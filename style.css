@@ -4827,7 +4827,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   width: 100%;
   height: 100%;
   z-index: 10;
-  cursor: grab;
+  cursor: default;
   touch-action: pan-y;
   background: transparent;
 }
@@ -4836,11 +4836,9 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   width: 100%;
   height: 100%;
   display: block;
+  cursor: default;
+  touch-action: pan-y;
   background: transparent;
-}
-
-#keypadCanvas:active {
-  cursor: grabbing;
 }
 
 @media (max-width: 1000px) {

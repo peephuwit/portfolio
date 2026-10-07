@@ -1210,21 +1210,64 @@
       updateMousePos(e.clientX, e.clientY);
     });
 
+    // Strict hit test: returns true ONLY when mouse/touch hits the keypad itself (chassis, plate, or keycaps)
+    function checkKeypadHit(clientX, clientY) {
+      if (clientX === undefined || clientY === undefined) return false;
+      const rect = canvas.getBoundingClientRect();
+      if (!rect || rect.width === 0 || rect.height === 0) return false;
+      const mx = ((clientX - rect.left) / rect.width) * 2 - 1;
+      const my = -((clientY - rect.top) / rect.height) * 2 + 1;
+      const hitRaycaster = new THREE.Raycaster();
+      hitRaycaster.setFromCamera({ x: mx, y: my }, camera);
+      const hits = hitRaycaster.intersectObjects(raycastTargets, true);
+      return hits.length > 0;
+    }
+
     canvas.addEventListener('mouseleave', () => {
       mouse.x = -9999;
       mouse.y = -9999;
-      canvas.style.cursor = 'grab';
+      canvas.style.cursor = 'default';
+      isPointerDragging = false;
+      if (controls) {
+        controls.enabled = true;
+      }
       if (window.innerWidth >= 1000) {
         deactivateKeyboardStage();
       }
     });
 
-    canvas.addEventListener('pointerdown', (e) => {
+    // Capture phase pointerdown: enables OrbitControls ONLY if pointer is on the keypad body/keys
+    function onPointerDownCapture(e) {
       hasMouseMovedSinceReset = true;
       downTime = Date.now();
-      isPointerDragging = true;
-      updateMousePos(e.clientX, e.clientY);
-    });
+      let cx = e.clientX;
+      let cy = e.clientY;
+      if (cx === undefined && e.touches && e.touches[0]) {
+        cx = e.touches[0].clientX;
+        cy = e.touches[0].clientY;
+      }
+      updateMousePos(cx, cy);
+
+      const isHit = checkKeypadHit(cx, cy);
+      isPointerDragging = isHit;
+      if (controls) {
+        controls.enabled = isHit;
+      }
+    }
+
+    canvas.addEventListener('pointerdown', onPointerDownCapture, { capture: true });
+    canvas.addEventListener('touchstart', onPointerDownCapture, { capture: true });
+    canvas.addEventListener('mousedown', onPointerDownCapture, { capture: true });
+
+    function onPointerUpGlobal() {
+      isPointerDragging = false;
+      if (controls) {
+        controls.enabled = true;
+      }
+    }
+    window.addEventListener('pointerup', onPointerUpGlobal);
+    window.addEventListener('touchend', onPointerUpGlobal);
+    window.addEventListener('pointercancel', onPointerUpGlobal);
 
     canvas.addEventListener('pointerup', (e) => {
       hasMouseMovedSinceReset = true;
@@ -1398,28 +1441,30 @@
       const isDesktop = window.innerWidth >= 1000;
       if (isDesktop) {
         let isTopHit = false;
+        let isKeypadBodyHit = false;
 
-        if (!isPointerDragging && mouse.x > -100 && mouse.y > -100) {
+        if (mouse.x > -100 && mouse.y > -100) {
           raycaster.setFromCamera(mouse, camera);
           const intersects = raycaster.intersectObjects(raycastTargets);
 
-          if (intersects.length > 0 && isKeycapTopFace(intersects[0])) {
-            isTopHit = true;
-            if (hasMouseMovedSinceReset) {
-              if (idleResetTimer) {
-                clearTimeout(idleResetTimer);
-                idleResetTimer = null;
-              }
-              const hoveredMesh = intersects[0].object;
-              if (hoveredMesh !== activePressedMesh) {
-                triggerKeyPress(hoveredMesh);
+          if (intersects.length > 0) {
+            isKeypadBodyHit = true;
+            if (isKeycapTopFace(intersects[0])) {
+              isTopHit = true;
+              if (!isPointerDragging && hasMouseMovedSinceReset) {
+                if (idleResetTimer) {
+                  clearTimeout(idleResetTimer);
+                  idleResetTimer = null;
+                }
+                const hoveredMesh = intersects[0].object;
+                if (hoveredMesh !== activePressedMesh) {
+                  triggerKeyPress(hoveredMesh);
+                }
               }
             }
           } else {
-            // Mouse is not over any keycap top face right now.
-            // Do NOT immediately snap stage back to idle (this eliminates the jitter loop!).
-            // Instead, gracefully release the stage after a 900ms inactivity grace period.
-            if (isKeypadActive && !idleResetTimer) {
+            // Mouse is not over any part of keypad
+            if (!isPointerDragging && isKeypadActive && !idleResetTimer) {
               idleResetTimer = setTimeout(() => {
                 deactivateKeyboardStage();
               }, 900);
@@ -1427,7 +1472,15 @@
           }
         }
 
-        canvas.style.cursor = isTopHit ? 'pointer' : (isPointerDragging ? 'grabbing' : 'grab');
+        if (isPointerDragging) {
+          canvas.style.cursor = 'grabbing';
+        } else if (isTopHit) {
+          canvas.style.cursor = 'pointer';
+        } else if (isKeypadBodyHit) {
+          canvas.style.cursor = 'grab';
+        } else {
+          canvas.style.cursor = 'default';
+        }
       }
 
       renderer.render(scene, camera);
