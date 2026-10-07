@@ -1362,19 +1362,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let hasUserScrolledHome = false;
 
+  let _hasCleanedUpZoomStyles = false;
+
   function isDesktopZoomEnabled() {
     if (typeof window === 'undefined') return false;
-    // Mobile or tablet screen width (<= 1180px covers iPads in portrait and most landscape)
-    if (window.innerWidth <= 1180) return false;
-    // Touchscreen / iPad detection (including iPad Pro 12.9" which is 1024x1366px)
-    const isTouch = (navigator.maxTouchPoints > 1) || ('ontouchstart' in window);
-    const isIPad = /iPad/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    const isTabletUA = /Tablet|iPad|PlayBook|Silk|Android(?!.*Mobile)/i.test(navigator.userAgent);
-    if ((isTouch && isIPad) || isTabletUA) return false;
-    // Coarse pointer without hover (tablets and mobile touch devices)
-    if (window.matchMedia && window.matchMedia('(pointer: coarse) and (hover: none)').matches) {
-      return false;
-    }
+    // Any iPad (Safari, Chrome, etc., with or without Magic Keyboard)
+    // Note: Apple has never made a Mac with touchscreen, so MacIntel with touchPoints > 0 is ALWAYS an iPad!
+    const isIPad = /iPad/i.test(navigator.userAgent) || 
+                   (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 0) ||
+                   (navigator.userAgent.includes('Mac') && navigator.maxTouchPoints > 0);
+    if (isIPad) return false;
+
+    // Any Android tablet, iPad, or mobile phone
+    if (/Android|Tablet|PlayBook|Silk|iPhone|iPod/i.test(navigator.userAgent)) return false;
+
+    // Viewport width checks: <= 1200px covers iPads in portrait and landscape
+    if (window.innerWidth <= 1200) return false;
+
+    // Touchscreen / coarse pointer devices
+    if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) return false;
+
+    // Any touch device up to 1366px (covers iPad Pro 12.9")
+    if ((navigator.maxTouchPoints > 0 || 'ontouchstart' in window) && window.innerWidth <= 1366) return false;
+
     return true;
   }
 
@@ -1399,32 +1409,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // On mobile and tablet/iPad devices: completely disable zoom-out scaling during scroll and page switching
     if (!isDesktopZoomEnabled()) {
-      if (hero) {
-        hero.style.transform = '';
-        hero.style.opacity = '';
-        hero.style.pointerEvents = 'auto';
-      }
-      if (lanyardCanvas) {
-        lanyardCanvas.style.transform = '';
-        lanyardCanvas.style.opacity = '';
-        lanyardCanvas.style.pointerEvents = 'auto';
-      }
-      if (sphereWrapper) {
-        sphereWrapper.style.transform = '';
-        sphereWrapper.style.opacity = '';
-      }
-      if (aboutContainer) {
-        aboutContainer.style.transform = '';
-        aboutContainer.style.opacity = '';
-        aboutContainer.style.pointerEvents = 'auto';
-      }
-      if (portfolioContainer) {
-        portfolioContainer.style.transform = '';
-        portfolioContainer.style.opacity = '';
-        portfolioContainer.style.pointerEvents = 'auto';
+      if (!_hasCleanedUpZoomStyles) {
+        _hasCleanedUpZoomStyles = true;
+        if (hero) {
+          hero.style.transform = '';
+          hero.style.opacity = '';
+          hero.style.pointerEvents = 'auto';
+        }
+        if (lanyardCanvas) {
+          lanyardCanvas.style.transform = '';
+          lanyardCanvas.style.opacity = '';
+          lanyardCanvas.style.pointerEvents = 'auto';
+        }
+        if (sphereWrapper) {
+          sphereWrapper.style.transform = '';
+          sphereWrapper.style.opacity = '';
+        }
+        if (aboutContainer) {
+          aboutContainer.style.transform = '';
+          aboutContainer.style.opacity = '';
+          aboutContainer.style.pointerEvents = 'auto';
+        }
+        if (portfolioContainer) {
+          portfolioContainer.style.transform = '';
+          portfolioContainer.style.opacity = '';
+          portfolioContainer.style.pointerEvents = 'auto';
+        }
       }
       return;
     }
+    _hasCleanedUpZoomStyles = false;
 
     // -------------------------------------------------------------------------
     // PAGE 1: HERO SECTION DYNAMIC SCROLL ZOOM-OUT (slower, more gradual)
@@ -1814,15 +1828,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updatePaperPlaneProgress();
 
     const scrollContainer = document.getElementById('homeScreen');
-    if (scrollContainer && scrollContainer.scrollTop < 120) {
-      const visibleItems = document.querySelectorAll('.about-scroll-item.is-visible');
-      if (visibleItems.length) {
-        visibleItems.forEach(item => item.classList.remove('is-visible'));
-      }
-      if (typeof window.resetAboutLeadTypewriter === 'function') {
-        window.resetAboutLeadTypewriter();
-      }
-    } else {
+    if (scrollContainer) {
       const introBlock = document.getElementById('aboutIntroBlock');
       if (introBlock) {
         const iRect = introBlock.getBoundingClientRect();
@@ -2211,6 +2217,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function initHomeSmoothScroll() {
     if (!homeScreen || isHomeSmoothInitialized) return;
+    if (!isDesktopZoomEnabled()) return;
     isHomeSmoothInitialized = true;
 
     syncHomeSmoothScroll();
@@ -2543,7 +2550,7 @@ document.addEventListener('DOMContentLoaded', () => {
         headerEl._scrollFloatTl.kill();
       }
 
-      // React Bits ScrollFloat GSAP Timeline for About Me header
+      // React Bits ScrollFloat GSAP Timeline for About Me header (gentle, butter-smooth float)
       let scrollFloatTl = null;
       if (typeof gsap !== 'undefined') {
         scrollFloatTl = gsap.timeline({ paused: true });
@@ -2551,14 +2558,14 @@ document.addEventListener('DOMContentLoaded', () => {
           targets,
           {
             opacity: 0,
-            yPercent: 120,
-            scaleY: 2.3,
-            scaleX: 0.7,
+            yPercent: 45,
+            scaleY: 1.25,
+            scaleX: 0.88,
             transformOrigin: '50% 0%'
           },
           {
             duration: 1,
-            ease: 'back.inOut(2)',
+            ease: 'power2.out',
             opacity: 1,
             yPercent: 0,
             scaleY: 1,
@@ -2596,16 +2603,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         lastTarget = targetProgress;
 
-        if (immediate) {
-          scrollFloatTl.progress(targetProgress);
-        } else {
-          gsap.to(scrollFloatTl, {
-            progress: targetProgress,
-            duration: 0.22,
-            ease: 'power1.out',
-            overwrite: 'auto'
-          });
-        }
+        scrollFloatTl.progress(targetProgress);
       }
 
       blocks.push({ headerEl, update: updateBlock });
@@ -6266,6 +6264,7 @@ function init3DLanyardWebGL() {
       }
     }
 
+    _hasCleanedUpZoomStyles = false;
     if (typeof handleHeroScrollZoom === 'function') {
       handleHeroScrollZoom();
     }

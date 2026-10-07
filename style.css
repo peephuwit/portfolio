@@ -4760,6 +4760,8 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
 
 @media (max-width: 1200px) {
   /* Disable zoom-out and scaling effects on tablet & iPad during section switching and scrolling */
+  .home-screen,
+  .home-screen.active,
   .hero-section,
   .about-container,
   .portfolio-container,
@@ -4779,8 +4781,10 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   }
 }
 
-@media (pointer: coarse) and (hover: none) {
+@media (pointer: coarse), (hover: none) {
   /* Disable zoom-out scaling on touch tablets and iPads */
+  .home-screen,
+  .home-screen.active,
   .hero-section,
   .about-container,
   .portfolio-container,
