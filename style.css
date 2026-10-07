@@ -4759,6 +4759,15 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
 }
 
 @media (max-width: 1200px) {
+  /* Disable zoom-out and scaling effects on tablet & iPad during section switching and scrolling */
+  .hero-section,
+  .about-container,
+  .portfolio-container,
+  #lanyard3dCanvas,
+  .sphere-3d-wrapper {
+    transform: none !important;
+  }
+
   .home-container {
     padding: 24px clamp(28px, 4.5vw, 48px);
   }
@@ -4767,6 +4776,17 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
     margin-top: clamp(96px, 11vh, 120px);
     padding-left: clamp(28px, 4vw, 54px);
     max-width: min(520px, 54vw);
+  }
+}
+
+@media (pointer: coarse) and (hover: none) {
+  /* Disable zoom-out scaling on touch tablets and iPads */
+  .hero-section,
+  .about-container,
+  .portfolio-container,
+  #lanyard3dCanvas,
+  .sphere-3d-wrapper {
+    transform: none !important;
   }
 }
 

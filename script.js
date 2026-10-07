@@ -1350,7 +1350,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let hasUserScrolledHome = false;
 
-  // Dynamic Scroll Zoom: Smoothly zoom out Home, About Me, and Portfolio when scrolling through sections
+  function isDesktopZoomEnabled() {
+    if (typeof window === 'undefined') return false;
+    // Mobile or tablet screen width (<= 1180px covers iPads in portrait and most landscape)
+    if (window.innerWidth <= 1180) return false;
+    // Touchscreen / iPad detection (including iPad Pro 12.9" which is 1024x1366px)
+    const isTouch = (navigator.maxTouchPoints > 1) || ('ontouchstart' in window);
+    const isIPad = /iPad/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const isTabletUA = /Tablet|iPad|PlayBook|Silk|Android(?!.*Mobile)/i.test(navigator.userAgent);
+    if ((isTouch && isIPad) || isTabletUA) return false;
+    // Coarse pointer without hover (tablets and mobile touch devices)
+    if (window.matchMedia && window.matchMedia('(pointer: coarse) and (hover: none)').matches) {
+      return false;
+    }
+    return true;
+  }
+
+  // Dynamic Scroll Zoom: Smoothly zoom out Home, About Me, and Portfolio when scrolling through sections (Desktop only)
   function handleHeroScrollZoom() {
     const scrollContainer = document.getElementById('homeScreen');
     const hero = heroSection || document.getElementById('home');
@@ -1369,8 +1385,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const lanyardCanvas = document.getElementById('lanyard3dCanvas');
     const sphereWrapper = document.querySelector('.sphere-3d-wrapper');
 
-    // On mobile screens (<= 768px): completely disable zoom-out scaling during scroll and page switching
-    if (window.innerWidth <= 768) {
+    // On mobile and tablet/iPad devices: completely disable zoom-out scaling during scroll and page switching
+    if (!isDesktopZoomEnabled()) {
       if (hero) {
         hero.style.transform = '';
         hero.style.opacity = '';
