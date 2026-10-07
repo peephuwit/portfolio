@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <title>PEEPHUWIT - Portfolio</title>
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="style.css">
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+</head>
+<body>
+  <!-- Side Rays Ambient Background Lighting -->
+  <canvas id="sideRaysCanvas" class="side-rays-canvas" aria-hidden="true"></canvas>
+
+  <!-- ====================================================================
+       PAGE 1: Clean Minimalist Preloader with Decrypted Text & Loading Bar
+       ==================================================================== -->
+  <section class="screen-section welcome-screen active" id="welcomeScreen">
+    <div class="welcome-container" id="welcomeContainer">
+      <!-- Decrypted Text Title (Speed 60ms) -->
+      <div class="loader-brand-title">
+        <span class="decrypted-text" id="loaderDecryptedText"></span>
+        <div class="loader-sub-text">loading PORTFOLIO<span class="wave-dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></div>
+      </div>
+      <script>
+        (function() {
+          var el = document.getElementById('loaderDecryptedText');
+          if (el) {
+            var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+            var h = '';
+            for (var i = 0; i < 11; i++) {
+              h += '<span class="decrypted-char decrypted-char--encrypted">' + chars[Math.floor(Math.random() * chars.length)] + '</span>';
+            }
+            el.innerHTML = h;
+          }
+        })();
+      </script>
+
+      <!-- Loading Bar Component -->
+      <div class="loading-wrapper">
+        <div class="loading-bar-track">
+          <div class="loading-bar-fill" id="loadingBarFill"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       PAGE 1.5: Scroll Expand Transition Stage (React Bits ScrollExpand)
+       ==================================================================== -->
+  <section class="screen-section scroll-expand-screen hidden" id="scrollExpandScreen">
+    <div class="scroll-expand" id="scrollExpandContainer">
+      <div class="scroll-expand__track" id="scrollExpandTrack">
+        <div class="scroll-expand__stage" id="scrollExpandStage">
+          <div class="scroll-expand__frame" id="scrollExpandFrame">
+            <div class="scroll-expand__media port-bg-media" id="scrollExpandMedia">
+              <div class="port-bg-mesh"></div>
+              <canvas id="scrollExpandRaysCanvas" class="port-bg-rays" aria-hidden="true"></canvas>
+              <div class="port-bg-noise"></div>
+            </div>
+            <div class="scroll-expand__scrim"></div>
+          </div>
+          <h1 class="scroll-expand__title" id="scrollExpandTitle">
+            Welcome To My PORTFOLIO Website
+          </h1>
+          <div class="scroll-expand__hint" id="scrollExpandHint">
+            <span class="scroll-expand__hint-float">Scroll inside the frame</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       PAGE 2: Main Home Screen (photo2.png) + 3D Lanyard Badge
+       ==================================================================== -->
+  <section class="screen-section home-screen hidden" id="homeScreen">
+    <!-- Navbar (Sticky Floating Capsule - Visible from the very first view with the Badge) -->
+    <header class="navbar-wrapper">
+      <nav class="navbar">
+        <a href="#" class="nav-brand-pill nav-logo" id="navLogoBtn" title="pphw.dev404">
+          <span class="brand-name">pphw<span class="logo-dot">.</span>dev404</span>
+        </a>
+        <ul class="nav-links">
+          <div class="nav-indicator" id="navIndicator"></div>
+          <li>
+            <a href="#home" class="nav-link active">
+              <svg class="nav-icon" viewBox="0 0 24 24">
+                <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-5a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/>
+              </svg>
+              <span>HOME</span>
+            </a>
+          </li>
+          <li>
+            <a href="#about" class="nav-link">
+              <svg class="nav-icon" viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              <span>ABOUT</span>
+            </a>
+          </li>
+          <li>
+            <a href="#portfolio" class="nav-link">
+              <svg class="nav-icon" viewBox="0 0 24 24">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+              </svg>
+              <span>PORTFOLIO</span>
+            </a>
+          </li>
+          <li>
+            <a href="#contact" class="nav-link">
+              <svg class="nav-icon" viewBox="0 0 24 24">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+              <span>CONTACT</span>
+            </a>
+          </li>
+        </ul>
+        <!-- Divider Between Menu and Language -->
+        <div class="nav-divider" aria-hidden="true"></div>
+
+        <!-- Language Switcher Button (Redesigned [文A EN/TH]) -->
+        <button type="button" class="nav-lang-toggle-btn" id="desktopLangToggle" aria-label="Switch Language" title="Switch Language">
+          <svg class="lang-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m5 8 6 6"/>
+            <path d="m4 14 6-6 2-3"/>
+            <path d="M2 5h12"/>
+            <path d="M7 2h1"/>
+            <path d="m22 22-5-10-5 10"/>
+            <path d="M14 18h6"/>
+          </svg>
+          <span class="lang-code-text" id="desktopLangCode">EN</span>
+        </button>
+
+        <!-- Mobile Hamburger Toggle (3 horizontal lines) -->
+        <button type="button" class="nav-hamburger-btn" id="navHamburgerBtn" aria-label="Toggle navigation menu" aria-expanded="false">
+          <span class="hamburger-line line-1"></span>
+          <span class="hamburger-line line-2"></span>
+          <span class="hamburger-line line-3"></span>
+        </button>
+      </nav>
+
+      <!-- Mobile Option Wheel Dropdown Attached Directly Under Navbar -->
+      <div class="mobile-option-wheel-dropdown" id="mobileOptionWheelDropdown" aria-hidden="true">
+        <div class="option-wheel-viewport" id="optionWheelViewport">
+          <div class="option-wheel-track" id="optionWheelTrack">
+            <!-- Set 0 (Loop wrap buffer) -->
+            <button type="button" class="option-wheel-item" data-index="0" data-target="#home">
+              <span class="option-wheel-text">HOME</span>
+            </button>
+            <button type="button" class="option-wheel-item" data-index="1" data-target="#about">
+              <span class="option-wheel-text">ABOUT</span>
+            </button>
+            <button type="button" class="option-wheel-item" data-index="2" data-target="#portfolio">
+              <span class="option-wheel-text">PORTFOLIO</span>
+            </button>
+            <button type="button" class="option-wheel-item" data-index="3" data-target="#contact">
+              <span class="option-wheel-text">CONTACT</span>
+            </button>
+
+            <!-- Set 1 (Main Interactive Set) -->
+            <button type="button" class="option-wheel-item is-active" data-index="4" data-target="#home">
+              <span class="option-wheel-text">HOME</span>
+            </button>
+            <button type="button" class="option-wheel-item dist-1" data-index="5" data-target="#about">
+              <span class="option-wheel-text">ABOUT</span>
+            </button>
+            <button type="button" class="option-wheel-item dist-2" data-index="6" data-target="#portfolio">
+              <span class="option-wheel-text">PORTFOLIO</span>
+            </button>
+            <button type="button" class="option-wheel-item dist-3" data-index="7" data-target="#contact">
+              <span class="option-wheel-text">CONTACT</span>
+            </button>
+
+            <!-- Set 2 (Loop wrap buffer) -->
+            <button type="button" class="option-wheel-item" data-index="8" data-target="#home">
+              <span class="option-wheel-text">HOME</span>
+            </button>
+            <button type="button" class="option-wheel-item" data-index="9" data-target="#about">
+              <span class="option-wheel-text">ABOUT</span>
+            </button>
+            <button type="button" class="option-wheel-item" data-index="10" data-target="#portfolio">
+              <span class="option-wheel-text">PORTFOLIO</span>
+            </button>
+            <button type="button" class="option-wheel-item" data-index="11" data-target="#contact">
+              <span class="option-wheel-text">CONTACT</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Language Switcher Frame Attached Directly Below Menu -->
+        <div class="option-wheel-lang-footer" id="optionWheelLangFooter">
+          <div class="nav-lang-pill mobile-lang-pill" id="mobileLangSwitch" role="group" aria-label="Language Selector">
+            <div class="lang-indicator" id="mobileLangIndicator"></div>
+            <button type="button" class="lang-btn active" data-lang="en" aria-label="English">EN</button>
+            <button type="button" class="lang-btn" data-lang="th" aria-label="Thai">TH</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Transparent Blur Backdrop for Click-Outside (Does NOT lock page scroll) -->
+    <div class="mobile-dropdown-backdrop" id="mobileDropdownBackdrop" aria-hidden="true"></div>
+
+    <!-- 3D Rolling Halftone Dot Sphere Graphic in Background -->
+    <div class="sphere-3d-wrapper">
+      <img src="theme/graphic_clean.svg" class="bg-graphic" alt="Portfolio 3D Halftone Sphere">
+    </div>
+
+    <!-- 3D Hanging Lanyard ID Badge with WebGL Multi-Segment Cloth Physics -->
+    <div class="lanyard-container" id="lanyardBadge">
+      <canvas id="lanyard3dCanvas" class="lanyard-3d-canvas"></canvas>
+    </div>
+
+    <div class="home-container">
+
+      <!-- Main Hero Content -->
+      <main class="hero-section" id="home">
+        <h1 class="hero-greeting">Hello, I'm</h1>
+        <h2 class="hero-name"><span class="typewriter-text shiny-text" id="typewriterName"></span><span class="typewriter-cursor name-cursor" id="nameCursor">_</span></h2>
+        <h3 class="hero-sub-student">Computer Science Student</h3>
+        <h4 class="hero-sub-role"><span class="typewriter-text" id="typewriterRole">Developer</span><span class="typewriter-cursor">_</span></h4>
+        <p class="hero-desc" id="heroDesc">
+          Computer Science student who enjoys building interactive digital experiences and turning creative ideas into functional websites.
+        </p>
+        
+        <div class="hero-cta-group">
+          <a href="#" class="cta-btn btn-cv">DOWNLOAD CV</a>
+          <a href="#portfolio" class="cta-btn btn-portfolio">
+            <span class="btn-paint-track" aria-hidden="true"><span class="btn-paint-fill"></span></span>
+            <span class="btn-text">PORTFOLIO</span>
+            <span class="btn-arrow-box">
+              <svg class="btn-arrow-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </span>
+          </a>
+        </div>
+      </main>
+
+      <!-- ====================================================================
+           React Bits "Scroll Velocity" Kinetic Parallax Typography
+           Customizer: Velocity: 60 | Num Copies: 6 | Damping: 50 | Stiffness: 400
+           Font: Anton | Color: Faint translucent watermark
+           ==================================================================== -->
+      <section class="scroll-velocity-section" id="scrollVelocity" aria-hidden="true">
+        <div class="scroll-velocity-container">
+          <!-- Row 1: Hello I'm PEEPHUWIT (Direction: Left) -->
+          <div class="scroll-velocity-row" data-direction="-1">
+            <div class="scroll-velocity-track">
+              <span class="scroll-velocity-text">Hello I'm PEEPHUWIT</span>
+              <span class="scroll-velocity-text">Hello I'm PEEPHUWIT</span>
+              <span class="scroll-velocity-text">Hello I'm PEEPHUWIT</span>
+              <span class="scroll-velocity-text">Hello I'm PEEPHUWIT</span>
+              <span class="scroll-velocity-text">Hello I'm PEEPHUWIT</span>
+              <span class="scroll-velocity-text">Hello I'm PEEPHUWIT</span>
+            </div>
+          </div>
+          <!-- Row 2: Devloper & Creative Designer (Direction: Right) -->
+          <div class="scroll-velocity-row" data-direction="1">
+            <div class="scroll-velocity-track">
+              <span class="scroll-velocity-text">Devloper &amp; Creative Designer</span>
+              <span class="scroll-velocity-text">Devloper &amp; Creative Designer</span>
+              <span class="scroll-velocity-text">Devloper &amp; Creative Designer</span>
+              <span class="scroll-velocity-text">Devloper &amp; Creative Designer</span>
+              <span class="scroll-velocity-text">Devloper &amp; Creative Designer</span>
+              <span class="scroll-velocity-text">Devloper &amp; Creative Designer</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- About Me Section -->
+      <section class="about-section" id="about">
+                        <!-- Paper Airplane & GSAP-Style Scroll Flight Path (Files 5, 6, 7) -->
+        <div class="flight-container" id="flightContainer" aria-hidden="true">
+          <svg class="flight-trail-svg" id="flightTrailSvg" viewBox="0 0 1440 1700" preserveAspectRatio="none">
+            <defs>
+              <!-- Primary Trail Gradient -->
+              <linearGradient id="flightTrailGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.15"/>
+                <stop offset="30%" stop-color="#c084fc" stop-opacity="0.8"/>
+                <stop offset="70%" stop-color="#f472b6" stop-opacity="0.95"/>
+                <stop offset="100%" stop-color="#ffffff" stop-opacity="1"/>
+              </linearGradient>
+              <!-- Glow Filter for Trail -->
+              <filter id="flightTrailGlow" x="-30%" y="-30%" width="160%" height="160%">
+                <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#f472b6" flood-opacity="0.7"/>
+                <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#c084fc" flood-opacity="0.4"/>
+              </filter>
+            </defs>
+            <!-- Hidden Master Path for Coordinate Sampling -->
+            <path id="flightTrailMaster" d="M 240,40 C 210,150 190,270 210,400 C 230,530 270,650 360,690 C 460,730 550,650 550,560 C 550,470 460,420 350,420 C 240,420 200,500 220,620 C 240,760 360,940 560,1080 C 760,1220 1000,1320 1240,1380 C 1400,1420 1560,1460 1740,1495" fill="none" stroke="none" style="display:none;" />
+            <!-- Primary Glowing Flight Path Line (Dynamic Contrail: Dashed) -->
+            <path id="flightTrailPrimary" class="flight-trail-line primary-line" fill="none" stroke-dasharray="10 8" filter="url(#flightTrailGlow)" />
+          </svg>
+
+          <!-- Origami Paper Airplane Graphic (~96px width) -->
+          <div class="paper-plane-wrapper" id="paperPlaneWrapper">
+            <svg class="paper-plane-svg" viewBox="-40 -35 80 70" width="96" height="84">
+              <defs>
+                <!-- Wing Pink / Lavender (top face) -->
+                <linearGradient id="planeWingPink" x1="100%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#fdf4ff"/>
+                  <stop offset="25%" stop-color="#f5d0fe"/>
+                  <stop offset="65%" stop-color="#e879f9"/>
+                  <stop offset="100%" stop-color="#a855f7"/>
+                </linearGradient>
+                <!-- Wing Cyan / Blue (facing face) -->
+                <linearGradient id="planeWingCyan" x1="100%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stop-color="#f0f9ff"/>
+                  <stop offset="30%" stop-color="#7dd3fc"/>
+                  <stop offset="70%" stop-color="#0284c7"/>
+                  <stop offset="100%" stop-color="#0369a1"/>
+                </linearGradient>
+                <!-- Keel Underbody Left (Deep Purple Shadow) -->
+                <linearGradient id="planeKeelLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#4c1d95"/>
+                  <stop offset="100%" stop-color="#2e1065"/>
+                </linearGradient>
+                <!-- Keel Underbody Right (Deep Blue Shadow) -->
+                <linearGradient id="planeKeelRight" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#0369a1"/>
+                  <stop offset="100%" stop-color="#082f49"/>
+                </linearGradient>
+              </defs>
+              <g>
+                <!-- Keel Fin Left -->
+                <polygon points="34,0 -16,-4 -10,-12" fill="url(#planeKeelLeft)"/>
+                <!-- Keel Fin Right -->
+                <polygon points="34,0 -16,4 -10,12" fill="url(#planeKeelRight)"/>
+                <!-- Center Fuselage Spine Crease (Top Fold) -->
+                <polygon points="34,0 -16,-4 -16,4" fill="rgba(255,255,255,0.22)"/>
+                <!-- Left Wing (Cyan) -->
+                <polygon points="34,0 -26,-24 -16,-4" fill="url(#planeWingCyan)"/>
+                <!-- Right Wing (Pink) -->
+                <polygon points="34,0 -16,4 -26,24" fill="url(#planeWingPink)"/>
+                <!-- Wing Fold Crease Highlights -->
+                <line x1="34" y1="0" x2="-16" y2="-4" stroke="rgba(255,255,255,0.6)" stroke-width="0.8" stroke-linecap="round"/>
+                <line x1="34" y1="0" x2="-16" y2="4" stroke="rgba(255,255,255,0.6)" stroke-width="0.8" stroke-linecap="round"/>
+                <!-- Center Ridge Line -->
+                <line x1="34" y1="0" x2="-16" y2="0" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <div class="about-container">
+          
+          <!-- Header / A little about me (Scroll Float) -->
+          <div class="about-header" id="aboutTitleBlock">
+            <h2 class="about-title">
+              <span class="about-title-prefix scroll-float" data-scroll-float>A LITTLE</span>
+              <span class="about-title-highlight scroll-float" data-scroll-float>ABOUT ME</span>
+            </h2>
+          </div>
+
+          <!-- Intro / Self-Introduction (Typewriter with Full Block Cursor & Zero Shift Ghost Placeholder) -->
+          <div class="about-scroll-item about-intro-wrap" id="aboutIntroBlock">
+            <p class="about-lead" id="aboutLead">
+              <span class="about-lead-ghost" id="aboutLeadGhost" aria-hidden="true">Hi, I'm <span class="highlight-name">Peephuwit Witwarothai</span>.<br>I'm a Computer Science student who enjoys building digital experiences where technology meets creativity.</span>
+              <span class="about-lead-typing" id="aboutLeadTyping">
+                <span id="aboutLeadText"></span><span class="type-cursor-block" id="aboutLeadCursor">█</span>
+              </span>
+            </p>
+          </div>
+
+          <!-- Vertical Timeline with Central Glowing Beam & Alternating Headings/Cards -->
+          <div class="about-timeline">
+            <!-- Central Spine Glow Beam -->
+            <div class="timeline-spine" aria-hidden="true">
+              <div class="timeline-beam" id="timelineBeam"></div>
+            </div>
+
+            <!-- Milestone 1: What I Do (with Stepper effect) -->
+            <div class="timeline-row row-right-card about-scroll-item" data-milestone="1">
+              <!-- Left Side: Heading (หัวข้ออย่างเดียว ไม่มีคำอธิบายเพิ่ม) -->
+              <div class="timeline-col col-heading">
+                <div class="timeline-heading-block align-right">
+                  <h3 class="heading-title">What I Do</h3>
+                </div>
+              </div>
+
+              <!-- Center: Node -->
+              <div class="timeline-col col-node" aria-hidden="true">
+                <div class="timeline-node node-work" title="What I Do">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="16 18 22 12 16 6"/>
+                    <polyline points="8 6 2 12 8 18"/>
+                    <line x1="14" y1="4" x2="10" y2="20"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Right Side: Card (ข้อมูลเดิม + Stepper) -->
+              <div class="timeline-col col-card">
+                <div class="timeline-card stepper-card">
+                  <!-- Stepper Nav Header (Node Icons + Connecting Lines as in user image) -->
+                  <div class="stepper-progress-nav" role="tablist">
+                    <!-- Step 1 Node -->
+                    <button type="button" class="stepper-node-btn active" data-step="0" role="tab" aria-selected="true" aria-label="Application Development" title="Application Development">
+                      <span class="node-circle">
+                        <svg class="node-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="16 18 22 12 16 6"/>
+                          <polyline points="8 6 2 12 8 18"/>
+                          <line x1="14" y1="4" x2="10" y2="20"/>
+                        </svg>
+                        <svg class="node-check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                      </span>
+                    </button>
+
+                    <!-- Connecting Line 1-2 -->
+                    <div class="stepper-line" data-line="0">
+                      <div class="stepper-line-fill"></div>
+                    </div>
+
+                    <!-- Step 2 Node -->
+                    <button type="button" class="stepper-node-btn" data-step="1" role="tab" aria-selected="false" aria-label="Backend & Database" title="Backend & Database">
+                      <span class="node-circle">
+                        <svg class="node-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                          <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                          <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+                          <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+                        </svg>
+                        <svg class="node-check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                      </span>
+                    </button>
+
+                    <!-- Connecting Line 2-3 -->
+                    <div class="stepper-line" data-line="1">
+                      <div class="stepper-line-fill"></div>
+                    </div>
+
+                    <!-- Step 3 Node -->
+                    <button type="button" class="stepper-node-btn" data-step="2" role="tab" aria-selected="false" aria-label="UI/UX & Interactive Design" title="UI/UX & Interactive Design">
+                      <span class="node-circle">
+                        <svg class="node-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                        </svg>
+                        <svg class="node-check" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="20 6 9 17 4 12"/>
+                        </svg>
+                      </span>
+                    </button>
+                  </div>
+
+                  <!-- Horizontal Slide Viewport & Track (สไลด์ด้านข้างเหมือนเลื่อนสไลด์) -->
+                  <div class="stepper-slider-viewport">
+                    <div class="stepper-slider-track" id="stepperSliderTrack">
+                      <!-- Slide 1: Application Development -->
+                      <div class="stepper-slide" data-slide="0">
+                        <h4 class="card-title">Application Development</h4>
+                        <p class="card-text" id="cardDesc1">Building functional, reliable web applications from concept to working software.</p>
+                      </div>
+
+                      <!-- Slide 2: Backend & Database -->
+                      <div class="stepper-slide" data-slide="1">
+                        <h4 class="card-title">Backend &amp; Database</h4>
+                        <p class="card-text" id="cardDesc2">Creating clean database schemas, APIs, and the core logic that powers applications.</p>
+                      </div>
+
+                      <!-- Slide 3: UI/UX & Interactive Design -->
+                      <div class="stepper-slide" data-slide="2">
+                        <h4 class="card-title">UI/UX &amp; Interactive Design</h4>
+                        <p class="card-text" id="cardDesc3">Crafting intuitive interfaces, smooth motion, and engaging user experiences.</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Stepper Footer: แยกปุ่มลูกศรมุมซ้ายกับมุมขวา และเอา step 1 of 3 ออก -->
+                  <div class="stepper-footer">
+                    <button type="button" class="stepper-arrow prev" id="stepperPrevBtn" aria-label="Previous step">
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                      </svg>
+                    </button>
+                    <button type="button" class="stepper-arrow next" id="stepperNextBtn" aria-label="Next step">
+                      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Milestone 2: My Approach -->
+            <div class="timeline-row row-left-card about-scroll-item" data-milestone="2">
+              <!-- Left Side: Card (ข้อมูลในกรอปแบบเดิม) -->
+              <div class="timeline-col col-card">
+                <div class="timeline-card approach-box">
+                  <div class="approach-badge">CODE x CREATIVITY</div>
+                  <p class="approach-quote" id="approachQuote">
+                    “I believe a good digital experience isn't just about how it works, but also how it feels.”
+                  </p>
+                </div>
+              </div>
+
+              <!-- Center: Node -->
+              <div class="timeline-col col-node" aria-hidden="true">
+                <div class="timeline-node node-approach" title="My Approach">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Right Side: Heading (หัวข้ออย่างเดียว ไม่มีคำอธิบายเพิ่ม) -->
+              <div class="timeline-col col-heading">
+                <div class="timeline-heading-block">
+                  <h3 class="heading-title">My Approach</h3>
+                </div>
+              </div>
+            </div>
+
+            <!-- Milestone 3: Currently Exploring -->
+            <div class="timeline-row row-right-card about-scroll-item" data-milestone="3">
+              <!-- Left Side: Heading (หัวข้ออย่างเดียว ไม่มีคำอธิบายเพิ่ม) -->
+              <div class="timeline-col col-heading">
+                <div class="timeline-heading-block align-right">
+                  <h3 class="heading-title">Currently Exploring</h3>
+                </div>
+              </div>
+
+              <!-- Center: Node -->
+              <div class="timeline-col col-node" aria-hidden="true">
+                <div class="timeline-node node-explore" title="Currently Exploring">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Right Side: Exploring Card -->
+              <div class="timeline-col col-card">
+                <div class="timeline-card exploring-card">
+                  <div class="exploring-tags">
+                    <div class="tag-pill">
+                      <span class="tag-dot"></span>
+                      <span>Fullstack Development</span>
+                    </div>
+                    <div class="tag-pill">
+                      <span class="tag-dot"></span>
+                      <span>Backend &amp; API Design</span>
+                    </div>
+                    <div class="tag-pill">
+                      <span class="tag-dot"></span>
+                      <span>Database Systems</span>
+                    </div>
+                    <div class="tag-pill">
+                      <span class="tag-dot"></span>
+                      <span>Interactive &amp; Creative Web</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           Logo Loop Section (React Bits LogoLoop: Tech Stack & Project Tooling)
+           Customizer: Direction: Left | Speed: 100px/s | Hover Speed: 0px/s | Height: 60px | Gap: 60px | Fade Out: true
+           ==================================================================== -->
+      <section class="logo-loop-section" id="logoLoop" aria-label="Technologies & Tech Stack">
+        <div class="logo-loop-container">
+          <div class="logo-loop-track" id="logoLoopTrack">
+            <!-- Set 1 -->
+            <div class="logo-loop-list">
+              <div class="logo-loop-item" title="React"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" alt="React" loading="lazy"></div>
+              <div class="logo-loop-item" title="Next.js"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg" alt="Next.js" loading="lazy"></div>
+              <div class="logo-loop-item" title="TypeScript"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-plain.svg" alt="TypeScript" loading="lazy"></div>
+              <div class="logo-loop-item" title="JavaScript"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-plain.svg" alt="JavaScript" loading="lazy"></div>
+              <div class="logo-loop-item" title="Tailwind CSS"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" alt="Tailwind CSS" loading="lazy"></div>
+              <div class="logo-loop-item" title="Node.js"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-plain.svg" alt="Node.js" loading="lazy"></div>
+              <div class="logo-loop-item" title="Express"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/express/express-original.svg" alt="Express" loading="lazy"></div>
+              <div class="logo-loop-item" title="Python"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-plain.svg" alt="Python" loading="lazy"></div>
+              <div class="logo-loop-item" title="Java"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-plain.svg" alt="Java" loading="lazy"></div>
+              <div class="logo-loop-item" title="C++"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-plain.svg" alt="C++" loading="lazy"></div>
+              <div class="logo-loop-item" title="PHP"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-plain.svg" alt="PHP" loading="lazy"></div>
+              <div class="logo-loop-item" title="MySQL"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg" alt="MySQL" loading="lazy"></div>
+              <div class="logo-loop-item" title="HTML5"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-plain.svg" alt="HTML5" loading="lazy"></div>
+              <div class="logo-loop-item" title="CSS3"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-plain.svg" alt="CSS3" loading="lazy"></div>
+              <div class="logo-loop-item" title="WordPress"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/wordpress/wordpress-plain.svg" alt="WordPress" loading="lazy"></div>
+              <div class="logo-loop-item" title="Docker"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-plain.svg" alt="Docker" loading="lazy"></div>
+              <div class="logo-loop-item" title="Git"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-plain.svg" alt="Git" loading="lazy"></div>
+              <div class="logo-loop-item" title="GitHub"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" alt="GitHub" loading="lazy"></div>
+              <div class="logo-loop-item" title="Figma"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg" alt="Figma" loading="lazy"></div>
+              <div class="logo-loop-item" title="Linux"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linux.svg" alt="Linux" loading="lazy"></div>
+            </div>
+            <!-- Set 2 (Duplicate for seamless infinite marquee loop) -->
+            <div class="logo-loop-list" aria-hidden="true">
+              <div class="logo-loop-item" title="React"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" alt="React" loading="lazy"></div>
+              <div class="logo-loop-item" title="Next.js"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg" alt="Next.js" loading="lazy"></div>
+              <div class="logo-loop-item" title="TypeScript"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-plain.svg" alt="TypeScript" loading="lazy"></div>
+              <div class="logo-loop-item" title="JavaScript"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-plain.svg" alt="JavaScript" loading="lazy"></div>
+              <div class="logo-loop-item" title="Tailwind CSS"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" alt="Tailwind CSS" loading="lazy"></div>
+              <div class="logo-loop-item" title="Node.js"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-plain.svg" alt="Node.js" loading="lazy"></div>
+              <div class="logo-loop-item" title="Express"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/express/express-original.svg" alt="Express" loading="lazy"></div>
+              <div class="logo-loop-item" title="Python"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-plain.svg" alt="Python" loading="lazy"></div>
+              <div class="logo-loop-item" title="Java"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-plain.svg" alt="Java" loading="lazy"></div>
+              <div class="logo-loop-item" title="C++"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-plain.svg" alt="C++" loading="lazy"></div>
+              <div class="logo-loop-item" title="PHP"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-plain.svg" alt="PHP" loading="lazy"></div>
+              <div class="logo-loop-item" title="MySQL"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg" alt="MySQL" loading="lazy"></div>
+              <div class="logo-loop-item" title="HTML5"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-plain.svg" alt="HTML5" loading="lazy"></div>
+              <div class="logo-loop-item" title="CSS3"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-plain.svg" alt="CSS3" loading="lazy"></div>
+              <div class="logo-loop-item" title="WordPress"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/wordpress/wordpress-plain.svg" alt="WordPress" loading="lazy"></div>
+              <div class="logo-loop-item" title="Docker"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-plain.svg" alt="Docker" loading="lazy"></div>
+              <div class="logo-loop-item" title="Git"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-plain.svg" alt="Git" loading="lazy"></div>
+              <div class="logo-loop-item" title="GitHub"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" alt="GitHub" loading="lazy"></div>
+              <div class="logo-loop-item" title="Figma"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg" alt="Figma" loading="lazy"></div>
+              <div class="logo-loop-item" title="Linux"><img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linux.svg" alt="Linux" loading="lazy"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           Portfolio Showcase Section (#portfolio)
+           ==================================================================== -->
+      <section class="portfolio-section" id="portfolio">
+        <div class="portfolio-container">
+          
+          <!-- Section Title / Center Header (Scroll Float) -->
+          <div class="portfolio-header" id="portfolioTitleBlock">
+            <h2 class="portfolio-title" id="portfolioTitle" aria-label="PORTFOLIO Showcase">
+              <span class="title-portfolio">PORTFOLIO</span>
+              <span class="title-showcase">Showcase</span>
+            </h2>
+          </div>
+
+          <!-- Secondary Sub-Navbar (Projects, Certificates, Tech Stack) -->
+          <div class="about-scroll-item portfolio-subnav-wrap">
+            <nav class="portfolio-subnav">
+              <button type="button" class="portfolio-tab active" data-tab="projects">Projects</button>
+              <button type="button" class="portfolio-tab" data-tab="certificates">Certificates</button>
+              <button type="button" class="portfolio-tab" data-tab="tech-stack">Tech Stack</button>
+            </nav>
+          </div>
+
+          <!-- Tab Content 1: Projects Grid (Default Active) -->
+          <div class="portfolio-tab-pane active" id="tab-projects">
+            <div class="portfolio-grid">
+              
+              <!-- Card 1: Bumblebee Clock -->
+              <article class="about-scroll-item project-card" data-project="bumblebee-clock">
+                <div class="project-card-image-wrap">
+                  <img src="port/pic1.png" alt="Bumblebee Clock Project" class="project-img">
+                </div>
+                <div class="project-card-body">
+                  <div class="project-card-info">
+                    <h3 class="project-title">BUMBLEBEE CLOCK</h3>
+                    <p class="project-category">Interactive Web Experience</p>
+                  </div>
+                  <div class="project-card-bottom">
+                    <div class="project-card-footer">
+                      <button type="button" class="project-link" data-open-modal="bumblebee-clock" aria-label="View Bumblebee Clock details">
+                        <span>VIEW DETAILS</span>
+                        <span class="arrow-icon">↗</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Card 2: RoomReserve -->
+              <article class="about-scroll-item project-card" data-project="room-reserve">
+                <div class="project-card-image-wrap">
+                  <img src="port/pic2.png" alt="RoomReserve Project" class="project-img">
+                </div>
+                <div class="project-card-body">
+                  <div class="project-card-info">
+                    <h3 class="project-title">ROOMRESERVE</h3>
+                    <p class="project-category">Fullstack Web Application</p>
+                  </div>
+                  <div class="project-card-bottom">
+                    <div class="project-card-footer">
+                      <button type="button" class="project-link" data-open-modal="room-reserve" aria-label="View RoomReserve details">
+                        <span>VIEW DETAILS</span>
+                        <span class="arrow-icon">↗</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Card 3: Placeholder -->
+              <article class="about-scroll-item project-card placeholder-card">
+                <div class="project-card-image-wrap empty-image-wrap">
+                  <div class="empty-image-placeholder"></div>
+                </div>
+                <div class="project-card-body">
+                  <div class="project-card-info">
+                    <h3 class="project-title">XXX</h3>
+                    <p class="project-category">xxx</p>
+                  </div>
+                  <div class="project-card-bottom">
+                    <div class="project-card-footer">
+                      <span class="project-link disabled">
+                        <span>XXX</span>
+                        <span class="arrow-icon">↗</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </article>
+
+            </div>
+          </div>
+
+          <!-- Tab Content 2: Certificates (Placeholder) -->
+          <div class="portfolio-tab-pane" id="tab-certificates">
+            <div class="tab-empty-state">
+              <p class="empty-text">xxx</p>
+            </div>
+          </div>
+
+          <!-- Tab Content 3: Tech Stack (3D Mechanical Skills Keypad) -->
+          <div class="portfolio-tab-pane" id="tab-tech-stack">
+            <div class="about-scroll-item keypad-showcase-card">
+              <!-- Typography Info Display (Top Overlay on Mobile / Left Overlay on Desktop) -->
+              <div class="keypad-stage-overlay">
+                <div class="skill-info-panel" id="skillInfoPanel">
+                  <div class="skill-category-badge" id="skillCategory">Tech Stack</div>
+                  <h3 class="skill-name-display" id="skillName">Skill</h3>
+                  <p class="skill-tagline-display" id="skillTagline">Tap any key to view skill details.</p>
+                  <div class="skill-meta-box">
+                    <div class="meta-row">
+                      <span class="meta-label">Shortcut Key</span>
+                      <span class="key-shortcut-tag" id="skillShortcut">-</span>
+                    </div>
+                    <div class="meta-row">
+                      <span class="meta-label">Proficiency</span>
+                      <span class="meta-value" id="skillLevel">-</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 3D WebGL Canvas Layer -->
+              <div class="keypad-canvas-container" id="keypadCanvasContainer">
+                <canvas id="keypadCanvas"></canvas>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <!-- ====================================================================
+       Project Detail Modal Overlay (Image on Left, Content on Right)
+       ==================================================================== -->
+  <div class="project-modal-backdrop" id="projectModalBackdrop" aria-hidden="true">
+    <div class="project-modal-container" role="dialog" aria-modal="true" aria-labelledby="modalProjectTitle">
+      <!-- Close Button -->
+      <button type="button" class="modal-close-btn" id="modalCloseBtn" aria-label="Close project details">
+        <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="project-modal-grid">
+        <!-- LEFT COLUMN: Image, Tech Used & Action Buttons -->
+        <div class="modal-left-col">
+          <div class="modal-image-wrapper">
+            <img src="port/pic2.png" alt="Project Preview" class="modal-project-img" id="modalProjectImg">
+          </div>
+
+          <!-- Technologies Used (Moved to Left Column with Frontend/Backend/Database separation) -->
+          <div class="modal-section modal-tech-section">
+            <h3 class="modal-section-title">Technologies Used</h3>
+            <div class="modal-tech-groups" id="modalTechTags">
+              <div class="modal-tech-group">
+                <span class="modal-tech-group-label">Frontend</span>
+                <div class="modal-tech-tags">
+                  <span class="modal-tech-tag">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" alt="" class="tech-tag-icon" loading="lazy">
+                    <span>React</span>
+                  </span>
+                  <span class="modal-tech-tag">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-original.svg" alt="" class="tech-tag-icon" loading="lazy">
+                    <span>TypeScript</span>
+                  </span>
+                  <span class="modal-tech-tag">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" alt="" class="tech-tag-icon" loading="lazy">
+                    <span>Tailwind CSS</span>
+                  </span>
+                </div>
+              </div>
+              <div class="modal-tech-group">
+                <span class="modal-tech-group-label">Backend</span>
+                <div class="modal-tech-tags">
+                  <span class="modal-tech-tag">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg" alt="" class="tech-tag-icon" loading="lazy">
+                    <span>Node.js</span>
+                  </span>
+                  <span class="modal-tech-tag">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/express/express-original.svg" alt="" class="tech-tag-icon tech-tag-icon-white" loading="lazy">
+                    <span>Express</span>
+                  </span>
+                  <span class="modal-tech-tag">
+                    <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/zod.svg" alt="" class="tech-tag-icon tech-tag-icon-white" loading="lazy">
+                    <span>Zod</span>
+                  </span>
+                  <span class="modal-tech-tag">
+                    <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/jsonwebtokens.svg" alt="" class="tech-tag-icon tech-tag-icon-white" loading="lazy">
+                    <span>JWT</span>
+                  </span>
+                </div>
+              </div>
+              <div class="modal-tech-group">
+                <span class="modal-tech-group-label">Database</span>
+                <div class="modal-tech-tags">
+                  <span class="modal-tech-tag">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/prisma/prisma-original.svg" alt="" class="tech-tag-icon tech-tag-icon-white" loading="lazy">
+                    <span>Prisma</span>
+                  </span>
+                  <span class="modal-tech-tag">
+                    <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sqlite/sqlite-original.svg" alt="" class="tech-tag-icon" loading="lazy">
+                    <span>SQLite</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons (Moved to Left Column) -->
+          <div class="modal-actions-footer">
+            <a href="#" target="_blank" rel="noopener noreferrer" class="modal-action-btn primary" id="modalLiveDemoBtn">
+              <span>Live Demo</span>
+              <span class="btn-icon">↗</span>
+            </a>
+            <a href="#" target="_blank" rel="noopener noreferrer" class="modal-action-btn secondary" id="modalSourceCodeBtn">
+              <span>View Source</span>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Project Info, Overview & Key Highlights -->
+        <div class="modal-right-col">
+          <div class="modal-header-info">
+            <h2 class="modal-project-title" id="modalProjectTitle">ROOMRESERVE</h2>
+            <p class="modal-project-subtitle" id="modalProjectSubtitle">Resource &amp; meeting room scheduling platform</p>
+          </div>
+
+          <!-- Project Overview / Concept Description -->
+          <div class="modal-section">
+            <h3 class="modal-section-title">Overview</h3>
+            <p class="modal-description" id="modalDescription">
+              A modular resource scheduling engine with real-time conflict detection, showcased through an enterprise room booking interface.
+            </p>
+          </div>
+
+          <!-- Key Highlights -->
+          <div class="modal-section">
+            <h3 class="modal-section-title">Key Highlights</h3>
+            <ul class="modal-highlights-list" id="modalHighlightsList">
+              <li class="modal-highlight-item">
+                <span class="highlight-bullet">▹</span>
+                <div class="highlight-text">
+                  <strong>Intelligent Conflict Detection:</strong> Server-side mathematical time-overlap algorithm prevents double bookings in real time (HTTP 409 Conflict).
+                </div>
+              </li>
+              <li class="modal-highlight-item">
+                <span class="highlight-bullet">▹</span>
+                <div class="highlight-text">
+                  <strong>End-to-End Type Safety:</strong> Strict TypeScript interfaces and Zod validation enforce reliable data contracts across frontend and backend.
+                </div>
+              </li>
+              <li class="modal-highlight-item">
+                <span class="highlight-bullet">▹</span>
+                <div class="highlight-text">
+                  <strong>Relational Modeling &amp; Prisma ORM:</strong> Structured database schemas (Users, Rooms, Bookings) with SQLite persistence and Role-Based Access Control (RBAC).
+                </div>
+              </li>
+              <li class="modal-highlight-item">
+                <span class="highlight-bullet">▹</span>
+                <div class="highlight-text">
+                  <strong>Interactive Timeline &amp; Bilingual UX:</strong> Real-time schedule timeline view with instant Thai/English switching and automated Buddhist/Gregorian year conversion.
+                </div>
+              </li>
+              <li class="modal-highlight-item">
+                <span class="highlight-bullet">▹</span>
+                <div class="highlight-text">
+                  <strong>Extensible Architecture:</strong> Data models and APIs designed to be adaptable for hot-desking, equipment, or appointment booking.
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script defer src="rapier.min.js"></script>
+  <script defer src="card_data.js"></script>
+  <script defer src="kartu_data.js"></script>
+  <script defer src="script.js"></script>
+  <script defer src="skills_keypad.js"></script>
+</body>
+</html>
