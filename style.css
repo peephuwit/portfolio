@@ -19,9 +19,7 @@
 
 @font-face {
   font-family: 'Willow';
-  src: url('font/Willow2.ttf') format('truetype'),
-       url('font/Willow_modern.ttf') format('truetype'),
-       url('font/Willow.TTF') format('truetype');
+  src: url('font/Willow2.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -4762,13 +4760,13 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
 
 @media (max-width: 1200px) {
   .home-container {
-    padding: 20px 10px;
+    padding: 24px clamp(28px, 4.5vw, 48px);
   }
 
   .hero-section {
-    margin-top: 70px;
-    padding-left: 20px;
-    max-width: 480px;
+    margin-top: clamp(96px, 11vh, 120px);
+    padding-left: clamp(28px, 4vw, 54px);
+    max-width: min(520px, 54vw);
   }
 }
 
@@ -4820,8 +4818,8 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   }
 
   .home-container {
-    padding: 100vh 8px 12px 8px;
-    padding: 100dvh 8px 12px 8px;
+    padding: 100vh clamp(18px, 4.5vw, 28px) 24px clamp(18px, 4.5vw, 28px);
+    padding: 100dvh clamp(18px, 4.5vw, 28px) 24px clamp(18px, 4.5vw, 28px);
   }
 
   .navbar-wrapper {
@@ -4983,8 +4981,9 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
     text-align: center !important;
     margin-left: auto !important;
     margin-right: auto !important;
-    max-width: 480px !important;
+    max-width: min(520px, 92vw) !important;
     width: 100% !important;
+    padding: 0 10px;
     transform: none;
   }
 
