@@ -510,6 +510,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (window.resetBadgeToTop) {
       window.resetBadgeToTop();
+    } else {
+      window._pendingBadgeDrop = true;
     }
 
     // Play Home screen animations (Navbar, Sphere, Typewriter, Lanyard Badge)
@@ -559,6 +561,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // 1. Ensure badge is completely off-screen at the top when entering Home
         if (window.resetBadgeToTop) {
           window.resetBadgeToTop();
+        } else {
+          window._pendingBadgeDrop = true;
         }
 
         // 2. Initialize and position sliding navbar indicator on active link
@@ -784,7 +788,11 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         const activeLink = document.querySelector('.nav-link.active');
         if (activeLink) updateNavIndicator(activeLink, true);
-        if (window.triggerBadgeDrop) window.triggerBadgeDrop();
+        if (window.triggerBadgeDrop) {
+          window.triggerBadgeDrop();
+        } else {
+          window._pendingBadgeDrop = true;
+        }
         unlockHomeScroll();
       }, 500);
       return;
@@ -838,6 +846,8 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         if (window.triggerBadgeDrop) {
           window.triggerBadgeDrop();
+        } else {
+          window._pendingBadgeDrop = true;
         }
       }, 500);
 
@@ -913,6 +923,8 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       if (window.triggerBadgeDrop) {
         window.triggerBadgeDrop();
+      } else {
+        window._pendingBadgeDrop = true;
       }
     }, 500);
 
@@ -2482,70 +2494,56 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================================================
   function initScrollFloat() {
     const scrollContainer = document.getElementById('homeScreen');
-    const headerIds = ['aboutTitleBlock', 'portfolioTitleBlock'];
+    const headerIds = ['aboutTitleBlock'];
     const blocks = [];
 
     headerIds.forEach((id) => {
       const headerEl = document.getElementById(id);
       if (!headerEl) return;
 
-      let targets = null;
-      let stagger = 0;
+      const floatElements = headerEl.querySelectorAll('[data-scroll-float]');
+      if (!floatElements.length) return;
 
-      if (id === 'portfolioTitleBlock') {
-        const titleEl = headerEl.querySelector('.portfolio-title') || headerEl;
-        targets = [titleEl];
-        stagger = 0;
-      } else {
-        const floatElements = headerEl.querySelectorAll('[data-scroll-float]');
-        if (!floatElements.length) return;
+      // Split text into individual character spans
+      const allChars = [];
+      floatElements.forEach((el) => {
+        if (el._scrollFloatReady) {
+          if (el._floatChars) allChars.push(...el._floatChars);
+          return;
+        }
+        el._scrollFloatReady = true;
 
-        // Split text into individual character spans
-        const allChars = [];
-        floatElements.forEach((el) => {
-          if (el._scrollFloatReady) {
-            if (el._floatChars) allChars.push(...el._floatChars);
-            return;
+        const rawText = el.textContent.trim();
+        el.textContent = '';
+        el.setAttribute('aria-label', rawText);
+
+        const chars = [];
+        for (let i = 0; i < rawText.length; i++) {
+          const char = rawText[i];
+          const span = document.createElement('span');
+          span.className = 'scroll-float-char';
+          if (char === ' ') {
+            span.classList.add('scroll-float-space');
+            span.innerHTML = '&nbsp;';
+          } else {
+            span.textContent = char;
           }
-          el._scrollFloatReady = true;
+          el.appendChild(span);
+          chars.push(span);
+        }
+        el._floatChars = chars;
+        allChars.push(...chars);
+      });
 
-          const rawText = el.textContent.trim();
-          el.textContent = '';
-          el.setAttribute('aria-label', rawText);
-
-          const chars = [];
-          for (let i = 0; i < rawText.length; i++) {
-            const char = rawText[i];
-            const span = document.createElement('span');
-            span.className = 'scroll-float-char';
-            if (char === ' ') {
-              span.classList.add('scroll-float-space');
-              span.innerHTML = '&nbsp;';
-            } else {
-              span.textContent = char;
-            }
-            el.appendChild(span);
-            chars.push(span);
-          }
-          el._floatChars = chars;
-          allChars.push(...chars);
-        });
-
-        if (!allChars.length) return;
-        targets = allChars;
-        stagger = 0.03;
-      }
-
-      if (!targets || !targets.length) return;
+      if (!allChars.length) return;
+      const targets = allChars;
+      const stagger = 0.03;
 
       if (headerEl._scrollFloatTl) {
         headerEl._scrollFloatTl.kill();
       }
 
-      // React Bits ScrollFloat GSAP Timeline
-      // Initial: opacity: 0, yPercent: 120/100, scaleY: 2.3/2.0, scaleX: 0.7/0.75, transformOrigin: '50% 0%'
-      // Target: opacity: 1, yPercent: 0, scaleY: 1, scaleX: 1
-      // Ease: 'back.inOut(2)'
+      // React Bits ScrollFloat GSAP Timeline for About Me header
       let scrollFloatTl = null;
       if (typeof gsap !== 'undefined') {
         scrollFloatTl = gsap.timeline({ paused: true });
@@ -2553,9 +2551,9 @@ document.addEventListener('DOMContentLoaded', () => {
           targets,
           {
             opacity: 0,
-            yPercent: id === 'portfolioTitleBlock' ? 100 : 120,
-            scaleY: id === 'portfolioTitleBlock' ? 2.0 : 2.3,
-            scaleX: id === 'portfolioTitleBlock' ? 0.75 : 0.7,
+            yPercent: 120,
+            scaleY: 2.3,
+            scaleX: 0.7,
             transformOrigin: '50% 0%'
           },
           {
@@ -5016,7 +5014,13 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 function init3DLanyardWebGL() {
   const canvas = document.getElementById('lanyard3dCanvas');
-  if (!canvas || typeof THREE === 'undefined') return;
+  if (!canvas) return;
+  if (typeof THREE === 'undefined') {
+    setTimeout(init3DLanyardWebGL, 40);
+    return;
+  }
+  if (init3DLanyardWebGL._initialized) return;
+  init3DLanyardWebGL._initialized = true;
 
   let width = window.innerWidth;
   let height = window.innerHeight;
@@ -5318,6 +5322,9 @@ function init3DLanyardWebGL() {
     }
   };
   frontImg.src = photoSrc;
+  if (frontImg.complete && frontImg.naturalWidth > 0) {
+    updateFrontAtlasImage(frontImg);
+  }
 
   if (!window.CARD_PHOTO_DATA) {
     const checkCardDataInterval = setInterval(() => {
@@ -5435,6 +5442,16 @@ function init3DLanyardWebGL() {
 
     cardGroup.add(modelGroup);
     if (frontMatRef) frontMatRef.needsUpdate = true;
+
+    // Wake up scene and render immediately once 3D card model is assembled
+    isBadgeInView = true;
+    isSceneVisible = true;
+    canvas.style.display = 'block';
+    canvas.style.visibility = 'visible';
+    canvas.style.opacity = '1';
+    if (window.triggerBadgeDrop && (homeScreen && homeScreen.classList.contains('active'))) {
+      window.triggerBadgeDrop();
+    }
   }
 
   function loadCardModel() {
@@ -5519,9 +5536,15 @@ function init3DLanyardWebGL() {
   let rapierWorld = null;
   let rbFixed = null, rbJ1 = null, rbJ2 = null, rbJ3 = null, rbCard = null;
   let isRapierActive = false;
+  let isRapierInitializing = false;
 
   async function initRapierPhysics() {
-    if (typeof window.RAPIER === 'undefined') return;
+    if (isRapierActive || isRapierInitializing) return;
+    if (typeof window.RAPIER === 'undefined') {
+      setTimeout(initRapierPhysics, 40);
+      return;
+    }
+    isRapierInitializing = true;
     try {
       await window.RAPIER.init();
       const R = window.RAPIER;
@@ -5577,6 +5600,7 @@ function init3DLanyardWebGL() {
       rapierWorld.createImpulseJoint(R.JointData.spherical({ x: 0, y: 0, z: 0 }, { x: 0, y: STRAP_ATTACH_Y, z: 0 }), rbJ3, rbCard, true);
 
       isRapierActive = true;
+      isRapierInitializing = false;
       window.rbCard = rbCard;
       window.rbFixed = rbFixed;
       window.rbJ1 = rbJ1;
@@ -5585,10 +5609,11 @@ function init3DLanyardWebGL() {
       window.rapierWorld = rapierWorld;
       console.log('3D Lanyard: Genuine Rapier 3D WASM initialized & running (100% original App.js physics)!');
 
-      if (pendingDrop || !isCurrentlyWelcome) {
+      if (pendingDrop || !isCurrentlyWelcome || window._pendingBadgeDrop) {
         if (window.triggerBadgeDrop) window.triggerBadgeDrop();
       }
     } catch (e) {
+      isRapierInitializing = false;
       console.warn('Rapier init failed, using Verlet fallback:', e);
     }
   }
@@ -5814,6 +5839,12 @@ function init3DLanyardWebGL() {
       isSceneVisible = true;
       return;
     }
+    const vh = window.innerHeight || 800;
+    if (homeScreen.scrollTop < vh * 1.25) {
+      isBadgeInView = true;
+      isSceneVisible = true;
+      return;
+    }
     isSceneVisible = isBadgeInView;
   }
 
@@ -5852,6 +5883,7 @@ function init3DLanyardWebGL() {
   }
 
   window.triggerBadgeDrop = function() {
+    window._pendingBadgeDrop = false;
     isBadgeInView = true;
     isSceneVisible = true;
     pendingDrop = true;
@@ -5957,7 +5989,11 @@ function init3DLanyardWebGL() {
     cardGroup.quaternion.copy(cardQuat);
   };
 
-  window.resetBadgeToTop();
+  if (window._pendingBadgeDrop) {
+    window.triggerBadgeDrop();
+  } else {
+    window.resetBadgeToTop();
+  }
 
   // 11. Physics Simulation Loop (Genuine Rapier WASM with Verlet Fallback)
   let lastFrameTime = performance.now();
