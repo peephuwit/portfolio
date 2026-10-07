@@ -2501,56 +2501,70 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==========================================================================
   function initScrollFloat() {
     const scrollContainer = document.getElementById('homeScreen');
-    const headerIds = ['aboutTitleBlock'];
+    const headerIds = ['aboutTitleBlock', 'portfolioTitleBlock'];
     const blocks = [];
 
     headerIds.forEach((id) => {
       const headerEl = document.getElementById(id);
       if (!headerEl) return;
 
-      const floatElements = headerEl.querySelectorAll('[data-scroll-float]');
-      if (!floatElements.length) return;
+      let targets = null;
+      let stagger = 0;
 
-      // Split text into individual character spans
-      const allChars = [];
-      floatElements.forEach((el) => {
-        if (el._scrollFloatReady) {
-          if (el._floatChars) allChars.push(...el._floatChars);
-          return;
-        }
-        el._scrollFloatReady = true;
+      if (id === 'portfolioTitleBlock') {
+        const titleEl = headerEl.querySelector('.portfolio-title') || headerEl;
+        targets = [titleEl];
+        stagger = 0;
+      } else {
+        const floatElements = headerEl.querySelectorAll('[data-scroll-float]');
+        if (!floatElements.length) return;
 
-        const rawText = el.textContent.trim();
-        el.textContent = '';
-        el.setAttribute('aria-label', rawText);
-
-        const chars = [];
-        for (let i = 0; i < rawText.length; i++) {
-          const char = rawText[i];
-          const span = document.createElement('span');
-          span.className = 'scroll-float-char';
-          if (char === ' ') {
-            span.classList.add('scroll-float-space');
-            span.innerHTML = '&nbsp;';
-          } else {
-            span.textContent = char;
+        // Split text into individual character spans
+        const allChars = [];
+        floatElements.forEach((el) => {
+          if (el._scrollFloatReady) {
+            if (el._floatChars) allChars.push(...el._floatChars);
+            return;
           }
-          el.appendChild(span);
-          chars.push(span);
-        }
-        el._floatChars = chars;
-        allChars.push(...chars);
-      });
+          el._scrollFloatReady = true;
 
-      if (!allChars.length) return;
-      const targets = allChars;
-      const stagger = 0.03;
+          const rawText = el.textContent.trim();
+          el.textContent = '';
+          el.setAttribute('aria-label', rawText);
+
+          const chars = [];
+          for (let i = 0; i < rawText.length; i++) {
+            const char = rawText[i];
+            const span = document.createElement('span');
+            span.className = 'scroll-float-char';
+            if (char === ' ') {
+              span.classList.add('scroll-float-space');
+              span.innerHTML = '&nbsp;';
+            } else {
+              span.textContent = char;
+            }
+            el.appendChild(span);
+            chars.push(span);
+          }
+          el._floatChars = chars;
+          allChars.push(...chars);
+        });
+
+        if (!allChars.length) return;
+        targets = allChars;
+        stagger = 0.03;
+      }
+
+      if (!targets || !targets.length) return;
 
       if (headerEl._scrollFloatTl) {
         headerEl._scrollFloatTl.kill();
       }
 
-      // React Bits ScrollFloat GSAP Timeline for About Me header (gentle, butter-smooth float)
+      // React Bits ScrollFloat GSAP Timeline
+      // Initial: opacity: 0, yPercent: 120/100, scaleY: 2.3/2.0, scaleX: 0.7/0.75, transformOrigin: '50% 0%'
+      // Target: opacity: 1, yPercent: 0, scaleY: 1, scaleX: 1
+      // Ease: 'back.inOut(2)'
       let scrollFloatTl = null;
       if (typeof gsap !== 'undefined') {
         scrollFloatTl = gsap.timeline({ paused: true });
@@ -2558,14 +2572,14 @@ document.addEventListener('DOMContentLoaded', () => {
           targets,
           {
             opacity: 0,
-            yPercent: 45,
-            scaleY: 1.25,
-            scaleX: 0.88,
+            yPercent: id === 'portfolioTitleBlock' ? 100 : 120,
+            scaleY: id === 'portfolioTitleBlock' ? 2.0 : 2.3,
+            scaleX: id === 'portfolioTitleBlock' ? 0.75 : 0.7,
             transformOrigin: '50% 0%'
           },
           {
             duration: 1,
-            ease: 'power2.out',
+            ease: 'back.inOut(2)',
             opacity: 1,
             yPercent: 0,
             scaleY: 1,
@@ -2603,7 +2617,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         lastTarget = targetProgress;
 
-        scrollFloatTl.progress(targetProgress);
+        if (immediate) {
+          scrollFloatTl.progress(targetProgress);
+        } else {
+          gsap.to(scrollFloatTl, {
+            progress: targetProgress,
+            duration: 0.22,
+            ease: 'power1.out',
+            overwrite: 'auto'
+          });
+        }
       }
 
       blocks.push({ headerEl, update: updateBlock });
