@@ -38,7 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
       card2: "Creating clean database schemas, APIs, and the core logic that powers applications.",
       card3: "Crafting intuitive interfaces, smooth motion, and engaging user experiences.",
       quote: "“I believe a good digital experience isn't just about how it works, but also how it feels.”",
-      skillTagline: "Hover over any key to view proficiency details."
+      skillTagline: "Tap any key to view skill details.",
+      shortcutLabel: "Shortcut Key"
     },
     th: {
       heroDesc: "นักศึกษาคณะวิทยาการคอมพิวเตอร์ที่หลงใหลการสร้างดิจิทัลประสบการณ์เชิงโต้ตอบ และเปลี่ยนไอเดียสร้างสรรค์ให้กลายเป็นเว็บไซต์ที่ใช้งานได้จริง",
@@ -47,7 +48,8 @@ document.addEventListener('DOMContentLoaded', () => {
       card2: "ออกแบบ Database Schemas, APIs และระบบ Core Logic ที่ขับเคลื่อนการทำงานของแอปพลิเคชัน",
       card3: "ออกแบบ UI ที่เข้าใจง่าย การเคลื่อนไหวที่ลื่นไหล และมอบประสบการณ์การใช้งานที่น่าประทับใจ",
       quote: "“ผมเชื่อว่าประสบการณ์ดิจิทัลที่ดี ไม่ได้สำคัญแค่ว่ามันทำงานอย่างไร แต่สำคัญที่ว่าผู้ใช้รู้สึกอย่างไรเมื่อได้ใช้งาน”",
-      skillTagline: "ชี้ที่ปุ่มเพื่อดูรายละเอียดความเชี่ยวชาญในแต่ละทักษะ"
+      skillTagline: "แตะปุ่มใดก็ได้เพื่อดูรายละเอียดของทักษะ",
+      shortcutLabel: "คีย์ลัด"
     }
   };
 
@@ -616,6 +618,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let hasHeroAnimatedOnMobile = false;
 
   function resetMobileHeroState() {
+    if (window.innerWidth > 768) return;
     if (mobileHeroTl) {
       mobileHeroTl.kill();
       mobileHeroTl = null;
@@ -1441,7 +1444,7 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         // Exactly at the top (scrollTop === 0): Zoom in completely restored to 100% original position
         hero.style.transform = '';
-        hero.style.opacity = '';
+        hero.style.opacity = '1';
         hero.style.pointerEvents = 'auto';
 
         if (lanyardCanvas) {
@@ -3739,6 +3742,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateLanguageUI(lang, animate = true) {
     currentLang = lang;
+    window.currentLang = lang;
     try {
       localStorage.setItem('preferred_lang', lang);
     } catch (e) {}
@@ -3763,6 +3767,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const card3 = document.getElementById('cardDesc3');
     const quote = document.getElementById('approachQuote');
     const skillTagline = document.getElementById('skillTagline');
+    const shortcutLabel = document.getElementById('shortcutLabel');
 
     if (heroDesc) heroDesc.innerHTML = dict.heroDesc;
     if (typeof window.retypeAboutLead === 'function') {
@@ -3778,6 +3783,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (card3) card3.textContent = dict.card3;
     if (quote) quote.textContent = dict.quote;
     if (skillTagline) skillTagline.textContent = dict.skillTagline;
+    if (shortcutLabel) shortcutLabel.textContent = dict.shortcutLabel || (lang === 'th' ? 'คีย์ลัด' : 'Shortcut Key');
+
+    if (typeof window.refreshSkillInfoLanguage === 'function') {
+      window.refreshSkillInfoLanguage(lang);
+    }
 
     if (typeof updateModalLanguage === 'function') {
       updateModalLanguage();
@@ -6157,16 +6167,55 @@ function init3DLanyardWebGL() {
       [rbFixed, rbJ1, rbJ2, rbJ3, rbCard].forEach(b => b && b.wakeUp());
     }
 
-    if (window.innerWidth > 768) {
+    const homeScreenEl = document.getElementById('homeScreen');
+    const isDesktop = window.innerWidth > 768;
+
+    if (isDesktop) {
       if (typeof gsap !== 'undefined') {
+        gsap.killTweensOf(['.hero-greeting', '.hero-sub-student', '.hero-sub-role', '.hero-desc', '.hero-cta-group', '.hero-name']);
         gsap.set(['.hero-greeting', '.hero-sub-student', '.hero-sub-role', '.hero-desc', '.hero-cta-group', '.hero-name'], {
           opacity: 1,
           y: 0,
           x: 0,
-          scale: 1,
-          clearProps: 'opacity,transform'
+          scale: 1
         });
       }
+      const heroEl = document.querySelector('.hero-section');
+      if (heroEl && (!homeScreenEl || homeScreenEl.scrollTop === 0)) {
+        heroEl.style.opacity = '1';
+        heroEl.style.transform = 'none';
+        heroEl.style.pointerEvents = 'auto';
+      }
+      const nameEl = document.getElementById('typewriterName');
+      if (nameEl && !nameEl.textContent.trim()) {
+        nameEl.textContent = 'PEEPHUWIT';
+      }
+      const roleEl = document.getElementById('typewriterRole');
+      if (roleEl && !roleEl.textContent.trim()) {
+        roleEl.textContent = 'Developer';
+      }
+      const nameCursor = document.getElementById('nameCursor');
+      if (nameCursor) nameCursor.style.opacity = '1';
+      hasHeroAnimatedOnMobile = false;
+    } else {
+      if (homeScreenEl && homeScreenEl.scrollTop > (window.innerHeight || 800) * 0.15) {
+        if (typeof gsap !== 'undefined') {
+          gsap.set(['.hero-greeting', '.hero-sub-student', '.hero-sub-role', '.hero-desc', '.hero-cta-group', '.hero-name'], {
+            opacity: 1,
+            y: 0,
+            x: 0,
+            scale: 1
+          });
+        }
+        const nameEl = document.getElementById('typewriterName');
+        if (nameEl && !nameEl.textContent.trim()) {
+          nameEl.textContent = 'PEEPHUWIT';
+        }
+      }
+    }
+
+    if (typeof handleHeroScrollZoom === 'function') {
+      handleHeroScrollZoom();
     }
   });
 }

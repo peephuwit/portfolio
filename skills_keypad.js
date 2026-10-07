@@ -9,32 +9,32 @@
   // 1. All 20 Skills mapped across a 4x5 Mechanical Macro Pad Grid in the user's exact order
   const SKILLS_DATA = [
     // ROW 1 (Top row, left to right: HTML, CSS, Python, JavaScript, TypeScript)
-    { id: 'html', name: 'HTML', key: '1', keycode: 'Digit1', col: '#9E351B', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-plain.svg', forceWhite: true, cat: 'Frontend Core', tag: 'Semantic web markup, accessibility standards, and clean DOM trees.', level: 'Expert' },
-    { id: 'css', name: 'CSS', key: '2', keycode: 'Digit2', col: '#1D3AB2', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-plain.svg', forceWhite: true, cat: 'Styling & Motion', tag: 'Advanced CSS Grid, Flexbox layouts, fluid typography, and animations.', level: 'Advanced' },
-    { id: 'python', name: 'Python', key: '3', keycode: 'Digit3', col: '#C2C7CE', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg', cat: 'General & Data', tag: 'Clean, elegant syntax for automation, AI algorithms, and backend APIs.', level: 'Proficient' },
-    { id: 'js', name: 'JavaScript', key: '4', keycode: 'Digit4', col: '#A85F10', cat: 'Core Language', tag: 'yeeting code into the DOM since \'95, no cap!', level: 'Expert' },
-    { id: 'ts', name: 'TypeScript', key: '5', keycode: 'Digit5', col: '#17527E', cat: 'Typed Language', tag: 'JavaScript that actually tells you what went wrong before runtime.', level: 'Advanced' },
+    { id: 'html', name: 'HTML', key: '1', keycode: 'Digit1', col: '#9E351B', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-plain.svg', forceWhite: true, cat: 'Frontend Core', cat_th: 'แกนหลักฝั่ง Frontend', tag: 'Semantic web markup, accessibility standards, and clean DOM trees.', tag_th: 'โครงสร้างเว็บแบบ Semantic ถูกต้องตามมาตรฐาน และโครงสร้าง DOM ที่สะอาด', level: 'Expert' },
+    { id: 'css', name: 'CSS', key: '2', keycode: 'Digit2', col: '#1D3AB2', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-plain.svg', forceWhite: true, cat: 'Styling & Motion', cat_th: 'การตกแต่ง & แอนิเมชัน', tag: 'Advanced CSS Grid, Flexbox layouts, fluid typography, and animations.', tag_th: 'จัดเลย์เอาต์ด้วย CSS Grid, Flexbox, ฟอนต์แบบยืดหยุ่น และแอนิเมชันลื่นไหล', level: 'Advanced' },
+    { id: 'python', name: 'Python', key: '3', keycode: 'Digit3', col: '#C2C7CE', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg', cat: 'General & Data', cat_th: 'ภาษาทั่วไป & จัดการข้อมูล', tag: 'Clean, elegant syntax for automation, AI algorithms, and backend APIs.', tag_th: 'ไวยากรณ์เรียบง่ายสำหรับระบบอัตโนมัติ อัลกอริทึม AI และ Backend API', level: 'Proficient' },
+    { id: 'js', name: 'JavaScript', key: '4', keycode: 'Digit4', col: '#A85F10', cat: 'Core Language', cat_th: 'ภาษาหลักของเว็บ', tag: 'yeeting code into the DOM since \'95, no cap!', tag_th: 'ขับเคลื่อนลูกเล่นและการทำงานแบบไดนามิกบนเว็บตั้งแต่ปี 1995 ของแท้แน่นอน!', level: 'Expert' },
+    { id: 'ts', name: 'TypeScript', key: '5', keycode: 'Digit5', col: '#17527E', cat: 'Typed Language', cat_th: 'ภาษาแบบมี Type ชัดเจน', tag: 'JavaScript that actually tells you what went wrong before runtime.', tag_th: 'JavaScript ที่ช่วยตรวจจับและบอกจุดผิดพลาดได้อย่างแม่นยำก่อนรันจริง', level: 'Advanced' },
 
     // ROW 2 (Second row, left to right: Next.js, Node.js, Java, Express, C++)
-    { id: 'next', name: 'Next.js', key: 'Q', keycode: 'KeyQ', col: '#101318', cat: 'Full-Stack Web', tag: 'SSR, React Server Components, and App Router for blazing speed.', level: 'Proficient' },
-    { id: 'node', name: 'Node.js', key: 'W', keycode: 'KeyW', col: '#1E5621', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg', cat: 'Backend Runtime', tag: 'Event-driven, asynchronous I/O backend powerhouse on Google V8.', level: 'Advanced' },
-    { id: 'java', name: 'Java', key: 'E', keycode: 'KeyE', col: '#C2C7CE', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg', cat: 'Enterprise OOP', tag: 'Robust object-oriented backend programming and enterprise ecosystems.', level: 'Intermediate' },
-    { id: 'express', name: 'Express', key: 'R', keycode: 'KeyR', col: '#1E222A', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/express/express-original.svg', forceWhite: true, cat: 'Backend Framework', tag: 'Fast, unopinionated, minimalist web framework for Node.js routing and RESTful APIs.', level: 'Advanced' },
-    { id: 'cpp', name: 'C++', key: 'T', keycode: 'KeyT', col: '#15456E', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-plain.svg', forceWhite: true, cat: 'Low-Level Systems', tag: 'High-performance memory management, pointers, and optimized data structures.', level: 'Intermediate' },
+    { id: 'next', name: 'Next.js', key: 'Q', keycode: 'KeyQ', col: '#101318', cat: 'Full-Stack Web', cat_th: 'Full-Stack เว็บเฟรมเวิร์ก', tag: 'SSR, React Server Components, and App Router for blazing speed.', tag_th: 'ระบบ SSR, React Server Components และ App Router เพื่อความเร็วระดับสูงสุด', level: 'Proficient' },
+    { id: 'node', name: 'Node.js', key: 'W', keycode: 'KeyW', col: '#1E5621', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nodejs/nodejs-original.svg', cat: 'Backend Runtime', cat_th: 'รันไทม์ฝั่ง Backend', tag: 'Event-driven, asynchronous I/O backend powerhouse on Google V8.', tag_th: 'ขุมพลังหลังบ้านแบบ Event-driven, Asynchronous I/O บนเอนจิน Google V8', level: 'Advanced' },
+    { id: 'java', name: 'Java', key: 'E', keycode: 'KeyE', col: '#C2C7CE', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original.svg', cat: 'Enterprise OOP', cat_th: 'การเขียนโปรแกรมเชิงวัตถุ', tag: 'Robust object-oriented backend programming and enterprise ecosystems.', tag_th: 'การเขียนโปรแกรมเชิงวัตถุ (OOP) ที่แข็งแกร่ง รองรับระบบระดับองค์กร', level: 'Intermediate' },
+    { id: 'express', name: 'Express', key: 'R', keycode: 'KeyR', col: '#1E222A', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/express/express-original.svg', forceWhite: true, cat: 'Backend Framework', cat_th: 'เฟรมเวิร์กฝั่ง Backend', tag: 'Fast, unopinionated, minimalist web framework for Node.js routing and RESTful APIs.', tag_th: 'เว็บเฟรมเวิร์กแบบมินิมอลสำหรับจัดการ Routing และสร้าง RESTful API บน Node.js', level: 'Advanced' },
+    { id: 'cpp', name: 'C++', key: 'T', keycode: 'KeyT', col: '#15456E', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-plain.svg', forceWhite: true, cat: 'Low-Level Systems', cat_th: 'ภาษาเชิงระบบระดับล่าง', tag: 'High-performance memory management, pointers, and optimized data structures.', tag_th: 'ประสิทธิภาพระดับสูง การจัดการหน่วยความจำ พอยน์เตอร์ และโครงสร้างข้อมูล', level: 'Intermediate' },
 
     // ROW 3 (Third row, left to right: React, Tailwind CSS, PHP, SQL, WordPress)
-    { id: 'react', name: 'React', key: 'A', keycode: 'KeyA', col: '#1A5F8C', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg', cat: 'Frontend UI', tag: 'Declarative components, reactive hooks, and modern virtual DOM architecture.', level: 'Advanced' },
-    { id: 'tailwind', name: 'Tailwind CSS', key: 'S', keycode: 'KeyS', col: '#0C4A6E', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg', cat: 'CSS Framework', tag: 'Utility-first CSS framework for rapid and responsive UI development.', level: 'Advanced' },
-    { id: 'php', name: 'PHP', key: 'D', keycode: 'KeyD', col: '#3A4474', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-plain.svg', forceWhite: true, cat: 'Web Backend', tag: 'Server-side scripting powering millions of dynamic applications worldwide.', level: 'Proficient' },
-    { id: 'sql', name: 'SQL', key: 'F', keycode: 'KeyF', col: '#134D66', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/mysql.svg', forceWhite: true, cat: 'Database', tag: 'Relational database architecture, queries, indexes, and normalized schemas.', level: 'Advanced' },
-    { id: 'wordpress', name: 'WordPress', key: 'G', keycode: 'KeyG', col: '#145078', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/wordpress/wordpress-plain.svg', forceWhite: true, cat: 'CMS Platform', tag: 'Custom theme development, REST APIs, and scalable content management.', level: 'Advanced' },
+    { id: 'react', name: 'React', key: 'A', keycode: 'KeyA', col: '#1A5F8C', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg', cat: 'Frontend UI', cat_th: 'ส่วนติดต่อผู้ใช้ Frontend', tag: 'Declarative components, reactive hooks, and modern virtual DOM architecture.', tag_th: 'คอมโพเนนต์แบบ Declarative, Hooks ที่ทรงพลัง และสถาปัตยกรรม Virtual DOM', level: 'Advanced' },
+    { id: 'tailwind', name: 'Tailwind CSS', key: 'S', keycode: 'KeyS', col: '#0C4A6E', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg', cat: 'CSS Framework', cat_th: 'CSS เฟรมเวิร์ก', tag: 'Utility-first CSS framework for rapid and responsive UI development.', tag_th: 'Utility-first CSS เฟรมเวิร์กสำหรับการพัฒนา UI ที่รวดเร็วและรองรับ Responsive', level: 'Advanced' },
+    { id: 'php', name: 'PHP', key: 'D', keycode: 'KeyD', col: '#3A4474', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-plain.svg', forceWhite: true, cat: 'Web Backend', cat_th: 'ภาษาหลังบ้านยอดนิยม', tag: 'Server-side scripting powering millions of dynamic applications worldwide.', tag_th: 'สคริปต์ฝั่งเซิร์ฟเวอร์ที่ขับเคลื่อนเว็บแอปพลิเคชันนับล้านทั่วโลก', level: 'Proficient' },
+    { id: 'sql', name: 'SQL', key: 'F', keycode: 'KeyF', col: '#134D66', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/mysql.svg', forceWhite: true, cat: 'Database', cat_th: 'ระบบฐานข้อมูล', tag: 'Relational database architecture, queries, indexes, and normalized schemas.', tag_th: 'สถาปัตยกรรมฐานข้อมูลเชิงสัมพันธ์ การเขียน Query ดัชนี และ Schema', level: 'Advanced' },
+    { id: 'wordpress', name: 'WordPress', key: 'G', keycode: 'KeyG', col: '#145078', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/wordpress/wordpress-plain.svg', forceWhite: true, cat: 'CMS Platform', cat_th: 'ระบบจัดการเนื้อหา CMS', tag: 'Custom theme development, REST APIs, and scalable content management.', tag_th: 'พัฒนาธีมตามความต้องการ เชื่อมต่อ REST API และจัดการเนื้อหาอย่างยืดหยุ่น', level: 'Advanced' },
 
     // ROW 4 (Bottom row, left to right: Docker, Git, GitHub, Figma, Linux)
-    { id: 'docker', name: 'Docker', key: 'Z', keycode: 'KeyZ', col: '#15577D', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-plain.svg', forceWhite: true, cat: 'DevOps Containers', tag: '"It works on my machine" is officially obsolete and containerized.', level: 'Proficient' },
-    { id: 'git', name: 'Git', key: 'X', keycode: 'KeyX', col: '#962615', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-plain.svg', forceWhite: true, cat: 'Version Control', tag: 'git commit -m "Fixed bug (for real this time)" and merge branches.', level: 'Expert' },
-    { id: 'github', name: 'GitHub', key: 'C', keycode: 'KeyC', col: '#13161C', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg', forceWhite: true, cat: 'Collaboration', tag: 'Pull requests, CI/CD automated workflows, and team version control.', level: 'Expert' },
-    { id: 'figma', name: 'Figma', key: 'V', keycode: 'KeyV', col: '#12151B', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg', cat: 'UI/UX Design', tag: 'Pixel-perfect vector designs, auto-layout components, and interactive prototypes.', level: 'Proficient' },
-    { id: 'terminal', name: 'Linux', key: 'B', keycode: 'KeyB', col: '#1A1E24', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linux.svg', forceWhite: true, cat: 'Operating System', tag: 'Unix bash command line, shell scripts, servers, and kernel power.', level: 'Everyday' }
+    { id: 'docker', name: 'Docker', key: 'Z', keycode: 'KeyZ', col: '#15577D', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-plain.svg', forceWhite: true, cat: 'DevOps Containers', cat_th: 'ระบบคอนเทนเนอร์ DevOps', tag: '"It works on my machine" is officially obsolete and containerized.', tag_th: 'หมดปัญหา "เครื่องผมรันผ่าน" ด้วยการบรรจุสภาพแวดล้อมลง Container มาตรฐาน', level: 'Proficient' },
+    { id: 'git', name: 'Git', key: 'X', keycode: 'KeyX', col: '#962615', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-plain.svg', forceWhite: true, cat: 'Version Control', cat_th: 'ระบบควบคุมเวอร์ชัน', tag: 'git commit -m "Fixed bug (for real this time)" and merge branches.', tag_th: 'ควบคุมเวอร์ชันโค้ด จัดการ Branch และบันทึกประวัติการเปลี่ยนแปลงอย่างเป็นระบบ', level: 'Expert' },
+    { id: 'github', name: 'GitHub', key: 'C', keycode: 'KeyC', col: '#13161C', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg', forceWhite: true, cat: 'Collaboration', cat_th: 'แพลตฟอร์มทำงานร่วมกัน', tag: 'Pull requests, CI/CD automated workflows, and team version control.', tag_th: 'การทำงานร่วมกันผ่าน Pull Request, เวิร์กโฟลว์อัตโนมัติ CI/CD และ Open Source', level: 'Expert' },
+    { id: 'figma', name: 'Figma', key: 'V', keycode: 'KeyV', col: '#12151B', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/figma/figma-original.svg', cat: 'UI/UX Design', cat_th: 'การออกแบบ UI/UX', tag: 'Pixel-perfect vector designs, auto-layout components, and interactive prototypes.', tag_th: 'ออกแบบกราฟิกเวกเตอร์ที่ประณีต ระบบ Auto-layout และ Prototype เสมือนจริง', level: 'Proficient' },
+    { id: 'terminal', name: 'Linux', key: 'B', keycode: 'KeyB', col: '#1A1E24', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linux.svg', forceWhite: true, cat: 'Operating System', cat_th: 'ระบบปฏิบัติการ', tag: 'Unix bash command line, shell scripts, servers, and kernel power.', tag_th: 'คำสั่ง Unix Bash สคริปต์อัตโนมัติ การดูแลเซิร์ฟเวอร์ และความเสถียรของระบบ', level: 'Everyday' }
   ];
 
   // Sound Synthesizer (Mechanical switch click)
@@ -832,9 +832,22 @@
 
     let currentSkillId = '';
 
+    function getCurrentLang() {
+      if (typeof window !== 'undefined' && window.currentLang) return window.currentLang;
+      try {
+        return localStorage.getItem('preferred_lang') || 'en';
+      } catch (e) {
+        return 'en';
+      }
+    }
+
     function updateSkillInfo(skill) {
       if (!skill || currentSkillId === skill.id) return;
       currentSkillId = skill.id;
+
+      const isTh = getCurrentLang() === 'th';
+      const displayCat = (isTh && skill.cat_th) ? skill.cat_th : skill.cat;
+      const displayTag = (isTh && skill.tag_th) ? skill.tag_th : skill.tag;
 
       if (typeof gsap !== 'undefined' && skillInfoPanelEl) {
         gsap.to(skillInfoPanelEl, {
@@ -844,18 +857,20 @@
           ease: 'power2.in',
           onComplete: () => {
             if (skillCategoryEl) {
-              skillCategoryEl.textContent = skill.cat;
-              skillCategoryEl.style.color = skill.col;
-              skillCategoryEl.style.borderColor = skill.col;
-              skillCategoryEl.style.background = `${skill.col}22`;
+              skillCategoryEl.textContent = displayCat;
+              skillCategoryEl.style.color = '#C2C7CE';
+              skillCategoryEl.style.borderColor = '#C2C7CE';
+              skillCategoryEl.style.background = '#C2C7CE22';
             }
             if (skillNameEl) {
               skillNameEl.textContent = skill.name;
               skillNameEl.style.textShadow = `0 0 40px ${skill.col}66, 0 4px 20px rgba(0,0,0,0.8)`;
             }
-            if (skillTaglineEl) skillTaglineEl.textContent = `"${skill.tag}"`;
+            if (skillTaglineEl) skillTaglineEl.textContent = `"${displayTag}"`;
             if (skillShortcutEl) skillShortcutEl.textContent = skill.key;
-            if (skillLevelEl) skillLevelEl.textContent = skill.level;
+
+            const shortcutLabel = document.getElementById('shortcutLabel');
+            if (shortcutLabel) shortcutLabel.textContent = isTh ? 'คีย์ลัด' : 'Shortcut Key';
 
             if (skillInfoPanelEl) {
               skillInfoPanelEl.classList.add('is-active');
@@ -869,7 +884,48 @@
             });
           }
         });
+      } else {
+        if (skillCategoryEl) {
+          skillCategoryEl.textContent = displayCat;
+          skillCategoryEl.style.color = '#C2C7CE';
+          skillCategoryEl.style.borderColor = '#C2C7CE';
+          skillCategoryEl.style.background = '#C2C7CE22';
+        }
+        if (skillNameEl) skillNameEl.textContent = skill.name;
+        if (skillTaglineEl) skillTaglineEl.textContent = `"${displayTag}"`;
+        if (skillShortcutEl) skillShortcutEl.textContent = skill.key;
+        const shortcutLabel = document.getElementById('shortcutLabel');
+        if (shortcutLabel) shortcutLabel.textContent = isTh ? 'คีย์ลัด' : 'Shortcut Key';
+        if (skillInfoPanelEl) {
+          skillInfoPanelEl.classList.add('is-active');
+          skillInfoPanelEl.style.pointerEvents = 'auto';
+        }
       }
+    }
+
+    // Live refresh when user switches language between EN and TH
+    if (typeof window !== 'undefined') {
+      window.refreshSkillInfoLanguage = function(lang) {
+        const isTh = (lang === 'th');
+        const shortcutLabel = document.getElementById('shortcutLabel');
+        if (shortcutLabel) shortcutLabel.textContent = isTh ? 'คีย์ลัด' : 'Shortcut Key';
+
+        if (currentSkillId) {
+          const activeSkill = SKILLS_DATA.find(s => s.id === currentSkillId);
+          if (activeSkill) {
+            if (skillCategoryEl) {
+              skillCategoryEl.textContent = isTh && activeSkill.cat_th ? activeSkill.cat_th : activeSkill.cat;
+            }
+            if (skillTaglineEl) {
+              const tag = isTh && activeSkill.tag_th ? activeSkill.tag_th : activeSkill.tag;
+              skillTaglineEl.textContent = `"${tag}"`;
+            }
+          }
+        } else {
+          if (skillCategoryEl) skillCategoryEl.textContent = isTh ? 'ทักษะความเชี่ยวชาญ' : 'Tech Stack';
+          if (skillTaglineEl) skillTaglineEl.textContent = isTh ? 'แตะปุ่มใดก็ได้เพื่อดูรายละเอียดของทักษะ' : 'Tap any key to view skill details.';
+        }
+      };
     }
 
     // Slide keypad to right and rotate to horizontal (Active Mode)
