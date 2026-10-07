@@ -3686,69 +3686,159 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
    TIMELINE RESPONSIVE (max-width: 900px)
    ========================================================================== */
 @media (max-width: 900px) {
+  .about-timeline {
+    gap: 56px;
+    padding: 12px 0 30px;
+  }
+
   .timeline-spine {
-    left: 24px;
+    left: 50%;
     transform: translateX(-50%);
+    top: 24px;
+    bottom: 24px;
   }
 
   .timeline-row {
+    display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    padding-left: 64px;
-    gap: 16px;
+    align-items: center;
+    justify-content: center;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    width: 100%;
+    max-width: 520px;
+    margin: 0 auto;
+    gap: 14px;
+    position: relative;
+    box-sizing: border-box;
   }
 
+  /* Milestone Node: Centered on central spine */
   .timeline-col.col-node {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: relative;
+    top: auto;
+    left: auto;
     flex: none;
-    width: 48px;
-    height: 48px;
+    width: auto;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 4;
+    order: 1;
+    margin-bottom: 2px;
   }
 
   .timeline-node {
     width: 48px;
     height: 48px;
+    background: #0b0f19;
   }
 
-  .timeline-col.col-card,
+  /* Milestone Heading: Centered directly below Node */
   .timeline-col.col-heading {
     width: 100%;
+    order: 2;
     padding: 0 !important;
-  }
-
-  /* Force heading before card on mobile stacked view */
-  .timeline-row.row-left-card {
     display: flex;
-    flex-direction: column;
-  }
-  .timeline-row.row-left-card .col-heading {
-    order: 1;
-    transform: none !important;
-  }
-  .timeline-row.row-left-card .col-card {
-    order: 2;
-    transform: none !important;
-  }
-
-  .timeline-row.row-right-card {
-    display: flex;
-    flex-direction: column;
-  }
-  .timeline-row.row-right-card .col-heading {
-    order: 1;
-    transform: none !important;
-  }
-  .timeline-row.row-right-card .col-card {
-    order: 2;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
     transform: none !important;
   }
 
   .timeline-heading-block,
   .timeline-heading-block.align-right {
-    text-align: left !important;
-    align-items: flex-start !important;
+    text-align: center !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100%;
+  }
+
+  .timeline-heading-block .heading-title {
+    text-align: center;
+    font-size: 1.85rem;
+    letter-spacing: 1px;
+    position: relative;
+    display: inline-block;
+    padding: 4px 20px;
+    background: rgba(10, 15, 28, 0.85);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Milestone Card: Centered below Heading */
+  .timeline-col.col-card {
+    width: 100%;
+    max-width: 100%;
+    order: 3;
+    padding: 0 !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
+    transform: none !important;
+  }
+
+  /* Ensure consistent 1-2-3 ordering on all row variants */
+  .timeline-row.row-left-card,
+  .timeline-row.row-right-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .timeline-row.row-left-card .col-node,
+  .timeline-row.row-right-card .col-node {
+    order: 1;
+  }
+
+  .timeline-row.row-left-card .col-heading,
+  .timeline-row.row-right-card .col-heading {
+    order: 2;
+    transform: none !important;
+  }
+
+  .timeline-row.row-left-card .col-card,
+  .timeline-row.row-right-card .col-card {
+    order: 3;
+    transform: none !important;
+  }
+
+  .timeline-card {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 0 auto;
+  }
+
+  .timeline-card.approach-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .timeline-card.exploring-card {
+    width: 100%;
+    max-width: 100%;
+    padding: 26px 20px;
+  }
+
+  .exploring-tags {
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  .tag-pill {
+    font-size: 1.15rem;
+    white-space: normal;
+    word-break: break-word;
   }
 
   .timeline-row.is-visible .col-card,
@@ -5147,6 +5237,11 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
 
   .approach-badge {
     font-size: 1.2rem;
+  }
+
+  .timeline-heading-block .heading-title {
+    font-size: 1.6rem;
+    padding: 4px 16px;
   }
 
   .tag-pill {
