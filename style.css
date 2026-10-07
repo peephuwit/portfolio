@@ -2114,13 +2114,13 @@ body.mobile-menu-open #homeScreen {
   100% { opacity: 1; }
 }
 
-/* 6. Description paragraph slides UP from below - Bold text */
+/* 6. Description paragraph slides UP from below */
 .hero-desc {
   font-family: 'Athiti', sans-serif;
   font-size: clamp(0.98rem, 1.15vw, 1.08rem);
   line-height: 1.6;
   color: #ffffff;
-  font-weight: bold;
+  font-weight: 400;
   max-width: 530px;
   margin-bottom: 34px;
   opacity: 0;
