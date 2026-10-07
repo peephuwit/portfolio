@@ -3687,173 +3687,227 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
    ========================================================================== */
 @media (max-width: 900px) {
   .about-timeline {
-    gap: 56px;
-    padding: 12px 0 30px;
+    gap: 36px;
+    padding: 8px 0 24px;
   }
 
+  /* Left Timeline Spine */
   .timeline-spine {
-    left: 50%;
+    left: 18px;
     transform: translateX(-50%);
-    top: 24px;
-    bottom: 24px;
+    top: 18px;
+    bottom: 18px;
   }
 
+  /* Timeline Row: Indented to clear the left spine & compact node */
   .timeline-row {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding-left: 0 !important;
+    align-items: flex-start;
+    padding-left: 48px !important;
     padding-right: 0 !important;
     width: 100%;
-    max-width: 520px;
-    margin: 0 auto;
-    gap: 14px;
+    margin: 0;
+    gap: 10px;
     position: relative;
     box-sizing: border-box;
   }
 
-  /* Milestone Node: Centered on central spine */
+  /* Compact Milestone Node: Centered on spine at top-left */
   .timeline-col.col-node {
-    position: relative;
-    top: auto;
-    left: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
     flex: none;
-    width: auto;
-    height: auto;
+    width: 36px;
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 4;
-    order: 1;
-    margin-bottom: 2px;
   }
 
   .timeline-node {
-    width: 48px;
-    height: 48px;
+    width: 36px;
+    height: 36px;
+    border-width: 1.6px;
     background: #0b0f19;
+    box-shadow: 0 0 12px rgba(0, 210, 255, 0.4), inset 0 0 8px rgba(0, 210, 255, 0.2);
   }
 
-  /* Milestone Heading: Centered directly below Node */
+  .timeline-node svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  /* Compact Milestone Heading: Aligned horizontally beside Node */
   .timeline-col.col-heading {
     width: 100%;
-    order: 2;
+    order: 1;
     padding: 0 !important;
+    min-height: 36px;
     display: flex;
-    justify-content: center;
     align-items: center;
-    z-index: 3;
     transform: none !important;
   }
 
   .timeline-heading-block,
   .timeline-heading-block.align-right {
-    text-align: center !important;
-    align-items: center !important;
+    text-align: left !important;
+    align-items: flex-start !important;
     justify-content: center !important;
     width: 100%;
   }
 
   .timeline-heading-block .heading-title {
-    text-align: center;
-    font-size: 1.85rem;
-    letter-spacing: 1px;
-    position: relative;
-    display: inline-block;
-    padding: 4px 20px;
-    background: rgba(10, 15, 28, 0.85);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    font-size: 1.4rem;
+    line-height: 1.2;
+    letter-spacing: 0.8px;
+    margin: 0;
+    background: transparent;
+    padding: 0;
+    border: none;
+    box-shadow: none;
   }
 
-  /* Milestone Card: Centered below Heading */
+  /* Compact Milestone Card */
   .timeline-col.col-card {
     width: 100%;
     max-width: 100%;
-    order: 3;
+    order: 2;
     padding: 0 !important;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 3;
     transform: none !important;
   }
 
-  /* Ensure consistent 1-2-3 ordering on all row variants */
+  /* Consistent Stacking: Heading (Order 1) -> Card (Order 2) */
   .timeline-row.row-left-card,
   .timeline-row.row-right-card {
     display: flex;
     flex-direction: column;
-    align-items: center;
-  }
-
-  .timeline-row.row-left-card .col-node,
-  .timeline-row.row-right-card .col-node {
-    order: 1;
+    align-items: flex-start;
   }
 
   .timeline-row.row-left-card .col-heading,
   .timeline-row.row-right-card .col-heading {
-    order: 2;
+    order: 1;
     transform: none !important;
   }
 
   .timeline-row.row-left-card .col-card,
   .timeline-row.row-right-card .col-card {
-    order: 3;
+    order: 2;
     transform: none !important;
   }
 
+  /* Cards Base Styling: Compact & Scaled */
   .timeline-card {
     width: 100%;
     max-width: 100%;
+    border-radius: 18px;
+    border-width: 1.2px;
     box-sizing: border-box;
-    margin: 0 auto;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   }
 
-  .timeline-card.approach-box {
-    width: 100% !important;
-    max-width: 100% !important;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  /* Milestone 1: Stepper Card Compact */
+  .stepper-card {
+    min-height: auto;
+    padding: 16px 14px 12px;
   }
 
+  .stepper-progress-nav {
+    margin-bottom: 14px;
+    padding: 0 2px;
+  }
+
+  .node-circle {
+    width: 30px;
+    height: 30px;
+  }
+
+  .node-circle svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .stepper-line {
+    margin: 0 4px;
+    height: 2px;
+  }
+
+  .stepper-card .card-title {
+    font-size: 1.15rem;
+    margin-bottom: 8px;
+  }
+
+  .stepper-card .card-text {
+    font-size: 0.98rem;
+    line-height: 1.5;
+  }
+
+  .stepper-footer {
+    margin-top: 12px;
+    padding-top: 10px;
+  }
+
+  .stepper-arrow {
+    width: 32px;
+    height: 32px;
+  }
+
+  .stepper-arrow svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  /* Milestone 2: Approach Box Compact */
+  .timeline-card.approach-box,
+  .approach-box {
+    padding: 22px 18px !important;
+    border-radius: 18px;
+  }
+
+  .approach-badge {
+    font-size: 1.05rem !important;
+    padding: 5px 16px !important;
+    margin-bottom: 12px !important;
+    letter-spacing: 1.2px;
+  }
+
+  .approach-quote {
+    font-size: 1.02rem !important;
+    line-height: 1.55 !important;
+  }
+
+  /* Milestone 3: Exploring Card Compact */
   .timeline-card.exploring-card {
-    width: 100%;
-    max-width: 100%;
-    padding: 26px 20px;
+    padding: 18px 16px;
+    border-radius: 18px;
   }
 
   .exploring-tags {
+    gap: 10px;
     width: 100%;
-    align-items: flex-start;
   }
 
   .tag-pill {
-    font-size: 1.15rem;
+    font-size: 1.05rem !important;
+    padding: 2px 0 !important;
+    gap: 8px;
     white-space: normal;
     word-break: break-word;
+  }
+
+  .tag-dot {
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-left: 6px solid #00d2ff;
   }
 
   .timeline-row.is-visible .col-card,
   .timeline-row.is-visible .col-heading {
     opacity: 1;
     transform: none !important;
-  }
-
-  .node-circle {
-    width: 36px;
-    height: 36px;
-  }
-
-  .stepper-line {
-    margin: 0 6px;
   }
 }
 
@@ -5231,23 +5285,6 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
     gap: 28px;
   }
 
-  .approach-box {
-    padding: 30px 22px;
-  }
-
-  .approach-badge {
-    font-size: 1.2rem;
-  }
-
-  .timeline-heading-block .heading-title {
-    font-size: 1.6rem;
-    padding: 4px 16px;
-  }
-
-  .tag-pill {
-    padding: 4px 0;
-    font-size: 1.15rem;
-  }
 
   .portfolio-section {
     padding: 60px 16px 140px 16px;
