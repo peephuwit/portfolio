@@ -1,6 +1,8 @@
 /* ==========================================================================
    Typography & Font Declarations
    ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Athiti:wght@300;400;500;600;700&display=swap');
+
 @font-face {
   font-family: 'Anton';
   src: url('font/Anton.ttf') format('truetype');
@@ -175,7 +177,7 @@ body::after {
 
 /* Minimalist Preloader Typography with Decrypted Text */
 .loader-brand-title {
-  font-family: 'Kinnari', serif !important;
+  font-family: 'Athiti', sans-serif !important;
   font-size: clamp(26px, 4vw, 36px);
   font-weight: 700;
   letter-spacing: 1.5px;
@@ -190,7 +192,7 @@ body::after {
 }
 
 .loader-sub-text {
-  font-family: 'Kinnari', serif !important;
+  font-family: 'Athiti', sans-serif !important;
   font-size: clamp(14px, 2vw, 18px);
   font-weight: 500;
   letter-spacing: 0.8px;
@@ -1024,7 +1026,7 @@ body::after {
   right: 0;
   bottom: 2.2rem;
   text-align: center;
-  font-family: 'Kinnari', serif !important;
+  font-family: 'Athiti', sans-serif !important;
   font-size: 1.25rem;
   font-weight: 600;
   letter-spacing: 0.05em;
@@ -1303,7 +1305,7 @@ body::after {
   -webkit-backdrop-filter: none;
   pointer-events: auto !important;
   text-decoration: none;
-  font-family: 'Kinnari', serif;
+  font-family: 'Athiti', sans-serif;
   font-size: 14.5px;
   font-weight: 600;
   letter-spacing: 0.6px;
@@ -2035,7 +2037,7 @@ body.mobile-menu-open #homeScreen {
 
 /* 4. "Computer Science Student" slides UP from below - Scaled close to Software Developer */
 .hero-sub-student {
-  font-family: 'Kinnari', serif;
+  font-family: 'Athiti', sans-serif;
   font-size: clamp(1.65rem, 2.2vw, 2.15rem);
   line-height: 1.15;
   color: #ffffff;
@@ -2114,7 +2116,7 @@ body.mobile-menu-open #homeScreen {
 
 /* 6. Description paragraph slides UP from below - Bold text */
 .hero-desc {
-  font-family: 'Kinnari', serif;
+  font-family: 'Athiti', sans-serif;
   font-size: clamp(0.98rem, 1.15vw, 1.08rem);
   line-height: 1.6;
   color: #ffffff;
@@ -2642,7 +2644,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
 }
 
 .about-lead {
-  font-family: 'Kinnari', serif;
+  font-family: 'Athiti', sans-serif;
   font-size: 1.24rem;
   color: rgba(255, 255, 255, 0.92);
   line-height: 1.7;
@@ -2877,7 +2879,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
 }
 
 .card-text {
-  font-family: 'Kinnari', serif;
+  font-family: 'Athiti', sans-serif;
   font-size: 1.24rem;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.82);
@@ -2993,7 +2995,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
 }
 
 .approach-quote {
-  font-family: 'Kinnari', serif;
+  font-family: 'Athiti', sans-serif;
   font-size: 1.24rem;
   line-height: 1.68;
   color: #ffffff;
@@ -3570,14 +3572,14 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
 }
 
 .timeline-card .card-org {
-  font-family: 'Kinnari', serif;
+  font-family: 'Athiti', sans-serif;
   font-size: 1.08rem;
   color: rgba(255, 255, 255, 0.65);
   margin-bottom: 14px;
 }
 
 .timeline-card .card-desc {
-  font-family: 'Kinnari', serif;
+  font-family: 'Athiti', sans-serif;
   font-size: 1.2rem;
   line-height: 1.65;
   color: rgba(255, 255, 255, 0.82);
@@ -3600,7 +3602,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
 }
 
 .card-quote-text {
-  font-family: 'Kinnari', serif;
+  font-family: 'Athiti', sans-serif;
   font-size: 1.28rem;
   line-height: 1.68;
   color: #ffffff;
@@ -4766,7 +4768,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
 
 .skill-tagline-display {
   font-size: clamp(1.05rem, 1.4vw, 1.35rem);
-  font-family: 'Kinnari', serif;
+  font-family: 'Athiti', sans-serif;
   line-height: 1.45;
   color: rgba(255, 255, 255, 0.9);
   margin-bottom: 20px;
@@ -5502,7 +5504,7 @@ body.modal-open {
 }
 
 .modal-project-subtitle {
-  font-family: 'Kinnari', serif;
+  font-family: 'Athiti', sans-serif;
   font-size: 1.12rem;
   color: #94a3b8;
   margin: 0;
@@ -5556,7 +5558,7 @@ body.modal-open {
 }
 
 .modal-description {
-  font-family: 'Kinnari', serif;
+  font-family: 'Athiti', sans-serif;
   font-size: 1.14rem;
   color: #cbd5e1;
   line-height: 1.72;
@@ -5577,14 +5579,14 @@ body.modal-open {
   display: flex;
   align-items: flex-start;
   gap: 10px;
-  font-family: 'Kinnari', serif;
+  font-family: 'Athiti', sans-serif;
   font-size: 1.05rem;
   line-height: 1.6;
   color: #94a3b8;
 }
 
 .modal-highlight-item strong {
-  font-family: 'Kinnari', serif;
+  font-family: 'Athiti', sans-serif;
   color: #ffffff;
   font-weight: 700;
 }
@@ -5763,6 +5765,19 @@ body.modal-open {
   background: rgba(255, 255, 255, 0.14);
   border-color: rgba(255, 255, 255, 0.45);
   transform: translateY(-2px);
+}
+
+.modal-action-btn svg {
+  flex-shrink: 0;
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-action-btn.primary:hover svg {
+  transform: translate(2px, -2px);
+}
+
+.modal-action-btn.secondary:hover svg {
+  transform: translateY(-1px);
 }
 
 /* Modal Responsive */
