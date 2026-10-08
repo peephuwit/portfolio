@@ -1904,6 +1904,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const isMobile = window.innerWidth <= 768;
     const navOffset = isMobile ? 84 : 96;
+    const aboutOffset = isMobile ? 120 : 140;
 
     let targetTop = 0;
     if (targetId === '#home') {
@@ -1932,7 +1933,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const aboutHeader = aboutSection.querySelector('#aboutTitleBlock') || aboutSection.querySelector('.about-header') || aboutSection;
         const headerRect = aboutHeader.getBoundingClientRect();
         const headerTop = headerRect.top - cRect.top + scrollContainer.scrollTop;
-        targetTop = Math.max(0, Math.round(headerTop - navOffset));
+        targetTop = Math.max(0, Math.round(headerTop - aboutOffset));
       }
     } else if (targetId && targetId.startsWith('#')) {
       const targetElement = document.querySelector(targetId);
@@ -3120,17 +3121,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const dy = Math.max(rect.top - e.clientY, 0, e.clientY - rect.bottom);
         const dist = Math.hypot(dx, dy);
 
-        if (dist === 0) {
-          const nx = (e.clientX - cx) / (rect.width / 2);
-          const ny = (cy - e.clientY) / (rect.height / 2);
-          pointerAngle = Math.atan2(2 / rect.height, -2 / rect.width) + nx * 0.35 + ny * 0.18;
-        } else {
-          pointerAngle = Math.atan2(cy - e.clientY, e.clientX - cx);
+        const mdx = e.clientX - cx;
+        const mdy = cy - e.clientY;
+        if (Math.hypot(mdx, mdy) > 1) {
+          pointerAngle = Math.atan2(mdy, mdx);
         }
         const t = Math.max(0, 1 - dist / Math.max(proximity, 1));
         proximityT = t * t * (3 - 2 * t);
       }
       window.addEventListener('pointermove', onPointerMove, { passive: true });
+      window.addEventListener('pointerleave', () => {
+        proximityT = 0;
+        pointerAngle = null;
+      }, { passive: true });
 
       let angle = 2.4;
       let idleAngle = 2.4;
@@ -3147,8 +3150,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const dt = Math.min((now - lastTime) / 1000, 0.05);
         lastTime = now;
 
-        idleAngle += speed * dt;
         const steer = pointerAngle !== null && proximityT > 0;
+        if (steer) {
+          idleAngle = angle;
+        } else {
+          idleAngle += speed * dt;
+        }
         const target = steer ? pointerAngle : idleAngle;
         const diff = ((target - angle + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
         angle += diff * (1 - Math.exp(-dt * 7));
