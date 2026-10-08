@@ -1758,38 +1758,59 @@ body.mobile-menu-open #homeScreen {
 }
 
 /* Language Switcher Frame directly attached below Option Wheel */
+/* Language Switcher Frame directly attached below Option Wheel - Moved to right corner (มุมขวา จากที่อยู่ตรงกลาง) */
 .option-wheel-lang-footer {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
-  padding: 12px 20px 16px 20px;
+  padding: 8px 18px 14px 18px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   background: transparent;
   flex-shrink: 0;
 }
 
-.mobile-lang-pill {
-  position: relative !important;
+.mobile-lang-toggle-btn {
   display: inline-flex !important;
-  height: 42px;
-  padding: 0 5px;
-  gap: 2px;
-  background: rgba(14, 20, 32, 0.85) !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.18) !important;
-  border-radius: 9999px !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.15) !important;
-  top: auto !important;
-  left: auto !important;
-  right: auto !important;
-  margin: 0 !important;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 9999px;
+  color: #ffffff;
+  font-family: 'Athiti', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.mobile-lang-pill .lang-btn {
-  height: 32px;
-  padding: 0 18px;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.8px;
+.mobile-lang-toggle-btn:hover,
+.mobile-lang-toggle-btn:active {
+  background: rgba(59, 130, 246, 0.22);
+  border-color: rgba(59, 130, 246, 0.55);
+  box-shadow: 0 0 16px rgba(59, 130, 246, 0.35);
+  color: #ffffff;
+}
+
+.mobile-lang-toggle-btn .lang-icon {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  stroke-width: 2;
+  transition: transform 0.25s ease;
+}
+
+.mobile-lang-toggle-btn:hover .lang-icon {
+  transform: rotate(15deg);
+}
+
+.mobile-lang-toggle-btn .lang-code-text {
+  letter-spacing: 0.6px;
+  font-weight: 700;
 }
 
 /* Dropdown Card - Hidden on desktop, seamless inside expanded navbar on mobile */
@@ -1813,8 +1834,8 @@ body.mobile-menu-open #homeScreen {
     pointer-events: none;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.26s cubic-bezier(0.16, 1, 0.3, 1),
-                visibility 0.26s ease;
+    transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                visibility 0.28s ease;
     z-index: 2;
     flex: 1 1 auto;
   }
@@ -1824,6 +1845,7 @@ body.mobile-menu-open #homeScreen {
     opacity: 1;
     visibility: visible;
     pointer-events: auto !important;
+    transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1) 0.06s;
   }
 }
 
@@ -1846,6 +1868,28 @@ body.mobile-menu-open #homeScreen {
   cursor: grabbing;
 }
 
+/* Selection indicator lines above and below the active item ("ขีดบนล่างว่าเลือกเมนูนั้นอยู่") */
+.option-wheel-bracket {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(220px, 66%);
+  height: 1.5px;
+  background: linear-gradient(90deg, transparent 0%, rgba(59, 130, 246, 0.35) 18%, rgba(0, 210, 255, 0.85) 50%, rgba(59, 130, 246, 0.35) 82%, transparent 100%);
+  box-shadow: 0 0 10px rgba(0, 210, 255, 0.5), 0 0 4px rgba(59, 130, 246, 0.6);
+  pointer-events: none;
+  z-index: 5;
+  border-radius: 9999px;
+}
+
+.option-wheel-bracket.bracket-top {
+  top: calc(50% - 34px);
+}
+
+.option-wheel-bracket.bracket-bottom {
+  top: calc(50% + 34px);
+}
+
 /* Wheel Track centered horizontally */
 .option-wheel-track {
   position: absolute;
@@ -1859,7 +1903,7 @@ body.mobile-menu-open #homeScreen {
   transform: translateY(0px);
   transform-origin: center center;
   will-change: transform;
-  transition: transform 200ms cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 /* Option Wheel Item Button - Centered */
@@ -1879,59 +1923,68 @@ body.mobile-menu-open #homeScreen {
   width: 100%;
 }
 
+.option-wheel-content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transform-origin: center center;
+  transition: color 320ms cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 320ms cubic-bezier(0.16, 1, 0.3, 1),
+              filter 320ms cubic-bezier(0.16, 1, 0.3, 1),
+              transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity, filter;
+  user-select: none;
+}
+
+.option-wheel-icon {
+  width: clamp(20px, 6vw, 24px);
+  height: clamp(20px, 6vw, 24px);
+  flex-shrink: 0;
+  stroke: currentColor;
+  transition: stroke 320ms ease, filter 320ms ease;
+}
+
 .option-wheel-text {
   font-family: 'Anton', sans-serif !important;
-  font-size: clamp(2.3rem, 7.5vw, 3.2rem);
+  font-size: clamp(2rem, 6.8vw, 2.8rem);
   line-height: 1;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: #ffffff;
-  transition: color 200ms cubic-bezier(0.25, 1, 0.5, 1),
-              opacity 200ms cubic-bezier(0.25, 1, 0.5, 1),
-              filter 200ms cubic-bezier(0.25, 1, 0.5, 1),
-              text-shadow 200ms cubic-bezier(0.25, 1, 0.5, 1),
-              transform 200ms cubic-bezier(0.25, 1, 0.5, 1);
-  will-change: color, opacity, filter, transform, text-shadow;
-  display: inline-block;
-  text-align: center;
-  transform-origin: center center;
+  color: inherit;
   white-space: nowrap;
 }
 
-/* State: Active Selected Option (Active: #3b82f6) - แนวตรง ไม่เอียง จัดกึ่งกลาง */
-.option-wheel-item.is-active .option-wheel-text {
+/* State: Active Selected Option (Active: #3b82f6) - แนวตรง ไม่เอียง จัดกึ่งกลาง พร้อมเรืองแสง */
+.option-wheel-item.is-active .option-wheel-content {
   color: #3b82f6;
   opacity: 1;
-  filter: blur(0px);
-  text-shadow: 0 0 28px rgba(59, 130, 246, 0.7), 0 0 10px rgba(59, 130, 246, 0.45);
-  transform: scale(1.04);
+  filter: blur(0px) drop-shadow(0 0 14px rgba(59, 130, 246, 0.65));
+  transform: scale(1.05);
 }
 
 /* State: Distance 1 from active - แนวตรง ไม่เอียง จัดกึ่งกลาง */
-.option-wheel-item.dist-1 .option-wheel-text {
+.option-wheel-item.dist-1 .option-wheel-content {
   color: #ffffff;
-  opacity: 0.40;
-  filter: blur(1.75px);
-  transform: scale(0.97);
-  text-shadow: none;
+  opacity: 0.38;
+  filter: blur(1.6px);
+  transform: scale(0.96);
 }
 
 /* State: Distance 2 from active - แนวตรง ไม่เอียง จัดกึ่งกลาง */
-.option-wheel-item.dist-2 .option-wheel-text {
+.option-wheel-item.dist-2 .option-wheel-content {
   color: #ffffff;
   opacity: 0.16;
-  filter: blur(3.50px);
-  transform: scale(0.93);
-  text-shadow: none;
+  filter: blur(3.2px);
+  transform: scale(0.92);
 }
 
 /* State: Distance 3 from active - แนวตรง ไม่เอียง จัดกึ่งกลาง */
-.option-wheel-item.dist-3 .option-wheel-text {
+.option-wheel-item.dist-3 .option-wheel-content {
   color: #ffffff;
   opacity: 0.08;
-  filter: blur(5.25px);
-  transform: scale(0.89);
-  text-shadow: none;
+  filter: blur(4.8px);
+  transform: scale(0.88);
 }
 
 @media (hover: hover) {
@@ -5026,18 +5079,19 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
     align-items: stretch;
     justify-content: flex-start;
     padding: 0;
-    border-radius: 9999px;
+    border-radius: 24px;
     overflow: hidden;
-    transition: height 0.38s cubic-bezier(0.16, 1, 0.3, 1),
-                border-radius 0.38s cubic-bezier(0.16, 1, 0.3, 1),
-                box-shadow 0.35s ease,
+    transition: height 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+                border-radius 0.42s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.42s ease,
                 border-color 0.35s ease,
                 background 0.35s ease;
+    will-change: height;
   }
 
   .navbar.is-open {
-    height: 384px;
-    border-radius: 28px;
+    height: 374px;
+    border-radius: 26px;
     box-shadow: 0 20px 48px rgba(0, 0, 0, 0.75), 0 0 32px rgba(59, 130, 246, 0.16), inset 0 1px 1.5px rgba(255, 255, 255, 0.24);
   }
 

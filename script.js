@@ -3778,6 +3778,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (desktopLangCode) {
       desktopLangCode.textContent = lang.toUpperCase();
     }
+    const mobileLangCode = document.getElementById('mobileLangCode');
+    if (mobileLangCode) {
+      mobileLangCode.textContent = lang.toUpperCase();
+    }
 
     updateLanguageIndicator(animate);
 
@@ -3831,6 +3835,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const desktopToggle = document.getElementById('desktopLangToggle');
     if (desktopToggle) {
       desktopToggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        const nextLang = currentLang === 'en' ? 'th' : 'en';
+        updateLanguageUI(nextLang, true);
+      });
+    }
+
+    const mobileToggle = document.getElementById('mobileLangToggle');
+    if (mobileToggle) {
+      mobileToggle.addEventListener('click', (e) => {
         e.preventDefault();
         const nextLang = currentLang === 'en' ? 'th' : 'en';
         updateLanguageUI(nextLang, true);
@@ -4761,7 +4774,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!animate) {
         track.style.transition = 'none';
       } else {
-        track.style.transition = 'transform 200ms cubic-bezier(0.25, 1, 0.5, 1)';
+        track.style.transition = 'transform 320ms cubic-bezier(0.16, 1, 0.3, 1)';
       }
       track.style.transform = `translateY(${Math.round(offsetY)}px)`;
 
@@ -4769,13 +4782,13 @@ document.addEventListener('DOMContentLoaded', () => {
       items.forEach((item, i) => {
         const diff = i - selectedIndex;
         const dist = Math.abs(diff);
-        const textEl = item.querySelector('.option-wheel-text');
-        if (!textEl) return;
+        const contentEl = item.querySelector('.option-wheel-content') || item.querySelector('.option-wheel-text');
+        if (!contentEl) return;
 
         if (!animate) {
-          textEl.style.transition = 'none';
+          contentEl.style.transition = 'none';
         } else {
-          textEl.style.transition = 'color 200ms cubic-bezier(0.25, 1, 0.5, 1), opacity 200ms cubic-bezier(0.25, 1, 0.5, 1), filter 200ms cubic-bezier(0.25, 1, 0.5, 1), text-shadow 200ms cubic-bezier(0.25, 1, 0.5, 1), transform 200ms cubic-bezier(0.25, 1, 0.5, 1)';
+          contentEl.style.transition = 'color 320ms cubic-bezier(0.16, 1, 0.3, 1), opacity 320ms cubic-bezier(0.16, 1, 0.3, 1), filter 320ms cubic-bezier(0.16, 1, 0.3, 1), transform 320ms cubic-bezier(0.16, 1, 0.3, 1)';
         }
 
         item.classList.remove('is-active', 'dist-1', 'dist-2', 'dist-3');
@@ -4783,23 +4796,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dist === 0) {
           // ACTIVE / SELECTED: แนวตรง กึ่งกลางจอ (Straight Horizontal 0deg), Blue #3b82f6 with glow
           item.classList.add('is-active');
-          textEl.style.color = '#3b82f6';
-          textEl.style.opacity = '1';
-          textEl.style.filter = 'blur(0px)';
-          textEl.style.textShadow = '0 0 28px rgba(59, 130, 246, 0.7), 0 0 10px rgba(59, 130, 246, 0.45)';
-          textEl.style.transform = 'scale(1.04)';
+          contentEl.style.color = '#3b82f6';
+          contentEl.style.opacity = '1';
+          contentEl.style.filter = 'blur(0px) drop-shadow(0 0 14px rgba(59, 130, 246, 0.65))';
+          contentEl.style.transform = 'scale(1.05)';
         } else {
           // NON-SELECTED: แนวตรง ไม่เอียง (Straight Horizontal 0deg), scale & blur with distance
           item.classList.add(`dist-${Math.min(dist, 3)}`);
           const scale = Math.max(0.88, (1 - dist * 0.035)).toFixed(3);
-          const opacity = dist === 1 ? '0.40' : (dist === 2 ? '0.16' : '0.08');
-          const blur = (dist * 1.75).toFixed(2);
+          const opacity = dist === 1 ? '0.38' : (dist === 2 ? '0.16' : '0.08');
+          const blur = (dist * 1.6).toFixed(2);
 
-          textEl.style.color = '#ffffff';
-          textEl.style.opacity = opacity;
-          textEl.style.filter = `blur(${blur}px)`;
-          textEl.style.textShadow = 'none';
-          textEl.style.transform = `scale(${scale})`;
+          contentEl.style.color = '#ffffff';
+          contentEl.style.opacity = opacity;
+          contentEl.style.filter = `blur(${blur}px)`;
+          contentEl.style.transform = `scale(${scale})`;
         }
       });
 
@@ -4811,7 +4822,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const baseIdx = ((selectedIndex % BASE_COUNT) + BASE_COUNT) % BASE_COUNT;
             selectedIndex = SET_OFFSET + baseIdx;
             updateWheel(selectedIndex, false);
-          }, 205);
+          }, 325);
         } else {
           const baseIdx = ((selectedIndex % BASE_COUNT) + BASE_COUNT) % BASE_COUNT;
           selectedIndex = SET_OFFSET + baseIdx;
@@ -4853,6 +4864,10 @@ document.addEventListener('DOMContentLoaded', () => {
       // Enforce positioning pass and update mobile language indicator
       requestAnimationFrame(() => {
         updateWheel(selectedIndex, false);
+        const mobileLangCode = document.getElementById('mobileLangCode');
+        if (mobileLangCode) {
+          mobileLangCode.textContent = (currentLang || 'en').toUpperCase();
+        }
         if (typeof updateLanguageIndicator === 'function') {
           updateLanguageIndicator(false);
         }
@@ -4903,13 +4918,13 @@ document.addEventListener('DOMContentLoaded', () => {
         updateWheel(idx, true);
         const target = item.getAttribute('data-target');
 
-        // Let user perceive the 200ms wheel spin smoothing before closing and scrolling
+        // Let user perceive the 320ms wheel spin smoothing before closing and scrolling
         setTimeout(() => {
           closeMenu();
           if (typeof smoothNavigateTo === 'function' && target) {
             smoothNavigateTo(target);
           }
-        }, 200);
+        }, 320);
       });
     });
 
