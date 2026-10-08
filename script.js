@@ -1051,12 +1051,23 @@ document.addEventListener('DOMContentLoaded', () => {
   let rubberTimeline = null;
   let isIndicatorInitialized = false;
 
+  let lastRenderedWidth = -1;
+  let lastRenderedHeight = -1;
+
   function renderIndicator() {
     if (!navIndicator) return;
-    const width = Math.max(0, indicatorState.r - indicatorState.l);
-    navIndicator.style.transform = `translate3d(${indicatorState.l}px, ${indicatorState.top}px, 0) scaleY(${indicatorState.scaleY})`;
-    navIndicator.style.width = `${width}px`;
-    navIndicator.style.height = `${indicatorState.height}px`;
+    const width = Math.max(0, Math.round(indicatorState.r - indicatorState.l));
+    const left = Math.round(indicatorState.l);
+    const top = Math.round(indicatorState.top);
+    navIndicator.style.transform = `translate3d(${left}px, ${top}px, 0) scaleY(${indicatorState.scaleY.toFixed(3)})`;
+    if (lastRenderedWidth !== width) {
+      navIndicator.style.width = `${width}px`;
+      lastRenderedWidth = width;
+    }
+    if (lastRenderedHeight !== indicatorState.height) {
+      navIndicator.style.height = `${indicatorState.height}px`;
+      lastRenderedHeight = indicatorState.height;
+    }
     navIndicator.style.opacity = '1';
   }
 
@@ -1132,11 +1143,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const leadTarget = dir > 0 ? b.r : b.l;
     const trailTarget = dir > 0 ? b.l : b.r;
 
-    // React Bits Rubber Segment physics:
-    // Stretch thins height (volume conservation), squash bulges height on impact
-    const stretchY = Math.max(0.84, 1 - Math.min(distance / 700, 0.16));
-    const squashPx = Math.min(7, Math.max(3, Math.round(distance * 0.045)));
-    const squashY = Math.min(1.12, 1 + Math.min(distance / 700, 0.12));
+    // Snappy fluid slide: lead edge moves quickly, trail edge follows smoothly with subtle volume-preserving stretch
+    const stretchY = Math.max(0.92, 1 - Math.min(distance / 1200, 0.08));
 
     rubberTimeline = gsap.timeline({
       onUpdate: renderIndicator
@@ -1146,55 +1154,35 @@ document.addEventListener('DOMContentLoaded', () => {
       rubberTimeline.to(indicatorState, {
         top: b.top,
         height: b.height,
-        duration: 0.28,
+        duration: 0.22,
         ease: 'power2.out'
       }, 0);
     }
 
-    // 1. Dilate / Stretch phase:
-    // Lead edge rushes towards target, trail edge lags behind to stretch across gap
-    const trailLag = dir > 0 ? a.l + (b.l - a.l) * 0.14 : a.r + (b.r - a.r) * 0.14;
-
+    // Snappy fluid glide (~0.24s total duration, crisp & responsive)
     rubberTimeline.to(indicatorState, {
       [leadEdge]: leadTarget,
       scaleY: stretchY,
-      duration: 0.19,
+      duration: 0.16,
       ease: 'power3.out'
     }, 0);
 
     rubberTimeline.to(indicatorState, {
-      [trailEdge]: trailLag,
-      duration: 0.19,
-      ease: 'power1.in'
-    }, 0);
-
-    // 2. Landing Squash phase:
-    // Trail edge overshoots into target slot by squashPx (compressing pill horizontally)
-    rubberTimeline.to(indicatorState, {
-      [trailEdge]: trailTarget + dir * squashPx,
-      scaleY: squashY,
-      duration: 0.16,
-      ease: 'power2.out'
-    }, 0.15);
-
-    // 3. Rebound & Relax phase:
-    // Trail edge rebounds back to exact slot boundary with spring damping, scaleY returns to 1
-    rubberTimeline.to(indicatorState, {
       [trailEdge]: trailTarget,
       scaleY: 1.0,
       duration: 0.24,
-      ease: 'elastic.out(1.25, 0.42)'
-    }, 0.31);
+      ease: 'power2.out'
+    }, 0.04);
   }
 
   // Helper to switch active navbar link and slide indicator
   function setActiveNavLink(targetLink, isImmediate = false) {
     if (!targetLink) return;
-    const links = document.querySelectorAll('.nav-link');
     if (targetLink.classList.contains('active')) {
-      updateNavIndicator(targetLink, isImmediate);
+      if (isImmediate) updateNavIndicator(targetLink, true);
       return;
     }
+    const links = document.querySelectorAll('.nav-link');
     links.forEach(l => l.classList.remove('active'));
     targetLink.classList.add('active');
     updateNavIndicator(targetLink, isImmediate);
@@ -1859,18 +1847,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const scrollTop = scrollContainer.scrollTop;
 
     // Config of all possible sections
-    const sectionConfigs = [
-      { id: 'home', link: document.querySelector('.nav-link[href="#home"]') },
-      { id: 'about', link: document.querySelector('.nav-link[href="#about"]') },
-      { id: 'portfolio', link: document.querySelector('.nav-link[href="#portfolio"]') },
-      { id: 'contact', link: document.querySelector('.nav-link[href="#contact"]') }
-    ];
+    if (!window._cachedScrollSpySections) {
+      const sectionConfigs = [
+        { id: 'home', link: document.querySelector('.nav-link[href="#home"]') },
+        { id: 'about', link: document.querySelector('.nav-link[href="#about"]') },
+        { id: 'portfolio', link: document.querySelector('.nav-link[href="#portfolio"]') },
+        { id: 'contact', link: document.querySelector('.nav-link[href="#contact"]') }
+      ];
+      window._cachedScrollSpySections = sectionConfigs
+        .map(cfg => ({ ...cfg, el: document.getElementById(cfg.id) }))
+        .filter(cfg => cfg.el && cfg.link);
+    }
 
-    const activeSections = sectionConfigs
-      .map(cfg => ({ ...cfg, el: document.getElementById(cfg.id) }))
-      .filter(cfg => cfg.el && cfg.link);
-
-    if (!activeSections.length) return;
+    const activeSections = window._cachedScrollSpySections;
+    if (!activeSections || !activeSections.length) return;
 
     // 1. Near the very top -> activate first section (HOME)
     if (scrollTop < 80) {
@@ -1885,10 +1875,10 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    // 3. Focal detection relative to scrollContainer viewport (triggers as soon as section enters reading view)
+    // 3. Focal detection relative to scrollContainer viewport (triggers as soon as section enters natural reading view ~38%)
     const containerRect = scrollContainer.getBoundingClientRect();
     const containerHeight = scrollContainer.clientHeight || window.innerHeight;
-    const focalY = containerRect.top + Math.min(containerHeight * 0.62, 560);
+    const focalY = containerRect.top + Math.min(containerHeight * 0.38, 380);
 
     let targetSection = activeSections[0];
     for (let i = 0; i < activeSections.length; i++) {
