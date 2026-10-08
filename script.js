@@ -1903,7 +1903,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const isMobile = window.innerWidth <= 768;
-    const vHeight = scrollContainer.clientHeight || window.innerHeight;
+    const navOffset = isMobile ? 84 : 96;
 
     let targetTop = 0;
     if (targetId === '#home') {
@@ -1920,28 +1920,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const cRect = scrollContainer.getBoundingClientRect();
-        const portHeader = portSection.querySelector('#portfolioTitleBlock') || portSection.querySelector('.portfolio-header');
-        const portFocus = portHeader || portSection;
-        const focusRect = portFocus.getBoundingClientRect();
+        const portHeader = portSection.querySelector('#portfolioTitleBlock') || portSection.querySelector('.portfolio-header') || portSection;
+        const focusRect = portHeader.getBoundingClientRect();
         const focusTop = focusRect.top - cRect.top + scrollContainer.scrollTop;
-        // Vertically center showcase header between top and bottom edge of viewport
-        const focalHeight = Math.min(focusRect.height || 180, 260);
-        const centerOffset = Math.max(isMobile ? 70 : 80, Math.round((vHeight - focalHeight) / 2));
-        targetTop = Math.max(0, Math.round(focusTop - centerOffset));
+        targetTop = Math.max(0, Math.round(focusTop - navOffset));
       }
     } else if (targetId === '#about') {
       const aboutSection = document.querySelector('#about');
       if (aboutSection) {
         const cRect = scrollContainer.getBoundingClientRect();
-        const aboutHeader = aboutSection.querySelector('#aboutTitleBlock') || aboutSection.querySelector('.about-header');
-        const introBlock = aboutSection.querySelector('#aboutIntroBlock');
-        const headerRect = aboutHeader ? aboutHeader.getBoundingClientRect() : aboutSection.getBoundingClientRect();
+        const aboutHeader = aboutSection.querySelector('#aboutTitleBlock') || aboutSection.querySelector('.about-header') || aboutSection;
+        const headerRect = aboutHeader.getBoundingClientRect();
         const headerTop = headerRect.top - cRect.top + scrollContainer.scrollTop;
-        // Vertically center title + intro block between top and bottom edge of viewport
-        const introBottom = introBlock ? introBlock.getBoundingClientRect().bottom : headerRect.bottom;
-        const focalHeight = Math.min(introBottom - headerRect.top, 320);
-        const centerOffset = Math.max(isMobile ? 70 : 80, Math.round((vHeight - focalHeight) / 2));
-        targetTop = Math.max(0, Math.round(headerTop - centerOffset));
+        targetTop = Math.max(0, Math.round(headerTop - navOffset));
       }
     } else if (targetId && targetId.startsWith('#')) {
       const targetElement = document.querySelector(targetId);
@@ -1949,8 +1940,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const cRect = scrollContainer.getBoundingClientRect();
         const tRect = targetElement.getBoundingClientRect();
         const tTop = tRect.top - cRect.top + scrollContainer.scrollTop;
-        const centerOffset = Math.max(isMobile ? 70 : 80, Math.round((vHeight - tRect.height) / 2));
-        targetTop = Math.max(0, Math.round(tTop - centerOffset));
+        targetTop = Math.max(0, Math.round(tTop - navOffset));
       }
     }
 
