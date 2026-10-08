@@ -3600,8 +3600,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { label: 'Frontend', tags: ['HTML', 'CSS', 'JavaScript', 'SVG Graphics'] },
         { label: 'Architecture', tags: ['Vanilla Web Standards', 'Responsive Design'] }
       ],
-      liveDemoUrl: '#',
-      sourceCodeUrl: 'https://github.com'
+      liveDemoUrl: 'https://peephuwit.github.io/bumblebee-clock/',
+      sourceCodeUrl: 'https://github.com/peephuwit/bumblebee-clock/'
     }
   };
 
