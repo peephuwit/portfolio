@@ -1058,32 +1058,29 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!navIndicator) return;
     const width = Math.max(0, Math.round(indicatorState.r - indicatorState.l));
     const left = Math.round(indicatorState.l);
-    const top = Math.round(indicatorState.top);
-    navIndicator.style.transform = `translate3d(${left}px, ${top}px, 0) scaleY(${indicatorState.scaleY.toFixed(3)})`;
+    navIndicator.style.transform = `translate3d(${left}px, 0px, 0) scaleY(${indicatorState.scaleY.toFixed(3)})`;
     if (lastRenderedWidth !== width) {
       navIndicator.style.width = `${width}px`;
       lastRenderedWidth = width;
     }
-    if (lastRenderedHeight !== indicatorState.height) {
-      navIndicator.style.height = `${indicatorState.height}px`;
-      lastRenderedHeight = indicatorState.height;
-    }
+    navIndicator.style.height = '32px';
     navIndicator.style.opacity = '1';
   }
 
   function getNavSlots() {
     if (!navLinksContainer) return [];
-    const navRect = navLinksContainer.getBoundingClientRect();
     const links = Array.from(navLinksContainer.querySelectorAll('.nav-link'));
     return links.map(link => {
-      const rect = link.getBoundingClientRect();
+      const li = link.closest('li') || link;
+      const l = li.offsetLeft;
+      const w = li.offsetWidth || link.offsetWidth;
       return {
         link: link,
-        l: rect.left - navRect.left,
-        r: rect.right - navRect.left,
-        top: rect.top - navRect.top,
-        height: rect.height,
-        width: rect.width
+        l: l,
+        r: l + w,
+        top: 0,
+        height: 32,
+        width: w
       };
     });
   }
@@ -1091,17 +1088,19 @@ document.addEventListener('DOMContentLoaded', () => {
   function updateNavIndicator(targetLink, isImmediate = false) {
     if (!targetLink || !navIndicator || !navLinksContainer) return;
 
-    const navRect = navLinksContainer.getBoundingClientRect();
-    const targetRect = targetLink.getBoundingClientRect();
+    const targetParentLi = targetLink.closest('li') || targetLink;
+    const l = targetParentLi.offsetLeft;
+    const width = targetParentLi.offsetWidth || targetLink.offsetWidth;
+    const r = l + width;
 
-    if (navRect.width === 0 || targetRect.width === 0) return;
+    if (width === 0) return;
 
     const b = {
-      l: targetRect.left - navRect.left,
-      r: targetRect.right - navRect.left,
-      top: targetRect.top - navRect.top,
-      height: targetRect.height,
-      width: targetRect.width
+      l: l,
+      r: r,
+      top: 0,
+      height: 32,
+      width: width
     };
 
     if (isImmediate || !isIndicatorInitialized || typeof gsap === 'undefined') {
@@ -1111,8 +1110,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       indicatorState.l = b.l;
       indicatorState.r = b.r;
-      indicatorState.top = b.top;
-      indicatorState.height = b.height;
+      indicatorState.top = 0;
+      indicatorState.height = 32;
       indicatorState.scaleY = 1;
       renderIndicator();
       isIndicatorInitialized = true;
@@ -1125,8 +1124,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (distance < 2) {
       indicatorState.l = b.l;
       indicatorState.r = b.r;
-      indicatorState.top = b.top;
-      indicatorState.height = b.height;
+      indicatorState.top = 0;
+      indicatorState.height = 32;
       indicatorState.scaleY = 1;
       renderIndicator();
       return;
@@ -1150,14 +1149,8 @@ document.addEventListener('DOMContentLoaded', () => {
       onUpdate: renderIndicator
     });
 
-    if (indicatorState.top !== b.top || indicatorState.height !== b.height) {
-      rubberTimeline.to(indicatorState, {
-        top: b.top,
-        height: b.height,
-        duration: 0.32,
-        ease: 'power2.out'
-      }, 0);
-    }
+    indicatorState.top = 0;
+    indicatorState.height = 32;
 
     // Lead edge rushes to target quickly (~0.18s)
     rubberTimeline.to(indicatorState, {
