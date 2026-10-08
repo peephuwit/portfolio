@@ -3576,8 +3576,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { label: 'Backend', tags: ['Node.js', 'Express', 'Zod', 'JWT'] },
         { label: 'Database', tags: ['Prisma', 'SQLite'] }
       ],
-      liveDemoUrl: '#',
-      sourceCodeUrl: 'https://github.com'
+      liveDemoUrl: 'https://meeting-room-booking-olive.vercel.app/',
+      sourceCodeUrl: 'https://github.com/peephuwit/meeting-room-booking'
     },
     'bumblebee-clock': {
       title: 'BUMBLEBEE CLOCK',
