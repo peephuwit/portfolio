@@ -1760,48 +1760,58 @@ body.mobile-menu-open #homeScreen {
 /* Language Switcher Frame directly attached below Option Wheel */
 /* Language Switcher Frame directly attached below Option Wheel - Moved to right corner (มุมขวา จากที่อยู่ตรงกลาง) */
 .option-wheel-lang-footer {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 8px 18px 14px 18px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  background: transparent;
-  flex-shrink: 0;
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  padding: 8px 18px 14px 18px !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: transparent !important;
+  flex-shrink: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .mobile-lang-toggle-btn {
   display: inline-flex !important;
-  align-items: center;
-  gap: 7px;
-  height: 34px;
-  padding: 0 14px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 9999px;
-  color: #ffffff;
-  font-family: 'Athiti', sans-serif;
-  font-size: 13.5px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  height: 34px !important;
+  padding: 0 14px !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.18) !important;
+  border-radius: 9999px !important;
+  color: #ffffff !important;
+  font-family: 'Athiti', sans-serif !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  transition: all 0.25s ease !important;
+  user-select: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
 }
 
 .mobile-lang-toggle-btn:hover,
 .mobile-lang-toggle-btn:active {
-  background: rgba(59, 130, 246, 0.22);
-  border-color: rgba(59, 130, 246, 0.55);
-  box-shadow: 0 0 16px rgba(59, 130, 246, 0.35);
-  color: #ffffff;
+  background: rgba(59, 130, 246, 0.25) !important;
+  border-color: rgba(59, 130, 246, 0.55) !important;
+  box-shadow: 0 0 16px rgba(59, 130, 246, 0.4) !important;
+  color: #ffffff !important;
 }
 
 .mobile-lang-toggle-btn .lang-icon {
-  width: 15px;
-  height: 15px;
-  stroke: currentColor;
-  stroke-width: 2;
-  transition: transform 0.25s ease;
+  width: 15px !important;
+  height: 15px !important;
+  stroke: #ffffff !important;
+  stroke-width: 2 !important;
+  transition: transform 0.25s ease !important;
+  display: inline-block !important;
+  opacity: 0.9 !important;
 }
 
 .mobile-lang-toggle-btn:hover .lang-icon {
@@ -1809,8 +1819,10 @@ body.mobile-menu-open #homeScreen {
 }
 
 .mobile-lang-toggle-btn .lang-code-text {
-  letter-spacing: 0.6px;
-  font-weight: 700;
+  letter-spacing: 0.6px !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  display: inline-block !important;
 }
 
 /* Dropdown Card - Hidden on desktop, seamless inside expanded navbar on mobile */
@@ -1866,28 +1878,6 @@ body.mobile-menu-open #homeScreen {
 
 .option-wheel-viewport:active {
   cursor: grabbing;
-}
-
-/* Selection indicator lines above and below the active item ("ขีดบนล่างว่าเลือกเมนูนั้นอยู่") */
-.option-wheel-bracket {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  width: min(220px, 66%);
-  height: 1.5px;
-  background: linear-gradient(90deg, transparent 0%, rgba(59, 130, 246, 0.35) 18%, rgba(0, 210, 255, 0.85) 50%, rgba(59, 130, 246, 0.35) 82%, transparent 100%);
-  box-shadow: 0 0 10px rgba(0, 210, 255, 0.5), 0 0 4px rgba(59, 130, 246, 0.6);
-  pointer-events: none;
-  z-index: 5;
-  border-radius: 9999px;
-}
-
-.option-wheel-bracket.bracket-top {
-  top: calc(50% - 34px);
-}
-
-.option-wheel-bracket.bracket-bottom {
-  top: calc(50% + 34px);
 }
 
 /* Wheel Track centered horizontally */
@@ -5058,21 +5048,30 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
 
   .navbar-wrapper {
     top: 12px;
-    padding: 0 12px;
+    left: 0;
+    right: 0;
     width: 100%;
-    height: auto;
-    min-height: 48px;
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+    padding: 0 12px;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     position: sticky;
     z-index: 1005;
     pointer-events: none !important;
+    box-sizing: border-box;
   }
 
   .navbar {
-    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 12px;
+    right: 12px;
+    width: calc(100% - 24px);
     max-width: 520px;
+    margin: 0 auto;
     height: 48px;
     display: flex;
     flex-direction: column;
@@ -5087,6 +5086,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
                 border-color 0.35s ease,
                 background 0.35s ease;
     will-change: height;
+    pointer-events: auto !important;
   }
 
   .navbar.is-open {
@@ -5131,7 +5131,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
     display: none !important;
   }
 
-  .nav-lang-toggle-btn {
+  .navbar-top-row .nav-lang-toggle-btn {
     display: none !important;
   }
 
