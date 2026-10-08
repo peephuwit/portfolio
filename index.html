@@ -84,129 +84,131 @@
   <section class="screen-section home-screen hidden" id="homeScreen">
     <!-- Navbar (Sticky Floating Capsule - Visible from the very first view with the Badge) -->
     <header class="navbar-wrapper">
-      <nav class="navbar">
-        <a href="#" class="nav-brand-pill nav-logo" id="navLogoBtn" title="pphw.dev404">
-          <span class="brand-name">pphw<span class="logo-dot">.</span>dev404</span>
-        </a>
-        <ul class="nav-links">
-          <div class="nav-indicator" id="navIndicator"></div>
-          <li>
-            <a href="#home" class="nav-link active">
-              <svg class="nav-icon" viewBox="0 0 24 24">
-                <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-5a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/>
-              </svg>
-              <span>HOME</span>
-            </a>
-          </li>
-          <li>
-            <a href="#about" class="nav-link">
-              <svg class="nav-icon" viewBox="0 0 24 24">
-                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                <circle cx="12" cy="7" r="4"/>
-              </svg>
-              <span>ABOUT</span>
-            </a>
-          </li>
-          <li>
-            <a href="#portfolio" class="nav-link">
-              <svg class="nav-icon" viewBox="0 0 24 24">
-                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
-                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
-              </svg>
-              <span>PORTFOLIO</span>
-            </a>
-          </li>
-          <li>
-            <a href="#contact" class="nav-link">
-              <svg class="nav-icon" viewBox="0 0 24 24">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                <polyline points="22,6 12,13 2,6"/>
-              </svg>
-              <span>CONTACT</span>
-            </a>
-          </li>
-        </ul>
-        <!-- Divider Between Menu and Language -->
-        <div class="nav-divider" aria-hidden="true"></div>
+      <nav class="navbar" id="mainNavbar">
+        <div class="navbar-top-row">
+          <a href="#" class="nav-brand-pill nav-logo" id="navLogoBtn" title="pphw.dev404">
+            <span class="brand-name">pphw<span class="logo-dot">.</span>dev404</span>
+          </a>
+          <ul class="nav-links">
+            <div class="nav-indicator" id="navIndicator"></div>
+            <li>
+              <a href="#home" class="nav-link active">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                  <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-5a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/>
+                </svg>
+                <span>HOME</span>
+              </a>
+            </li>
+            <li>
+              <a href="#about" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+                <span>ABOUT</span>
+              </a>
+            </li>
+            <li>
+              <a href="#portfolio" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+                </svg>
+                <span>PORTFOLIO</span>
+              </a>
+            </li>
+            <li>
+              <a href="#contact" class="nav-link">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                  <polyline points="22,6 12,13 2,6"/>
+                </svg>
+                <span>CONTACT</span>
+              </a>
+            </li>
+          </ul>
+          <!-- Divider Between Menu and Language -->
+          <div class="nav-divider" aria-hidden="true"></div>
 
-        <!-- Language Switcher Button (Redesigned [文A EN/TH]) -->
-        <button type="button" class="nav-lang-toggle-btn" id="desktopLangToggle" aria-label="Switch Language" title="Switch Language">
-          <svg class="lang-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="m5 8 6 6"/>
-            <path d="m4 14 6-6 2-3"/>
-            <path d="M2 5h12"/>
-            <path d="M7 2h1"/>
-            <path d="m22 22-5-10-5 10"/>
-            <path d="M14 18h6"/>
-          </svg>
-          <span class="lang-code-text" id="desktopLangCode">EN</span>
-        </button>
+          <!-- Language Switcher Button (Redesigned [文A EN/TH]) -->
+          <button type="button" class="nav-lang-toggle-btn" id="desktopLangToggle" aria-label="Switch Language" title="Switch Language">
+            <svg class="lang-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m5 8 6 6"/>
+              <path d="m4 14 6-6 2-3"/>
+              <path d="M2 5h12"/>
+              <path d="M7 2h1"/>
+              <path d="m22 22-5-10-5 10"/>
+              <path d="M14 18h6"/>
+            </svg>
+            <span class="lang-code-text" id="desktopLangCode">EN</span>
+          </button>
 
-        <!-- Mobile Hamburger Toggle (3 horizontal lines) -->
-        <button type="button" class="nav-hamburger-btn" id="navHamburgerBtn" aria-label="Toggle navigation menu" aria-expanded="false">
-          <span class="hamburger-line line-1"></span>
-          <span class="hamburger-line line-2"></span>
-          <span class="hamburger-line line-3"></span>
-        </button>
+          <!-- Mobile Hamburger Toggle (3 horizontal lines) -->
+          <button type="button" class="nav-hamburger-btn" id="navHamburgerBtn" aria-label="Toggle navigation menu" aria-expanded="false">
+            <span class="hamburger-line line-1"></span>
+            <span class="hamburger-line line-2"></span>
+            <span class="hamburger-line line-3"></span>
+          </button>
+        </div>
+
+        <!-- Mobile Option Wheel Dropdown Directly Inside Navbar -->
+        <div class="mobile-option-wheel-dropdown" id="mobileOptionWheelDropdown" aria-hidden="true">
+          <div class="option-wheel-viewport" id="optionWheelViewport">
+            <div class="option-wheel-track" id="optionWheelTrack">
+              <!-- Set 0 (Loop wrap buffer) -->
+              <button type="button" class="option-wheel-item" data-index="0" data-target="#home">
+                <span class="option-wheel-text">HOME</span>
+              </button>
+              <button type="button" class="option-wheel-item" data-index="1" data-target="#about">
+                <span class="option-wheel-text">ABOUT</span>
+              </button>
+              <button type="button" class="option-wheel-item" data-index="2" data-target="#portfolio">
+                <span class="option-wheel-text">PORTFOLIO</span>
+              </button>
+              <button type="button" class="option-wheel-item" data-index="3" data-target="#contact">
+                <span class="option-wheel-text">CONTACT</span>
+              </button>
+
+              <!-- Set 1 (Main Interactive Set) -->
+              <button type="button" class="option-wheel-item is-active" data-index="4" data-target="#home">
+                <span class="option-wheel-text">HOME</span>
+              </button>
+              <button type="button" class="option-wheel-item dist-1" data-index="5" data-target="#about">
+                <span class="option-wheel-text">ABOUT</span>
+              </button>
+              <button type="button" class="option-wheel-item dist-2" data-index="6" data-target="#portfolio">
+                <span class="option-wheel-text">PORTFOLIO</span>
+              </button>
+              <button type="button" class="option-wheel-item dist-3" data-index="7" data-target="#contact">
+                <span class="option-wheel-text">CONTACT</span>
+              </button>
+
+              <!-- Set 2 (Loop wrap buffer) -->
+              <button type="button" class="option-wheel-item" data-index="8" data-target="#home">
+                <span class="option-wheel-text">HOME</span>
+              </button>
+              <button type="button" class="option-wheel-item" data-index="9" data-target="#about">
+                <span class="option-wheel-text">ABOUT</span>
+              </button>
+              <button type="button" class="option-wheel-item" data-index="10" data-target="#portfolio">
+                <span class="option-wheel-text">PORTFOLIO</span>
+              </button>
+              <button type="button" class="option-wheel-item" data-index="11" data-target="#contact">
+                <span class="option-wheel-text">CONTACT</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Language Switcher Frame Attached Directly Below Menu -->
+          <div class="option-wheel-lang-footer" id="optionWheelLangFooter">
+            <div class="nav-lang-pill mobile-lang-pill" id="mobileLangSwitch" role="group" aria-label="Language Selector">
+              <div class="lang-indicator" id="mobileLangIndicator"></div>
+              <button type="button" class="lang-btn active" data-lang="en" aria-label="English">EN</button>
+              <button type="button" class="lang-btn" data-lang="th" aria-label="Thai">TH</button>
+            </div>
+          </div>
+        </div>
       </nav>
-
-      <!-- Mobile Option Wheel Dropdown Attached Directly Under Navbar -->
-      <div class="mobile-option-wheel-dropdown" id="mobileOptionWheelDropdown" aria-hidden="true">
-        <div class="option-wheel-viewport" id="optionWheelViewport">
-          <div class="option-wheel-track" id="optionWheelTrack">
-            <!-- Set 0 (Loop wrap buffer) -->
-            <button type="button" class="option-wheel-item" data-index="0" data-target="#home">
-              <span class="option-wheel-text">HOME</span>
-            </button>
-            <button type="button" class="option-wheel-item" data-index="1" data-target="#about">
-              <span class="option-wheel-text">ABOUT</span>
-            </button>
-            <button type="button" class="option-wheel-item" data-index="2" data-target="#portfolio">
-              <span class="option-wheel-text">PORTFOLIO</span>
-            </button>
-            <button type="button" class="option-wheel-item" data-index="3" data-target="#contact">
-              <span class="option-wheel-text">CONTACT</span>
-            </button>
-
-            <!-- Set 1 (Main Interactive Set) -->
-            <button type="button" class="option-wheel-item is-active" data-index="4" data-target="#home">
-              <span class="option-wheel-text">HOME</span>
-            </button>
-            <button type="button" class="option-wheel-item dist-1" data-index="5" data-target="#about">
-              <span class="option-wheel-text">ABOUT</span>
-            </button>
-            <button type="button" class="option-wheel-item dist-2" data-index="6" data-target="#portfolio">
-              <span class="option-wheel-text">PORTFOLIO</span>
-            </button>
-            <button type="button" class="option-wheel-item dist-3" data-index="7" data-target="#contact">
-              <span class="option-wheel-text">CONTACT</span>
-            </button>
-
-            <!-- Set 2 (Loop wrap buffer) -->
-            <button type="button" class="option-wheel-item" data-index="8" data-target="#home">
-              <span class="option-wheel-text">HOME</span>
-            </button>
-            <button type="button" class="option-wheel-item" data-index="9" data-target="#about">
-              <span class="option-wheel-text">ABOUT</span>
-            </button>
-            <button type="button" class="option-wheel-item" data-index="10" data-target="#portfolio">
-              <span class="option-wheel-text">PORTFOLIO</span>
-            </button>
-            <button type="button" class="option-wheel-item" data-index="11" data-target="#contact">
-              <span class="option-wheel-text">CONTACT</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Language Switcher Frame Attached Directly Below Menu -->
-        <div class="option-wheel-lang-footer" id="optionWheelLangFooter">
-          <div class="nav-lang-pill mobile-lang-pill" id="mobileLangSwitch" role="group" aria-label="Language Selector">
-            <div class="lang-indicator" id="mobileLangIndicator"></div>
-            <button type="button" class="lang-btn active" data-lang="en" aria-label="English">EN</button>
-            <button type="button" class="lang-btn" data-lang="th" aria-label="Thai">TH</button>
-          </div>
-        </div>
-      </div>
     </header>
 
     <!-- Transparent Blur Backdrop for Click-Outside (Does NOT lock page scroll) -->

@@ -4737,6 +4737,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const viewport = document.getElementById('optionWheelViewport');
     const track = document.getElementById('optionWheelTrack');
     const items = Array.from(document.querySelectorAll('.option-wheel-item'));
+    const mainNavbar = document.getElementById('mainNavbar');
 
     if (!hamburgerBtn || !dropdown || !viewport || !track || !items.length) return;
 
@@ -4753,7 +4754,7 @@ document.addEventListener('DOMContentLoaded', () => {
       selectedIndex = Math.max(0, Math.min(items.length - 1, index));
 
       // 1. Calculate translateY offset so active item is centered in the wheel viewport
-      const vHeight = viewport.clientHeight || 280;
+      const vHeight = viewport.clientHeight || 270;
       const iHeight = items[selectedIndex]?.offsetHeight || defaultItemHeight;
       const offsetY = (vHeight / 2) - (iHeight / 2) - (selectedIndex * iHeight);
 
@@ -4764,10 +4765,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       track.style.transform = `translateY(${Math.round(offsetY)}px)`;
 
-      // 2. Dynamic Option Wheel: Active item is completely straight horizontal (rotate 0deg / แนวตรง)
-      // Items above slant upwards (-6deg per step), items below slant downwards (+6deg per step)
+      // 2. Dynamic Option Wheel: Centered, Completely Straight Horizontal (0deg rotation / แนวตรง)
       items.forEach((item, i) => {
-        const diff = i - selectedIndex; // negative = above center, positive = below center
+        const diff = i - selectedIndex;
         const dist = Math.abs(diff);
         const textEl = item.querySelector('.option-wheel-text');
         if (!textEl) return;
@@ -4781,17 +4781,16 @@ document.addEventListener('DOMContentLoaded', () => {
         item.classList.remove('is-active', 'dist-1', 'dist-2', 'dist-3');
 
         if (dist === 0) {
-          // ACTIVE / SELECTED: แนวตรง (Straight Horizontal 0deg), Blue #3b82f6 with glow
+          // ACTIVE / SELECTED: แนวตรง กึ่งกลางจอ (Straight Horizontal 0deg), Blue #3b82f6 with glow
           item.classList.add('is-active');
           textEl.style.color = '#3b82f6';
           textEl.style.opacity = '1';
           textEl.style.filter = 'blur(0px)';
           textEl.style.textShadow = '0 0 28px rgba(59, 130, 246, 0.7), 0 0 10px rgba(59, 130, 246, 0.45)';
-          textEl.style.transform = 'translateX(10px) rotate(0deg) scale(1.04)';
+          textEl.style.transform = 'scale(1.04)';
         } else {
-          // NON-SELECTED: Curved cylinder rotation
+          // NON-SELECTED: แนวตรง ไม่เอียง (Straight Horizontal 0deg), scale & blur with distance
           item.classList.add(`dist-${Math.min(dist, 3)}`);
-          const angle = diff * 6; // -6deg for 1 above, +6deg for 1 below, -12deg for 2 above, etc.
           const scale = Math.max(0.88, (1 - dist * 0.035)).toFixed(3);
           const opacity = dist === 1 ? '0.40' : (dist === 2 ? '0.16' : '0.08');
           const blur = (dist * 1.75).toFixed(2);
@@ -4800,7 +4799,7 @@ document.addEventListener('DOMContentLoaded', () => {
           textEl.style.opacity = opacity;
           textEl.style.filter = `blur(${blur}px)`;
           textEl.style.textShadow = 'none';
-          textEl.style.transform = `translateX(0px) rotate(${angle}deg) scale(${scale})`;
+          textEl.style.transform = `scale(${scale})`;
         }
       });
 
@@ -4837,6 +4836,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function openMenu() {
       isOpen = true;
+      if (mainNavbar) {
+        mainNavbar.classList.add('is-open');
+      }
       hamburgerBtn.classList.add('active');
       hamburgerBtn.setAttribute('aria-expanded', 'true');
       dropdown.classList.add('active');
@@ -4844,13 +4846,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (backdrop) {
         backdrop.classList.add('active');
         backdrop.setAttribute('aria-hidden', 'false');
-      }
-
-      // Lock background page scroll on body and homeScreen
-      document.body.classList.add('mobile-menu-open');
-      const homeScreen = document.getElementById('homeScreen');
-      if (homeScreen) {
-        homeScreen.classList.add('scroll-locked');
       }
 
       // Sync wheel position to the currently viewed section immediately
@@ -4866,6 +4861,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function closeMenu() {
       isOpen = false;
+      if (mainNavbar) {
+        mainNavbar.classList.remove('is-open');
+      }
       hamburgerBtn.classList.remove('active');
       hamburgerBtn.setAttribute('aria-expanded', 'false');
       dropdown.classList.remove('active');
@@ -4873,13 +4871,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (backdrop) {
         backdrop.classList.remove('active');
         backdrop.setAttribute('aria-hidden', 'true');
-      }
-
-      // Unlock background page scroll
-      document.body.classList.remove('mobile-menu-open');
-      const homeScreen = document.getElementById('homeScreen');
-      if (homeScreen) {
-        homeScreen.classList.remove('scroll-locked');
       }
     }
 
