@@ -1143,8 +1143,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const leadTarget = dir > 0 ? b.r : b.l;
     const trailTarget = dir > 0 ? b.l : b.r;
 
-    // Snappy fluid slide: lead edge moves quickly, trail edge follows smoothly with subtle volume-preserving stretch
-    const stretchY = Math.max(0.92, 1 - Math.min(distance / 1200, 0.08));
+    // Fluid slide: lead edge moves quickly, trailing edge follows at reduced speed with graceful stretch
+    const stretchY = Math.max(0.88, 1 - Math.min(distance / 900, 0.12));
 
     rubberTimeline = gsap.timeline({
       onUpdate: renderIndicator
@@ -1154,25 +1154,26 @@ document.addEventListener('DOMContentLoaded', () => {
       rubberTimeline.to(indicatorState, {
         top: b.top,
         height: b.height,
-        duration: 0.22,
+        duration: 0.32,
         ease: 'power2.out'
       }, 0);
     }
 
-    // Snappy fluid glide (~0.24s total duration, crisp & responsive)
+    // Lead edge rushes to target quickly (~0.18s)
     rubberTimeline.to(indicatorState, {
       [leadEdge]: leadTarget,
       scaleY: stretchY,
-      duration: 0.16,
+      duration: 0.18,
       ease: 'power3.out'
     }, 0);
 
+    // Trailing edge moves at reduced speed (ดึ๊บตามมาอย่างนุ่มนวล ~0.44s)
     rubberTimeline.to(indicatorState, {
       [trailEdge]: trailTarget,
       scaleY: 1.0,
-      duration: 0.24,
+      duration: 0.44,
       ease: 'power2.out'
-    }, 0.04);
+    }, 0.06);
   }
 
   // Helper to switch active navbar link and slide indicator
@@ -1909,8 +1910,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const isMobile = window.innerWidth <= 768;
-    const targetOffset = isMobile ? 78 : 90;
-    const aboutOffset = isMobile ? 96 : 124;
+    const vHeight = scrollContainer.clientHeight || window.innerHeight;
 
     let targetTop = 0;
     if (targetId === '#home') {
@@ -1928,37 +1928,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const cRect = scrollContainer.getBoundingClientRect();
         const portHeader = portSection.querySelector('#portfolioTitleBlock') || portSection.querySelector('.portfolio-header');
-        if (portHeader) {
-          const headerRect = portHeader.getBoundingClientRect();
-          const headerTop = headerRect.top - cRect.top + scrollContainer.scrollTop;
-          targetTop = Math.max(0, Math.round(headerTop - targetOffset));
-        } else {
-          const tRect = portSection.getBoundingClientRect();
-          targetTop = Math.max(0, Math.round(tRect.top - cRect.top + scrollContainer.scrollTop - targetOffset));
-        }
+        const portFocus = portHeader || portSection;
+        const focusRect = portFocus.getBoundingClientRect();
+        const focusTop = focusRect.top - cRect.top + scrollContainer.scrollTop;
+        // Vertically center showcase header between top and bottom edge of viewport
+        const focalHeight = Math.min(focusRect.height || 180, 260);
+        const centerOffset = Math.max(isMobile ? 70 : 80, Math.round((vHeight - focalHeight) / 2));
+        targetTop = Math.max(0, Math.round(focusTop - centerOffset));
       }
     } else if (targetId === '#about') {
       const aboutSection = document.querySelector('#about');
       if (aboutSection) {
         const cRect = scrollContainer.getBoundingClientRect();
         const aboutHeader = aboutSection.querySelector('#aboutTitleBlock') || aboutSection.querySelector('.about-header');
-        if (aboutHeader) {
-          const headerRect = aboutHeader.getBoundingClientRect();
-          const headerTop = headerRect.top - cRect.top + scrollContainer.scrollTop;
-          targetTop = Math.max(0, Math.round(headerTop - aboutOffset));
-        } else {
-          const tRect = aboutSection.getBoundingClientRect();
-          targetTop = Math.max(0, Math.round(tRect.top - cRect.top + scrollContainer.scrollTop - aboutOffset));
-        }
+        const introBlock = aboutSection.querySelector('#aboutIntroBlock');
+        const headerRect = aboutHeader ? aboutHeader.getBoundingClientRect() : aboutSection.getBoundingClientRect();
+        const headerTop = headerRect.top - cRect.top + scrollContainer.scrollTop;
+        // Vertically center title + intro block between top and bottom edge of viewport
+        const introBottom = introBlock ? introBlock.getBoundingClientRect().bottom : headerRect.bottom;
+        const focalHeight = Math.min(introBottom - headerRect.top, 320);
+        const centerOffset = Math.max(isMobile ? 70 : 80, Math.round((vHeight - focalHeight) / 2));
+        targetTop = Math.max(0, Math.round(headerTop - centerOffset));
       }
     } else if (targetId && targetId.startsWith('#')) {
       const targetElement = document.querySelector(targetId);
       if (targetElement) {
         const cRect = scrollContainer.getBoundingClientRect();
         const tRect = targetElement.getBoundingClientRect();
-        targetTop = Math.max(0, Math.round(tRect.top - cRect.top + scrollContainer.scrollTop - targetOffset));
+        const tTop = tRect.top - cRect.top + scrollContainer.scrollTop;
+        const centerOffset = Math.max(isMobile ? 70 : 80, Math.round((vHeight - tRect.height) / 2));
+        targetTop = Math.max(0, Math.round(tTop - centerOffset));
       }
     }
+
+    const maxScroll = Math.max(0, scrollContainer.scrollHeight - scrollContainer.clientHeight);
+    targetTop = Math.min(targetTop, maxScroll);
 
     const startTop = scrollContainer.scrollTop;
     const delta = Math.abs(targetTop - startTop);
