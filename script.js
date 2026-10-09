@@ -1650,38 +1650,22 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const curDist = p * totalLen;
-      const pt = getPointAt(curDist);
-      const ptPrev = getPointAt(Math.max(0, curDist - 6));
-      const ptNext = getPointAt(Math.min(totalLen, curDist + 6));
+      const TRAIL_LENGTH = 140; // Sleek modern dashed contrail
+      const TRAIL_GAP = 58;     // Original distinct air gap requested by user
 
-      const dx = (ptNext.x - ptPrev.x) * scaleX;
-      const dy = (ptNext.y - ptPrev.y) * scaleY;
-      const heading = Math.atan2(dy, dx) * (180 / Math.PI);
-      const radHeading = heading * (Math.PI / 180);
-
-      // Pixel-perfect alignment with the paper airplane's tail (-16px * 1.2 = -19.2px)
-      const tailX_svg = pt.x - (19.2 / Math.max(0.01, scaleX)) * Math.cos(radHeading);
-      const tailY_svg = pt.y - (19.2 / Math.max(0.01, scaleY)) * Math.sin(radHeading);
-
-      const TRAIL_LENGTH = 160;
-      const avgScale = Math.max(0.1, (scaleX + scaleY) * 0.5);
-      const tailDist = 19.2 / avgScale;
-
-      const trailEnd = Math.max(0, curDist - tailDist);
+      const trailEnd = Math.max(0, curDist - TRAIL_GAP);
       const trailStart = Math.max(0, trailEnd - TRAIL_LENGTH);
       const activeLen = trailEnd - trailStart;
 
-      // Dynamic contrail generation: seamlessly connected directly to the tail
+      // Dynamic contrail generation: strictly along master flight path
       if (activeLen > 4 && opacity > 0.01) {
         const STEPS = 24;
         let dStr = '';
-        for (let i = 0; i < STEPS; i++) {
+        for (let i = 0; i <= STEPS; i++) {
           const d = trailStart + (i / STEPS) * activeLen;
           const ptSample = getPointAt(d);
           dStr += (i === 0 ? 'M ' : ' L ') + ptSample.x.toFixed(1) + ',' + ptSample.y.toFixed(1);
         }
-        // Connect final segment directly into the airplane's tail
-        dStr += ' L ' + tailX_svg.toFixed(1) + ',' + tailY_svg.toFixed(1);
 
         primaryPath.setAttribute('d', dStr);
         // Dash offset so dashes stay fixed in space as jet contrail vapor
@@ -1701,6 +1685,14 @@ document.addEventListener('DOMContentLoaded', () => {
       planeWrapper.style.opacity = opacity.toFixed(3);
 
       if (opacity > 0.001) {
+        const pt = getPointAt(curDist);
+        const ptPrev = getPointAt(Math.max(0, curDist - 6));
+        const ptNext = getPointAt(Math.min(totalLen, curDist + 6));
+
+        const dx = (ptNext.x - ptPrev.x) * scaleX;
+        const dy = (ptNext.y - ptPrev.y) * scaleY;
+        const heading = Math.atan2(dy, dx) * (180 / Math.PI);
+
         // 3D Aerodynamic Banking (Roll into turn)
         const ptBehind = getPointAt(Math.max(0, curDist - 22));
         const ptAhead = getPointAt(Math.min(totalLen, curDist + 22));
@@ -1727,7 +1719,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const targetPitch = Math.max(-16, Math.min(16, vertSlope * 14));
         smoothPitch += (targetPitch - smoothPitch) * 0.18;
 
-        // 3D Altitude (posZ): higher during loop-the-loop, dipping in dive
+        // 3D Altitude: smooth visual scale without shifting (posX, posY) off the centerline
         let targetZ = 0;
         if (p > 0.22 && p < 0.55) {
           const loopT = (p - 0.22) / 0.33;
@@ -1742,8 +1734,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const posX = pt.x * scaleX;
         const posY = pt.y * scaleY;
+        const scaleZ = 1 + smoothZ * 0.0035;
 
-        planeWrapper.style.transform = `translate3d(${posX.toFixed(1)}px, ${posY.toFixed(1)}px, ${smoothZ.toFixed(1)}px) rotateZ(${heading.toFixed(1)}deg) rotateX(${smoothBank.toFixed(1)}deg) rotateY(${smoothPitch.toFixed(1)}deg)`;
+        // Keeps airplane center locked 100% directly onto the flight trail centerline
+        planeWrapper.style.transform = `translate3d(${posX.toFixed(1)}px, ${posY.toFixed(1)}px, 0px) rotateZ(${heading.toFixed(1)}deg) rotateX(${smoothBank.toFixed(1)}deg) rotateY(${smoothPitch.toFixed(1)}deg) scale(${scaleZ.toFixed(3)})`;
 
         // Dynamic 3D shadow shifting with altitude
         const shadowDist = 10 + (smoothZ + 15) * 0.35;

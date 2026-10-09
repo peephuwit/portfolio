@@ -2575,7 +2575,6 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   pointer-events: none;
   z-index: 5;
   overflow: visible;
-  perspective: 1200px;
 }
 
 .flight-trail-svg {
@@ -2624,6 +2623,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   will-change: transform, opacity;
   transition: opacity 0.3s ease;
   transform-origin: center center;
+  perspective: 800px;
   transform-style: preserve-3d;
 }
 
@@ -2632,7 +2632,6 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   width: 100%;
   height: 100%;
   overflow: visible;
-  filter: drop-shadow(0 10px 22px rgba(0, 210, 255, 0.5)) drop-shadow(0 4px 12px rgba(192, 132, 252, 0.45));
   transform-style: preserve-3d;
 }
 
