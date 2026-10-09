@@ -1650,23 +1650,39 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const curDist = p * totalLen;
-      const TRAIL_LENGTH = 140; // Shorter, sleek modern dashed contrail
-      const TRAIL_GAP = 58;     // Distinct air gap: guaranteed separation from the rocket tail
+      const pt = getPointAt(curDist);
+      const ptPrev = getPointAt(Math.max(0, curDist - 6));
+      const ptNext = getPointAt(Math.min(totalLen, curDist + 6));
 
-      const trailEnd = Math.max(0, curDist - TRAIL_GAP);
+      const dx = (ptNext.x - ptPrev.x) * scaleX;
+      const dy = (ptNext.y - ptPrev.y) * scaleY;
+      const heading = Math.atan2(dy, dx) * (180 / Math.PI);
+      const radHeading = heading * (Math.PI / 180);
+
+      // Pixel-perfect alignment with the paper airplane's tail (-16px * 1.2 = -19.2px)
+      const tailX_svg = pt.x - (19.2 / Math.max(0.01, scaleX)) * Math.cos(radHeading);
+      const tailY_svg = pt.y - (19.2 / Math.max(0.01, scaleY)) * Math.sin(radHeading);
+
+      const TRAIL_LENGTH = 160;
+      const avgScale = Math.max(0.1, (scaleX + scaleY) * 0.5);
+      const tailDist = 19.2 / avgScale;
+
+      const trailEnd = Math.max(0, curDist - tailDist);
       const trailStart = Math.max(0, trailEnd - TRAIL_LENGTH);
       const activeLen = trailEnd - trailStart;
 
-      // Dynamic contrail generation: creates ONLY the active trailing segment
-      // Completely eliminates mask artifacts, negative dash offsets, and stationary streak bugs
+      // Dynamic contrail generation: seamlessly connected directly to the tail
       if (activeLen > 4 && opacity > 0.01) {
-        const STEPS = 20;
+        const STEPS = 24;
         let dStr = '';
-        for (let i = 0; i <= STEPS; i++) {
+        for (let i = 0; i < STEPS; i++) {
           const d = trailStart + (i / STEPS) * activeLen;
           const ptSample = getPointAt(d);
           dStr += (i === 0 ? 'M ' : ' L ') + ptSample.x.toFixed(1) + ',' + ptSample.y.toFixed(1);
         }
+        // Connect final segment directly into the airplane's tail
+        dStr += ' L ' + tailX_svg.toFixed(1) + ',' + tailY_svg.toFixed(1);
+
         primaryPath.setAttribute('d', dStr);
         // Dash offset so dashes stay fixed in space as jet contrail vapor
         primaryPath.style.strokeDashoffset = (-trailStart).toFixed(1);
@@ -1685,14 +1701,6 @@ document.addEventListener('DOMContentLoaded', () => {
       planeWrapper.style.opacity = opacity.toFixed(3);
 
       if (opacity > 0.001) {
-        const pt = getPointAt(curDist);
-        const ptPrev = getPointAt(Math.max(0, curDist - 6));
-        const ptNext = getPointAt(Math.min(totalLen, curDist + 6));
-
-        const dx = (ptNext.x - ptPrev.x) * scaleX;
-        const dy = (ptNext.y - ptPrev.y) * scaleY;
-        const heading = Math.atan2(dy, dx) * (180 / Math.PI);
-
         // 3D Aerodynamic Banking (Roll into turn)
         const ptBehind = getPointAt(Math.max(0, curDist - 22));
         const ptAhead = getPointAt(Math.min(totalLen, curDist + 22));
