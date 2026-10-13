@@ -29,8 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
   try {
     currentLang = localStorage.getItem('preferred_lang') || 'en';
   } catch (e) {}
-  document.documentElement.lang = currentLang;
-  document.body.setAttribute('data-lang', currentLang);
 
   const TRANSLATIONS = {
     en: {
@@ -3769,9 +3767,6 @@ document.addEventListener('DOMContentLoaded', () => {
     try {
       localStorage.setItem('preferred_lang', lang);
     } catch (e) {}
-
-    document.documentElement.lang = lang;
-    document.body.setAttribute('data-lang', lang);
 
     const langBtns = document.querySelectorAll('.lang-btn');
     langBtns.forEach(btn => {
