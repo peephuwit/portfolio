@@ -283,6 +283,10 @@ body::after {
   border-radius: 9999px;
 }
 
+.welcome-screen .loading-bar-fill::after {
+  display: none !important;
+}
+
 .screen-section.hidden,
 .welcome-screen.hidden,
 .hidden {
@@ -967,12 +971,13 @@ body::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  white-space: nowrap;
   margin: 0;
-  padding: 0 8%;
+  padding: 0 3%;
   text-align: center;
   font-family: 'Anton', sans-serif !important;
-  font-size: clamp(2.4rem, 5.8vw, 4.8rem);
+  font-size: clamp(1.8rem, 4.6vw, 5.0rem);
   font-weight: 400;
   text-transform: none !important;
   letter-spacing: 0.03em;
@@ -4751,8 +4756,8 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
 .keypad-showcase-card {
   position: relative;
   width: 100%;
-  height: clamp(640px, 80vh, 800px);
-  margin-top: 0;
+  height: clamp(540px, 70vh, 670px);
+  margin-top: -36px;
   background: transparent;
   border: none;
   box-shadow: none;
@@ -4771,19 +4776,19 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding-left: 28px;
+  padding-left: clamp(36px, 9vw, 140px);
   z-index: 20;
   pointer-events: none;
 }
 
 .skill-info-panel {
-  width: 380px;
-  max-width: 36vw;
+  width: 320px;
+  max-width: 30vw;
   pointer-events: none;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-top: -15px;
+  margin-top: -125px;
   opacity: 0;
   transition: opacity 0.35s ease, transform 0.35s ease;
 }
@@ -4810,7 +4815,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
 }
 
 .skill-name-display {
-  font-size: clamp(3rem, 5.2vw, 5.6rem);
+  font-size: clamp(2.4rem, 4.4vw, 4.6rem);
   font-family: 'Willow', 'Anton', sans-serif;
   line-height: 0.95;
   letter-spacing: 0.02em;
@@ -4822,12 +4827,12 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
 }
 
 .skill-tagline-display {
-  font-size: clamp(1.05rem, 1.4vw, 1.35rem);
+  font-size: clamp(0.95rem, 1.2vw, 1.18rem);
   font-family: 'Athiti', sans-serif;
-  line-height: 1.45;
+  line-height: 1.48;
   color: rgba(255, 255, 255, 0.9);
   margin-bottom: 20px;
-  max-width: 340px;
+  max-width: 290px;
   min-height: 2.6em;
 }
 
@@ -4836,8 +4841,8 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   flex-direction: column;
   gap: 10px;
   width: 100%;
-  max-width: 290px;
-  padding: 16px 20px;
+  max-width: 250px;
+  padding: 14px 18px;
   background: rgba(18, 22, 32, 0.72);
   border: 1.5px solid rgba(255, 255, 255, 0.15);
   border-radius: 18px;
