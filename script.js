@@ -2080,10 +2080,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      if (typeof window.unlockKeypadAudio === 'function') {
-        window.unlockKeypadAudio();
-      }
-
       if (targetTab === 'tech-stack') {
         const keypadEl = document.querySelector('.keypad-showcase-card');
         if (keypadEl) {

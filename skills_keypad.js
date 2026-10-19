@@ -37,171 +37,32 @@
     { id: 'terminal', name: 'Linux', key: 'B', keycode: 'KeyB', col: '#1A1E24', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linux.svg', forceWhite: true, cat: 'Operating System', cat_th: 'ระบบปฏิบัติการ', tag: 'Unix bash command line, shell scripts, servers, and kernel power.', tag_th: 'คำสั่ง Unix Bash สคริปต์อัตโนมัติ การดูแลเซิร์ฟเวอร์ และความเสถียรของระบบ', level: 'Everyday' }
   ];
 
-  // Sound Synthesizer (Creamy Lubed Custom Mechanical Switch - Safari & WebKit compatible)
+  // Sound Synthesizer (Mechanical switch click)
   let isSoundEnabled = true;
   let audioCtx = null;
-  let masterFilter = null;
-  let masterGain = null;
-  let noiseBuffer = null;
-  let isAudioUnlocked = false;
-
-  function ensureAudioGraph() {
-    try {
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContextClass) return;
-      if (!audioCtx) {
-        audioCtx = new AudioContextClass();
-      }
-      if (!masterFilter && audioCtx) {
-        // Velvety lowpass filter to remove plastic harshness and create deep creamy warmth
-        masterFilter = audioCtx.createBiquadFilter();
-        masterFilter.type = 'lowpass';
-        masterFilter.frequency.setValueAtTime(2600, audioCtx.currentTime);
-        masterFilter.Q.setValueAtTime(0.7, audioCtx.currentTime);
-
-        // Dynamics compressor: keeps rapid loops/glides buttery smooth without digital clipping
-        const compressor = audioCtx.createDynamicsCompressor();
-        compressor.threshold.setValueAtTime(-10, audioCtx.currentTime);
-        compressor.knee.setValueAtTime(8, audioCtx.currentTime);
-        compressor.ratio.setValueAtTime(3.5, audioCtx.currentTime);
-        compressor.attack.setValueAtTime(0.002, audioCtx.currentTime);
-        compressor.release.setValueAtTime(0.045, audioCtx.currentTime);
-
-        masterGain = audioCtx.createGain();
-        masterGain.gain.setValueAtTime(0.88, audioCtx.currentTime);
-
-        masterFilter.connect(compressor);
-        compressor.connect(masterGain);
-        masterGain.connect(audioCtx.destination);
-      }
-    } catch (e) {}
-  }
-
-  function getNoiseBuffer() {
-    if (noiseBuffer || !audioCtx) return noiseBuffer;
-    try {
-      const bufferSize = Math.floor(audioCtx.sampleRate * 0.035);
-      noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-      const data = noiseBuffer.getChannelData(0);
-      let lastOut = 0.0;
-      for (let i = 0; i < bufferSize; i++) {
-        const white = Math.random() * 2 - 1;
-        // Pink-filtered noise for smooth lubed stem glide against POM housing
-        lastOut = (lastOut * 0.70) + (white * 0.30);
-        data[i] = lastOut * 0.45;
-      }
-    } catch (e) {}
-    return noiseBuffer;
-  }
-
-  function initOrUnlockAudio() {
-    try {
-      ensureAudioGraph();
-      if (!audioCtx) return;
-
-      // iOS Safari AudioSession API
-      if (typeof navigator !== 'undefined' && navigator.audioSession) {
-        try { navigator.audioSession.type = 'playback'; } catch (_) {}
-      }
-
-      if (audioCtx.state === 'suspended' || audioCtx.state === 'interrupted') {
-        audioCtx.resume().catch(() => {});
-      }
-
-      // Safari WebKit Unlock: Playing a 1-sample silent buffer directly to destination awakens hardware output
-      if (!isAudioUnlocked && audioCtx) {
-        const buffer = audioCtx.createBuffer(1, 1, 22050);
-        const source = audioCtx.createBufferSource();
-        source.buffer = buffer;
-        source.connect(audioCtx.destination);
-        if (source.start) {
-          source.start(0);
-        } else if (source.noteOn) {
-          source.noteOn(0);
-        }
-        isAudioUnlocked = true;
-      }
-    } catch (e) {}
-  }
-
-  // Expose global unlocker for tab switches and external interactions
-  if (typeof window !== 'undefined') {
-    window.unlockKeypadAudio = initOrUnlockAudio;
-
-    // Pre-unlock on first user interaction anywhere (covers Safari mousedown, touchend, click, keydown)
-    const unlockEvents = ['touchstart', 'touchend', 'mousedown', 'mouseup', 'click', 'keydown', 'pointerdown'];
-    unlockEvents.forEach(evt => {
-      window.addEventListener(evt, initOrUnlockAudio, { capture: true, passive: true });
-    });
-  }
 
   function playKeyClickSound(pitch = 1.0) {
     if (!isSoundEnabled) return;
     try {
-      ensureAudioGraph();
-      if (!audioCtx) return;
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
 
-      const executePlay = () => {
-        try {
-          if (!audioCtx || !masterFilter) return;
-          // Safari-safe timestamp: small 5ms lookahead prevents past-timestamp drops
-          const startTime = audioCtx.currentTime + 0.005;
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
 
-          // 1. Lubed Stem Touch (Soft cushioned glide noise - lubed linear switch feel)
-          const nBuf = getNoiseBuffer();
-          if (nBuf) {
-            const noiseSource = audioCtx.createBufferSource();
-            noiseSource.buffer = nBuf;
-            const noiseGain = audioCtx.createGain();
-            noiseGain.gain.setValueAtTime(0.24, startTime);
-            noiseGain.gain.linearRampToValueAtTime(0.001, startTime + 0.022);
-            noiseGain.gain.setValueAtTime(0, startTime + 0.024);
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(280 * pitch, now);
+      osc.frequency.exponentialRampToValueAtTime(70, now + 0.035);
 
-            noiseSource.connect(noiseGain);
-            noiseGain.connect(masterFilter);
-            noiseSource.start(startTime);
-            noiseSource.stop(startTime + 0.025);
-          }
+      gain.gain.setValueAtTime(0.35, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
 
-          // 2. The Creamy "Pop" (Rounded marble tone - signature creamy switch sound)
-          const oscPop = audioCtx.createOscillator();
-          const gainPop = audioCtx.createGain();
-          oscPop.type = 'sine';
-          oscPop.frequency.setValueAtTime(395 * pitch, startTime);
-          oscPop.frequency.exponentialRampToValueAtTime(Math.max(20, 165 * pitch), startTime + 0.036);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
 
-          gainPop.gain.setValueAtTime(0.58, startTime);
-          gainPop.gain.linearRampToValueAtTime(0.001, startTime + 0.040);
-          gainPop.gain.setValueAtTime(0, startTime + 0.042);
-
-          oscPop.connect(gainPop);
-          gainPop.connect(masterFilter);
-          oscPop.start(startTime);
-          oscPop.stop(startTime + 0.044);
-
-          // 3. Deep Switch Body & Deskpad Thock (Velvety acoustic bottom-out)
-          const oscThock = audioCtx.createOscillator();
-          const gainThock = audioCtx.createGain();
-          oscThock.type = 'sine';
-          oscThock.frequency.setValueAtTime(195 * pitch, startTime);
-          oscThock.frequency.exponentialRampToValueAtTime(Math.max(20, 76 * pitch), startTime + 0.048);
-
-          gainThock.gain.setValueAtTime(0.42, startTime);
-          gainThock.gain.linearRampToValueAtTime(0.001, startTime + 0.052);
-          gainThock.gain.setValueAtTime(0, startTime + 0.054);
-
-          oscThock.connect(gainThock);
-          gainThock.connect(masterFilter);
-          oscThock.start(startTime);
-          oscThock.stop(startTime + 0.056);
-        } catch (e) {}
-      };
-
-      if (audioCtx.state === 'suspended' || audioCtx.state === 'interrupted') {
-        audioCtx.resume().then(executePlay).catch(() => {});
-      } else {
-        executePlay();
-      }
+      osc.start(now);
+      osc.stop(now + 0.04);
     } catch (err) {}
   }
 
@@ -1273,17 +1134,7 @@
 
       activePressedMesh = mesh;
       mesh.userData.isPressed = true;
-
-      // Creamy harmonic pitch variation based on keycap row and column:
-      // Row 0 (top): slightly brighter, Row 3 (bottom): deeper, plus gentle column variation
-      let pitch = 1.0;
-      if (mesh.userData) {
-        const row = mesh.userData.row !== undefined ? mesh.userData.row : Math.floor((mesh.userData.index || 0) / 5);
-        const col = mesh.userData.col !== undefined ? mesh.userData.col : ((mesh.userData.index || 0) % 5);
-        const rowPitches = [1.07, 1.02, 0.98, 0.93];
-        pitch = (rowPitches[row % 4] || 1.0) + (col - 2) * 0.015;
-      }
-      playKeyClickSound(pitch);
+      playKeyClickSound(1.0 + (mesh.userData.index % 5) * 0.08);
       updateSkillInfo(mesh.userData.skill);
 
       if (typeof gsap !== 'undefined') {
@@ -1390,7 +1241,6 @@
 
     // Capture phase pointerdown: enables OrbitControls ONLY if pointer is on the keypad body/keys
     function onPointerDownCapture(e) {
-      initOrUnlockAudio();
       hasMouseMovedSinceReset = true;
       downTime = Date.now();
       let cx = e.clientX;
@@ -1695,7 +1545,6 @@
     // Tab buttons listener directly inside keypad module
     document.querySelectorAll('.portfolio-tab').forEach(btn => {
       btn.addEventListener('click', () => {
-        initOrUnlockAudio();
         const tabKey = btn.getAttribute('data-tab');
         if (tabKey === 'tech-stack') {
           setTimeout(() => {
