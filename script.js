@@ -1063,7 +1063,7 @@ document.addEventListener('DOMContentLoaded', () => {
       navIndicator.style.width = `${width}px`;
       lastRenderedWidth = width;
     }
-    navIndicator.style.height = '32px';
+    navIndicator.style.height = '100%';
     navIndicator.style.opacity = '1';
   }
 
