@@ -1299,13 +1299,13 @@ body::after {
   box-shadow: 0 16px 42px rgba(0, 0, 0, 0.68), 0 0 30px rgba(0, 210, 255, 0.14), inset 0 1px 1px rgba(255, 255, 255, 0.3);
 }
 
-/* Brand inside Unified Navbar Capsule (pphw.dev404) */
+/* Brand Icon (Sharp Vector icon.svg) on the Left */
 .nav-brand-pill {
   position: relative;
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  padding: 0 14px 0 4px;
+  padding: 0 22px 0 8px;
   background: transparent;
   border: none;
   border-radius: 0;
@@ -1314,47 +1314,24 @@ body::after {
   -webkit-backdrop-filter: none;
   pointer-events: auto !important;
   text-decoration: none;
-  font-family: 'Athiti', sans-serif;
-  font-size: 14.5px;
-  font-weight: 600;
-  letter-spacing: 0.6px;
-  text-transform: lowercase;
-  color: #ffffff;
   cursor: pointer;
   transition: transform 0.25s ease;
   z-index: 2;
   user-select: none;
   -webkit-user-select: none;
   white-space: nowrap;
-  transform-origin: center left;
 }
 
-.nav-brand-pill .brand-name {
-  color: #ffffff;
-  -webkit-text-fill-color: #ffffff;
-  display: inline-flex;
-  align-items: center;
-  transition: text-shadow 0.25s ease;
+.nav-logo-icon {
+  height: 26px;
+  width: auto;
+  display: block;
+  transition: transform 0.25s ease, filter 0.25s ease;
 }
 
-.nav-brand-pill .logo-dot {
-  color: #00d2ff;
-  -webkit-text-fill-color: #00d2ff;
-  text-shadow: 0 0 10px rgba(0, 210, 255, 0.95);
-  font-size: 16px;
-  line-height: 1;
-  display: inline-block;
-  margin: 0 1px;
-  transition: transform 0.25s ease, text-shadow 0.25s ease;
-}
-
-.nav-brand-pill:hover .brand-name {
-  text-shadow: 0 0 12px rgba(255, 255, 255, 0.45);
-}
-
-.nav-brand-pill:hover .logo-dot {
-  transform: scale(1.35);
-  text-shadow: 0 0 14px rgba(0, 210, 255, 1);
+.nav-brand-pill:hover .nav-logo-icon {
+  transform: scale(1.12);
+  filter: drop-shadow(0 0 8px rgba(0, 210, 255, 0.85));
 }
 
 /* Divider Between Menu and Language Switcher */
@@ -4469,7 +4446,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   background: rgba(22, 25, 34, 0.58);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 2px solid rgba(255, 255, 255, 0.22);
+  border: 1.6px solid rgba(255, 255, 255, 0.12);
   border-radius: 14px;
   padding: 16px 16px 22px 16px;
   display: flex;
@@ -4560,7 +4537,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   z-index: 3;
   overflow: hidden;
   background: #0b0d14;
-  border: 1.8px solid rgba(255, 255, 255, 0.18);
+  border: 1.5px solid rgba(255, 255, 255, 0.14);
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -4597,7 +4574,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   aspect-ratio: 1902 / 912;
   width: 100%;
   background: rgba(14, 17, 24, 0.6);
-  border: 1.8px solid rgba(255, 255, 255, 0.16);
+  border: 1.5px solid rgba(255, 255, 255, 0.14);
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -4972,8 +4949,10 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
     padding: 0 6px 0 12px;
   }
   .nav-brand-pill {
-    padding: 0 10px 0 4px;
-    font-size: 13px;
+    padding: 0 16px 0 6px;
+  }
+  .nav-logo-icon {
+    height: 22px;
   }
   .nav-lang-toggle-btn {
     height: 28px;
@@ -5183,6 +5162,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
     align-items: stretch;
     justify-content: flex-start;
     padding: 0;
+    border: 1.5px solid rgba(255, 255, 255, 0.16);
     border-radius: 24px;
     overflow: hidden;
     transition: height 0.42s cubic-bezier(0.16, 1, 0.3, 1),
@@ -5210,6 +5190,10 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
     padding: 0 10px 0 16px;
     box-sizing: border-box;
     flex-shrink: 0;
+  }
+
+  .nav-logo-icon {
+    height: 22px;
   }
 
   .nav-brand-pill {
@@ -5459,9 +5443,6 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
     letter-spacing: 0.5px;
   }
 
-  .project-card {
-    border-width: 2.4px;
-  }
 }
 
 @media (max-width: 1100px) and (min-width: 769px) {
@@ -5492,7 +5473,6 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   .project-card {
     padding: 16px 16px 20px 16px;
     border-radius: 14px;
-    border-width: 3px;
   }
 
   .project-card-image-wrap {
@@ -5636,7 +5616,7 @@ body.modal-open {
   border-radius: 12px;
   overflow: hidden;
   background: #090c13;
-  border: 1.8px solid rgba(255, 255, 255, 0.18);
+  border: 1.5px solid rgba(255, 255, 255, 0.14);
   box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55), inset 0 0 24px rgba(0, 0, 0, 0.65);
   transform: scale(0.86);
   opacity: 0;
