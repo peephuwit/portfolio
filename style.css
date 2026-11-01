@@ -1226,7 +1226,7 @@ body::after {
   height: 100%;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0.06) 32%, transparent 50%, rgba(255, 255, 255, 0.08) 100%);
   pointer-events: none;
-  border-radius: 22px;
+  border-radius: 12px;
 }
 
 /* Home Layout Container */
@@ -2237,7 +2237,7 @@ body.mobile-menu-open #homeScreen {
   width: auto;
   height: 44px;
   padding: 0 22px;
-  border-radius: 12px;
+  border-radius: 8px;
   color: #ffffff;
   font-family: 'Athiti', sans-serif;
   font-size: 16px;
@@ -2360,7 +2360,7 @@ body.mobile-menu-open #homeScreen {
   -webkit-backdrop-filter: blur(10px);
   gap: 10px;
   position: relative;
-  border-radius: 12px !important;
+  border-radius: 8px !important;
   transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1),
               box-shadow 0.28s ease;
 }
@@ -2426,7 +2426,7 @@ body.mobile-menu-open #homeScreen {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 6px;
+  border-radius: 4px;
   border: 1.5px solid rgba(255, 255, 255, 0.65);
   background: rgba(255, 255, 255, 0.08);
   transition: all 0.32s cubic-bezier(0.16, 1, 0.3, 1);
@@ -2818,7 +2818,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1.6px solid rgba(255, 255, 255, 0.12);
-  border-radius: 20px;
+  border-radius: 12px;
   padding: 28px 24px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
   display: flex;
@@ -2838,7 +2838,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: 20px;
+  border-radius: 12px;
   padding: 1.5px;
   background: linear-gradient(135deg, #00d2ff 0%, rgba(0, 210, 255, 0.28) 45%, rgba(56, 189, 248, 0.08) 70%, #00d2ff 100%);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -2890,7 +2890,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
 .card-icon-wrap {
   width: 44px;
   height: 44px;
-  border-radius: 11px;
+  border-radius: 7px;
   background: rgba(0, 210, 255, 0.1);
   border: 1.5px solid rgba(0, 210, 255, 0.35);
   display: flex;
@@ -2957,7 +2957,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1.5px solid rgba(0, 210, 255, 0.35);
-  border-radius: 24px;
+  border-radius: 14px;
   padding: 44px 38px;
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4), inset 0 1px 2px rgba(255, 255, 255, 0.15);
   overflow: hidden;
@@ -2973,7 +2973,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: 24px;
+  border-radius: 14px;
   padding: 1.5px;
   background: linear-gradient(135deg, #00d2ff 0%, rgba(0, 210, 255, 0.35) 45%, rgba(56, 189, 248, 0.1) 70%, #00d2ff 100%);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -3460,7 +3460,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   position: relative;
   width: 100%;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 6px;
   flex: 1;
 }
 
@@ -3541,7 +3541,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1.5px solid rgba(255, 255, 255, 0.12);
-  border-radius: 20px;
+  border-radius: 12px;
   padding: 30px 28px;
   box-shadow: 0 12px 36px rgba(0, 0, 0, 0.4);
   overflow: hidden;
@@ -3556,7 +3556,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   content: '';
   position: absolute;
   inset: 0;
-  border-radius: 20px;
+  border-radius: 12px;
   padding: 1.5px;
   background: linear-gradient(135deg, rgba(0, 210, 255, 0.6) 0%, rgba(139, 92, 246, 0.35) 50%, rgba(236, 72, 153, 0.5) 100%);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -3865,7 +3865,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   .timeline-card {
     width: 100%;
     max-width: 100%;
-    border-radius: 18px;
+    border-radius: 10px;
     border-width: 1.2px;
     box-sizing: border-box;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
@@ -3926,7 +3926,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   .timeline-card.approach-box,
   .approach-box {
     padding: 22px 18px !important;
-    border-radius: 18px;
+    border-radius: 10px;
   }
 
   .approach-badge {
@@ -3944,7 +3944,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   /* Milestone 3: Exploring Card Compact */
   .timeline-card.exploring-card {
     padding: 18px 16px;
-    border-radius: 18px;
+    border-radius: 10px;
   }
 
   .exploring-tags {
@@ -4470,7 +4470,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 2px solid rgba(255, 255, 255, 0.22);
-  border-radius: 24px;
+  border-radius: 14px;
   padding: 16px 16px 22px 16px;
   display: flex;
   flex-direction: column;
@@ -4561,7 +4561,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   overflow: hidden;
   background: #0b0d14;
   border: 1.8px solid rgba(255, 255, 255, 0.18);
-  border-radius: 16px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4575,7 +4575,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   object-fit: contain;
   object-position: center;
   display: block;
-  border-radius: 14px;
+  border-radius: 8px;
   transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -4598,7 +4598,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   width: 100%;
   background: rgba(14, 17, 24, 0.6);
   border: 1.8px solid rgba(255, 255, 255, 0.16);
-  border-radius: 16px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -4608,7 +4608,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   width: 48px;
   height: 48px;
   border: 1.8px dashed rgba(255, 255, 255, 0.24);
-  border-radius: 12px;
+  border-radius: 7px;
   background: rgba(255, 255, 255, 0.03);
 }
 
@@ -4738,7 +4738,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   text-align: center;
   background: rgba(22, 25, 34, 0.35);
   border: 1.5px dashed rgba(255, 255, 255, 0.12);
-  border-radius: 22px;
+  border-radius: 12px;
 }
 
 .empty-text {
@@ -4845,7 +4845,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   padding: 14px 18px;
   background: rgba(18, 22, 32, 0.72);
   border: 1.5px solid rgba(255, 255, 255, 0.15);
-  border-radius: 18px;
+  border-radius: 10px;
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
@@ -4874,7 +4874,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   background: rgba(255, 255, 255, 0.18);
   border: 1px solid rgba(255, 255, 255, 0.35);
   padding: 3px 12px;
-  border-radius: 6px;
+  border-radius: 4px;
   font-family: monospace;
   font-size: 13px;
   color: #00d2ff;
@@ -5052,7 +5052,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   }
   .project-card {
     padding: 12px 12px 16px 12px;
-    border-radius: 18px;
+    border-radius: 10px;
   }
   .project-card-body {
     padding: 12px 2px 2px 2px;
@@ -5374,7 +5374,7 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
     font-family: 'Athiti', sans-serif !important;
     font-weight: 600 !important;
     letter-spacing: 0.6px !important;
-    border-radius: 12px !important;
+    border-radius: 8px !important;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -5393,14 +5393,14 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
     padding: 0 8px 0 12px !important;
     font-size: 13px !important;
     letter-spacing: 0.6px !important;
-    border-radius: 12px !important;
+    border-radius: 8px !important;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35) !important;
   }
 
   .btn-arrow-box {
     width: 22px !important;
     height: 22px !important;
-    border-radius: 6px !important;
+    border-radius: 4px !important;
     margin-left: 2px !important;
     flex-shrink: 0 !important;
     display: inline-flex !important;
@@ -5491,14 +5491,14 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
 
   .project-card {
     padding: 16px 16px 20px 16px;
-    border-radius: 28px;
+    border-radius: 14px;
     border-width: 3px;
   }
 
   .project-card-image-wrap {
     aspect-ratio: 1902 / 912;
     height: auto;
-    border-radius: 18px;
+    border-radius: 10px;
   }
 
   .project-card-body {
@@ -5563,7 +5563,7 @@ body.modal-open {
   backdrop-filter: blur(28px) saturate(200%);
   -webkit-backdrop-filter: blur(28px) saturate(200%);
   border: 2px solid rgba(255, 255, 255, 0.18);
-  border-radius: 28px;
+  border-radius: 16px;
   box-shadow: 0 32px 80px rgba(0, 0, 0, 0.75), 0 0 45px rgba(0, 210, 255, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.25);
   transform: translateY(60px) scale(0.98);
   opacity: 0;
@@ -5633,7 +5633,7 @@ body.modal-open {
   position: relative;
   width: 100%;
   aspect-ratio: 1897 / 910;
-  border-radius: 20px;
+  border-radius: 12px;
   overflow: hidden;
   background: #090c13;
   border: 1.8px solid rgba(255, 255, 255, 0.18);
@@ -5930,7 +5930,7 @@ body.modal-open {
   justify-content: center;
   gap: 8px;
   padding: 10px 16px;
-  border-radius: 12px;
+  border-radius: 8px;
   font-family: 'Anton', sans-serif;
   font-weight: 400;
   font-size: 0.95rem;
@@ -5989,7 +5989,7 @@ body.modal-open {
 
   .project-modal-container {
     max-height: 86vh;
-    border-radius: 22px;
+    border-radius: 14px;
   }
 
   .modal-project-title {

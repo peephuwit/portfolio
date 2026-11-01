@@ -3171,7 +3171,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         gl.uniform2f(uCenterLoc, (PAD + btnW / 2) * dpr, (PAD + btnH / 2) * dpr);
         gl.uniform2f(uHalfSizeLoc, (btnW / 2) * dpr, (btnH / 2) * dpr);
-        gl.uniform1f(uRadiusLoc, Math.min(14, Math.min(btnW, btnH) / 2) * dpr);
+        gl.uniform1f(uRadiusLoc, Math.min(8, Math.min(btnW, btnH) / 2) * dpr);
         gl.uniform1f(uAngleLoc, angle);
         gl.uniform1f(uPxLoc, dpr);
         gl.uniform3f(uLineColorLoc, lineColor[0], lineColor[1], lineColor[2]);
