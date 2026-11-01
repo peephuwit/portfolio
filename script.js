@@ -5038,11 +5038,29 @@ function init3DLanyardWebGL() {
   let width = window.innerWidth;
   let height = window.innerHeight;
 
+  function getCameraDistance() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    if (w <= 768) return 13.0; // Mobile untouched
+    if (h <= 850) return 14.3; // ลดลงนิดเดียว (~9%) บนจอโน้ตบุ๊ก / compact screens
+    return 13.8; // ลดลงนิดเดียว (~6%) บนหน้าจอปกติ
+  }
+
+  function calculateAnchorX(camZ) {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    if (w <= 768) return 0;
+    const z = camZ || getCameraDistance();
+    const aspect = w / h;
+    const halfVisibleWidth = z * Math.tan((25 * Math.PI) / 360) * aspect;
+    return Math.min(2.9, Math.max(2.4, halfVisibleWidth * 0.52));
+  }
+
   // 1. Scene, Camera, High-Precision WebGL Renderer
   const scene = new THREE.Scene();
 
   const camera = new THREE.PerspectiveCamera(25, width / height, 0.1, 100);
-  camera.position.set(0, 0, 13);
+  camera.position.set(0, 0, getCameraDistance());
 
   const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
@@ -5507,9 +5525,6 @@ function init3DLanyardWebGL() {
   loadCardModel();
 
   // 7. Multi-Body Chain Physics System (Authentic Rapier 3D Engine matching fattahmaulana/3D_CARD)
-  function calculateAnchorX() {
-    return (window.innerWidth > 768) ? 2.5 : 0;
-  }
   const ANCHOR_POS = new THREE.Vector3(calculateAnchorX(), 4.0, 0);
   const SEG_LEN = 1.0; // Segment rest reach matching original App.js
 
@@ -6220,10 +6235,11 @@ function init3DLanyardWebGL() {
     width = window.innerWidth;
     height = window.innerHeight;
     camera.aspect = width / height;
+    camera.position.z = getCameraDistance();
     camera.updateProjectionMatrix();
     renderer.setSize(width, height);
 
-    const newAnchorX = calculateAnchorX();
+    const newAnchorX = calculateAnchorX(camera.position.z);
     ANCHOR_POS.x = newAnchorX;
     fixed.x = newAnchorX;
 
