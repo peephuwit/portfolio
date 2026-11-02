@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
   <title>PEEPHUWIT - Portfolio</title>
-    <!-- Favicon: Inline Data URIs for Instant Zero-Network Load + File Fallbacks -->
-  <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACDElEQVR4nO2WL4hUURTGvzPvragI6gbBIKxBELFYBIsGkyCYjIJgsGvbJmqxWYwGi0nDVptgEIMmbSIaDJvUou7M+8mZPReuj9mZ+96sTHA+OBy4577znX/3zEhL/O+wWRcAK7lXRGbWaJFgO5m/YNMumxnAMUkHJTXZfSZ9MuGskjSQVEvaNLMvyW9JtIPQ54AhMGI+bALHc98lQVShb4WTn8BWB0lBewKOV16BJKVB1KE35qyAB+R44BVIyVlhK7xnq5LWo59jU+tqE2cu7nxL0mlJl8KW+L5LWpP0ragCfeGVA94ATbRgGFW4mCVWjujbHmBvakuc7wNOASthdzkQ5Kn/qfzX4ptx+TshH5oI5ixwD/gI3IizNC/Psr4n8vWwrfQhH4Q+A9wB3mbD9boV2MMJ5I/CXvchr0M/bk11EwSfgXch78M2ysg34vuq+OlNIL/d6ucwAnBpIyf3Odgfz67z0FWhz2dOR9lSmYVPwNHwsSN5vQO5f+DZHZH0NNsXrt32O95x7tiy3eC2K2b21RMxs1GXzC0r/YvI5leW2RPgJHCoJYdDVv2pzsp8WgB16Putkr4ELnTwMxf55YzY3/n17E4VQ2XTZJ63vhaD9gO46+WNc+u1wQrJLcT79wF4DpzI7P+GOCFK6rv8JnC19YOyK/8HZ4JtsvGe7rU4djGQaiHESyyhBeEPFyef4eagKkUAAAAASUVORK5CYII=">
-  <link rel="icon" type="image/png" sizes="16x16" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABDElEQVR4nLWSwSpFURSGv3WvMjC4UwPJwIhSykyG5sbeQAyV57ivYCoDAx6CpHgCeQCRYsD9tJ11dO6JE27+2rXW3v9a69/73zAhor2h9oCyumBEvE00WY0xBWovIkbqNrAOPAP9ctSqnQZOI+Is1VYoSemqrqilURee1NXCn8p6cnpExLW6BMwDj0DhDIAHYAvYA2aAhYi4og2134iX1Y2MF9XbVLDf5tLcKAT1Mskn6q56l/mwyf2E+nEddafj7sc1d8wFtV98VdeAi+x5BNxkPAJegWFEvORbVe6YVqiz6r16rm7yU1jZN1AP1YNaWlGVUpsrvmsypxbb6nz8gX6h5s+F5Qd+Le+/8Q5U3RHU+mxJcwAAAABJRU5ErkJggg==">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+CiAgPHN0eWxlPgogICAgcGF0aCB7IGZpbGw6ICNmZmZmZmY7IH0KICAgIEBtZWRpYSAocHJlZmVycy1jb2xvci1zY2hlbWU6IGxpZ2h0KSB7CiAgICAgIHBhdGggeyBmaWxsOiAjMGEwZTE3OyB9CiAgICB9CiAgPC9zdHlsZT4KICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg0NC4yNCwgMTA3LjQ4KSBzY2FsZSgwLjIyMDQpIj4KICAgIDxwYXRoIGZpbGw9IiNmZmZmZmYiIGQ9Ik0gMTY1MC4wIDguMCBMIDE3MjIuMCA4LjAgTCAxNzMxLjAgMTIuMCBMIDE5MTAuMCAyNTYuMCBMIDE5MTQuMCAyNzIuMCBMIDEzNzcuMCA4ODYuMCBMIDEzNTIuMCA4OTIuMCBMIDc5MS4wIDg5MC4wIEwgOC4wIDEzNDAuMCBMIDU2My4wIDYxOS4wIEwgNTgwLjAgNjA5LjAgTCA2MzIuMCA1OTAuMCBMIDEwNzkuMCA0MzguMCBMIDEwODguMCA0MzkuMCBMIDEwODYuMCA0NDcuMCBMIDEwMDkuMCA1ODAuMCBMIDk5Ni4wIDYxMC4wIEwgMTAwMC4wIDYxMy4wIEwgMTIzNi4wIDYxMy4wIEwgMTI1My4wIDU5OC4wIEwgMTUyMy4wIDI4OS4wIEwgMTUyMy4wIDI4My4wIEwgMTUxOC4wIDI4MC4wIEwgMTM5My4wIDI3OC4wIEwgNjExLjAgMjgwLjAgTCA1OTUuMCAyNjguMCBMIDUwNC4wIDE0NS4wIEwgNDE1LjAgMjIuMCBMIDQxMS4wIDE0LjAgTCA0MTMuMCAxMC4wIEwgMTQyMy4wIDExLjAgTCAxNjUwLjAgOC4wIFoiIGZpbGwtcnVsZT0iZXZlbm9kZCIvPgogIDwvZz4KPC9zdmc+">
-  <link rel="shortcut icon" href="favicon.ico?v=11">
-  <link rel="apple-touch-icon" sizes="180x180" href="theme/brand-p-180.png?v=11">
-  <link rel="mask-icon" href="theme/brand-p.svg" color="#ffffff">
+  <!-- Standard Multi-Resolution Favicon Suite -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#ffffff">
   <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
