@@ -10,6 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const homeScreen = document.getElementById('homeScreen');
   const welcomeContainer = document.getElementById('welcomeContainer');
   const navLogoBtn = document.getElementById('navLogoBtn');
+  const mainNavbar = document.getElementById('mainNavbar');
+  const loaderRipplePortal = document.getElementById('loaderRipplePortal');
+  const loaderRippleRing = document.getElementById('loaderRippleRing');
+  const loaderMorphCapsule = document.getElementById('loaderMorphCapsule');
+  const loaderLogoImg = document.getElementById('loaderLogoImg');
+  const loaderLatticeWrap = document.getElementById('loaderLatticeWrap');
   const loaderDecryptedText = document.getElementById('loaderDecryptedText');
   const loadingBarFill = document.getElementById('loadingBarFill');
   const loadingPercent = document.getElementById('loadingPercent');
@@ -117,95 +123,253 @@ document.addEventListener('DOMContentLoaded', () => {
     }, speed);
   }
 
-  // Initialize and run staged loading bar animation with Decrypted Text
+  // Helper: compute target navbar dimensions and position with subpixel accuracy
+  let cachedHomePillRect = { left: 0, width: 78 };
+
+  function getNavbarTargetRect() {
+    const isMobile = window.innerWidth <= 768;
+    const isCompact = window.innerWidth <= 1440 || window.innerHeight <= 850;
+
+    const defaultTop = isMobile || isCompact ? 12 : 18;
+    const defaultHeight = isMobile ? 48 : (isCompact ? 42 : 48);
+    const defaultWidth = isMobile ? Math.min(515, window.innerWidth - 24) : (isCompact ? 515 : 645);
+    const defaultPillWidth = isCompact ? 78 : 100;
+
+    let targetTop = defaultTop;
+    let targetHeight = defaultHeight;
+    let targetWidth = 0;
+
+    if (mainNavbar && homeScreen) {
+      const wasHidden = homeScreen.classList.contains('hidden');
+      if (wasHidden) {
+        homeScreen.classList.remove('hidden');
+        homeScreen.style.visibility = 'hidden';
+        homeScreen.style.position = 'fixed';
+        homeScreen.style.top = '0';
+        homeScreen.style.left = '0';
+        homeScreen.style.width = '100vw';
+      }
+      const rect = mainNavbar.getBoundingClientRect();
+      if (rect.width > 50) {
+        targetWidth = rect.width;
+      }
+      if (rect.height > 20) {
+        targetHeight = rect.height;
+      }
+      if (rect.top >= 6 && rect.top <= 40) {
+        targetTop = rect.top;
+      }
+
+      const firstLi = mainNavbar.querySelector('.nav-links li');
+      if (firstLi) {
+        cachedHomePillRect = {
+          left: firstLi.offsetLeft,
+          width: firstLi.offsetWidth || defaultPillWidth
+        };
+      }
+
+      if (wasHidden) {
+        homeScreen.classList.add('hidden');
+        homeScreen.style.visibility = '';
+        homeScreen.style.position = '';
+        homeScreen.style.top = '';
+        homeScreen.style.left = '';
+        homeScreen.style.width = '';
+      }
+    }
+
+    if (!targetWidth || targetWidth < 100) {
+      targetWidth = defaultWidth;
+    }
+
+    if (!cachedHomePillRect || !cachedHomePillRect.width) {
+      cachedHomePillRect = { left: 0, width: defaultPillWidth };
+    }
+
+    return {
+      top: Math.round(targetTop),
+      width: Math.round(targetWidth),
+      height: Math.round(targetHeight),
+      pill: cachedHomePillRect
+    };
+  }
+
+  let morphTimeouts = [];
+  function clearMorphTimeouts() {
+    morphTimeouts.forEach(t => clearTimeout(t));
+    morphTimeouts = [];
+  }
+
+  // Initialize and run Apple FLIP Morph Preloader sequence (Black Canvas, 8-Dot Rotating Lattice, Timed Choreography)
   function startLoading() {
+    window.startLoading = startLoading;
     if (loadingAnimFrame) {
       cancelAnimationFrame(loadingAnimFrame);
       loadingAnimFrame = null;
     }
     if (loadingTimeout) clearTimeout(loadingTimeout);
+    clearMorphTimeouts();
 
-    loadProgress = 0;
-    let isDecryptedFinished = false;
+    hasTransitioned = false;
+    window.hasMorphedNavbar = false;
 
-    if (loadingBarFill) {
-      loadingBarFill.style.width = '0%';
-    }
-    if (loadingPercent) {
-      loadingPercent.textContent = '0%';
-    }
+    const isMobile = window.innerWidth <= 768;
+    const isCompact = window.innerWidth <= 1440 || window.innerHeight <= 850;
+    const baseCapsuleHeight = isMobile ? '48px' : (isCompact ? '42px' : '48px');
 
-    // Trigger Decrypted Text with speed 60ms immediately; guarantees completion before 100%
-    if (loaderDecryptedText) {
-      runDecryptedText(loaderDecryptedText, 'pphw.dev404', 60, () => {
-        isDecryptedFinished = true;
-      });
-    } else {
-      isDecryptedFinished = true;
+    // Reset visual state of loader elements on cosmic dark background (#020408)
+    if (welcomeScreen) {
+      welcomeScreen.classList.remove('hidden', 'fade-out', 'darkened');
+      welcomeScreen.classList.add('active');
+      welcomeScreen.style.backgroundColor = '#020408';
     }
 
-    // Trigger 3D Keypad compilation in background right away
+    if (scrollExpandFrame) {
+      scrollExpandFrame.classList.remove('active-expand');
+    }
+
+    if (loaderMorphCapsule) {
+      loaderMorphCapsule.classList.remove('capsule-locked', 'capsule-floating', 'capsule-expanded', 'capsule-items-revealed');
+      loaderMorphCapsule.style.top = '50%';
+      loaderMorphCapsule.style.left = '50%';
+      loaderMorphCapsule.style.transform = 'translate(-50%, -50%)';
+      loaderMorphCapsule.style.width = baseCapsuleHeight;
+      loaderMorphCapsule.style.minWidth = baseCapsuleHeight;
+      loaderMorphCapsule.style.maxWidth = baseCapsuleHeight;
+      loaderMorphCapsule.style.height = baseCapsuleHeight;
+    }
+
+    if (loaderLatticeWrap) {
+      loaderLatticeWrap.classList.remove('fade-out');
+      loaderLatticeWrap.style.opacity = '';
+    }
+
+    // Prewarm 3D Keypad compilation in background right away
     if (typeof window.prewarmKeypad === 'function') {
       window.prewarmKeypad();
     }
 
-    loadingTimeout = setTimeout(() => {
+    // STAGE 1 (0.0s - 1.8s): 8-dot rotating lattice loader beside text on dark canvas
+    // STAGE 2 (1.8s): Fade out lattice loader & text smoothly (0.45s duration)
+    morphTimeouts.push(setTimeout(() => {
       if (hasTransitioned) return;
+      if (loaderLatticeWrap) {
+        loaderLatticeWrap.style.opacity = '';
+        loaderLatticeWrap.classList.add('fade-out');
+      }
+    }, 1800));
 
-      let currentVal = 0;
-      let phase = 1; // 1: 0->72%, 2: wait for decrypted to finish, 3: 72->100%
+    // STAGE 3 (2.2s): Lock circular capsule frame around central logo & smoothly auto-expand circular portal (2.4s duration)
+    morphTimeouts.push(setTimeout(() => {
+      if (hasTransitioned) return;
+      if (loaderMorphCapsule) {
+        loaderMorphCapsule.classList.add('capsule-locked');
+      }
+      if (scrollExpandFrame) {
+        scrollExpandFrame.classList.add('active-expand');
+      }
+    }, 2200));
 
-      function updateUI(val) {
-        loadProgress = val;
-        if (loadingBarFill) {
-          loadingBarFill.style.width = `${val.toFixed(1)}%`;
-        }
-        if (loadingPercent) {
-          loadingPercent.textContent = `${Math.floor(val)}%`;
+    // STAGE 4 (2.85s): Float circular capsule upward to exact navbar position (reduced duration 0.75s)
+    morphTimeouts.push(setTimeout(() => {
+      if (hasTransitioned) return;
+      const target = getNavbarTargetRect();
+      if (loaderMorphCapsule) {
+        loaderMorphCapsule.classList.add('capsule-floating');
+        loaderMorphCapsule.style.top = `${target.top}px`;
+        loaderMorphCapsule.style.transform = 'translate(-50%, 0)';
+      }
+    }, 2850));
+
+    // STAGE 5 (3.60s): Horizontally expand capsule into full navbar width over 0.50s
+    morphTimeouts.push(setTimeout(() => {
+      if (hasTransitioned) return;
+      const target = getNavbarTargetRect();
+      if (loaderMorphCapsule) {
+        loaderMorphCapsule.classList.add('capsule-expanded');
+        loaderMorphCapsule.style.minWidth = '0';
+        loaderMorphCapsule.style.width = `${target.width}px`;
+        loaderMorphCapsule.style.maxWidth = `${target.width}px`;
+        loaderMorphCapsule.style.height = `${target.height}px`;
+
+        const loaderIndicator = document.getElementById('loaderNavIndicator');
+        if (loaderIndicator && target.pill) {
+          loaderIndicator.style.left = `${target.pill.left}px`;
+          loaderIndicator.style.width = `${target.pill.width}px`;
         }
       }
+    }, 3600));
 
-      function step() {
-        if (hasTransitioned) return;
+    // STAGE 5.5 (4.10s): Trigger slide-to-right effect right AFTER navbar frame finishes expanding (3.60s + 0.50s = 4.10s)
+    morphTimeouts.push(setTimeout(() => {
+      if (hasTransitioned) return;
+      if (loaderMorphCapsule) {
+        loaderMorphCapsule.classList.add('capsule-items-revealed');
+      }
+    }, 4100));
 
-        if (phase === 1) {
-          // Phase 1: Smooth, quick initial fill to ~72%
-          currentVal += (72 - currentVal) * 0.085 + 0.55;
-          if (currentVal >= 71) {
-            currentVal = 71;
-            phase = 2;
-          }
-          updateUI(currentVal);
-          loadingAnimFrame = requestAnimationFrame(step);
-        } else if (phase === 2) {
-          // Phase 2: Wait until pphw.dev404 has 100% finished decrypting
-          if (isDecryptedFinished) {
-            phase = 3;
-          } else {
-            // Gentle creeping while text effect finishes resolving
-            if (currentVal < 82) {
-              currentVal += 0.08;
-              updateUI(currentVal);
-            }
-          }
-          loadingAnimFrame = requestAnimationFrame(step);
-        } else if (phase === 3) {
-          // Phase 3: Decrypted text is already fully finished; bar accelerates to 100%
-          currentVal += (100 - currentVal) * 0.14 + 0.85;
-          if (currentVal >= 99.5) {
-            currentVal = 100;
-            updateUI(100);
-            // Brief natural pause before ultra-smooth crossfade
-            loadingTimeout = setTimeout(transitionToScrollExpand, 200);
-            return;
-          }
-          updateUI(currentVal);
-          loadingAnimFrame = requestAnimationFrame(step);
-        }
+    // STAGE 6: Seamless handoff to HomeScreen right as slide items settle into place
+    // On mobile, navbar reaches full width at 4.10s; hand off at 4.18s so 3D badge drops down without delay
+    const isMobileDevice = window.innerWidth <= 768;
+    const handoffDelay = isMobileDevice ? 4180 : 4780;
+    morphTimeouts.push(setTimeout(() => {
+      if (hasTransitioned) return;
+      transitionFromMorphToHome();
+    }, handoffDelay));
+  }
+
+  // Seamless handoff from FLIP Morph Capsule to HomeScreen
+  function transitionFromMorphToHome() {
+    if (hasTransitioned) return;
+    hasTransitioned = true;
+    window.hasMorphedNavbar = true;
+    clearMorphTimeouts();
+
+    if (welcomeScreen && homeScreen) {
+      // 1. Activate Home Screen
+      homeScreen.classList.remove('hidden');
+      homeScreen.classList.add('active');
+      homeScreen.scrollTop = 0;
+      hasUserScrolledHome = false;
+      if (typeof resetHomeSmoothScroll === 'function') resetHomeSmoothScroll();
+      if (typeof handleHeroScrollZoom === 'function') handleHeroScrollZoom();
+
+      // 2. Hide Welcome Screen cleanly
+      welcomeScreen.classList.remove('active', 'fade-out');
+      welcomeScreen.classList.add('hidden');
+
+      // 3. Keep navbar firmly in place and initialize rubber indicator
+      const navbarWrapper = document.querySelector('.navbar-wrapper');
+      if (navbarWrapper) {
+        navbarWrapper.style.transform = 'translateY(0)';
+        navbarWrapper.style.opacity = '1';
       }
 
-      loadingAnimFrame = requestAnimationFrame(step);
-    }, 60);
+      const activeLink = document.querySelector('#mainNavbar .nav-link.active') || document.querySelector('#mainNavbar .nav-link');
+      if (activeLink) {
+        updateNavIndicator(activeLink, true);
+      }
+      setTimeout(() => {
+        const activeLinkRetry = document.querySelector('#mainNavbar .nav-link.active') || document.querySelector('#mainNavbar .nav-link');
+        if (activeLinkRetry) updateNavIndicator(activeLinkRetry, true);
+      }, 50);
+
+      if (typeof updateLanguageIndicator === 'function') updateLanguageIndicator(false);
+
+      // 4. Ensure 3D badge is prepared for drop
+      if (window.resetBadgeToTop) {
+        window.resetBadgeToTop();
+      } else {
+        window._pendingBadgeDrop = true;
+      }
+
+      // 5. Trigger Home Screen Entrance (GSAP) & other page reveals
+      animateHomeEntrance();
+      initAboutScrollReveal();
+      initPaperPlaneFlight();
+      if (typeof initSpecularButtons === 'function') initSpecularButtons();
+      if (typeof window._updateScrollFloat === 'function') window._updateScrollFloat(true);
+    }
   }
 
   // Smooth transition from White Preloader to Scroll Expand Stage
@@ -785,8 +949,9 @@ document.addEventListener('DOMContentLoaded', () => {
         hasHeroAnimatedOnMobile = false;
         resetMobileHeroState();
       }
+      const badgeDropDelayFallback = (isMobile && window.hasMorphedNavbar) ? 20 : 500;
       setTimeout(() => {
-        const activeLink = document.querySelector('.nav-link.active');
+        const activeLink = document.querySelector('#mainNavbar .nav-link.active') || document.querySelector('#mainNavbar .nav-link');
         if (activeLink) updateNavIndicator(activeLink, true);
         if (window.triggerBadgeDrop) {
           window.triggerBadgeDrop();
@@ -794,7 +959,7 @@ document.addEventListener('DOMContentLoaded', () => {
           window._pendingBadgeDrop = true;
         }
         unlockHomeScroll();
-      }, 500);
+      }, badgeDropDelayFallback);
       return;
     }
 
@@ -825,15 +990,21 @@ document.addEventListener('DOMContentLoaded', () => {
       hasHeroAnimatedOnMobile = false;
       resetMobileHeroState();
 
-      // Navbar drops down smoothly
-      homeTl.fromTo('.navbar-wrapper',
-        { y: -80, opacity: 1 },
-        { y: 0, opacity: 1, duration: 0.65, ease: smoothEase, onComplete: () => {
-          const activeLink = document.querySelector('.nav-link.active');
-          if (activeLink) updateNavIndicator(activeLink, true);
-        }},
-        0.10
-      );
+      // Navbar in place (morphed) or drops down smoothly (fallback)
+      if (window.hasMorphedNavbar) {
+        gsap.set('.navbar-wrapper', { y: 0, opacity: 1 });
+        const activeLink = document.querySelector('#mainNavbar .nav-link.active') || document.querySelector('#mainNavbar .nav-link');
+        if (activeLink) updateNavIndicator(activeLink, true);
+      } else {
+        homeTl.fromTo('.navbar-wrapper',
+          { y: -80, opacity: 1 },
+          { y: 0, opacity: 1, duration: 0.65, ease: smoothEase, onComplete: () => {
+            const activeLink = document.querySelector('#mainNavbar .nav-link.active') || document.querySelector('#mainNavbar .nav-link');
+            if (activeLink) updateNavIndicator(activeLink, true);
+          }},
+          0.10
+        );
+      }
 
       // 3D Sphere Background
       homeTl.fromTo('.sphere-3d-wrapper',
@@ -842,17 +1013,18 @@ document.addEventListener('DOMContentLoaded', () => {
         0.35
       );
 
-      // Drop 3D badge smoothly at 0.5s
+      // Drop 3D badge smoothly (immediately on mobile if morphed from preloader)
+      const badgeDropDelay = (isMobile && window.hasMorphedNavbar) ? 20 : 500;
       setTimeout(() => {
         if (window.triggerBadgeDrop) {
           window.triggerBadgeDrop();
         } else {
           window._pendingBadgeDrop = true;
         }
-      }, 500);
+      }, badgeDropDelay);
 
       // Unlock scroll after badge entrance so user can scroll down
-      setTimeout(unlockHomeScroll, 650);
+      setTimeout(unlockHomeScroll, (isMobile && window.hasMorphedNavbar) ? 350 : 650);
       return;
     }
 
@@ -874,15 +1046,21 @@ document.addEventListener('DOMContentLoaded', () => {
       0.35
     );
 
-    // 3. Navbar drops down from top
-    homeTl.fromTo('.navbar-wrapper',
-      { y: -80, opacity: 1 },
-      { y: 0, opacity: 1, duration: 0.65, ease: smoothEase, onComplete: () => {
-        const activeLink = document.querySelector('.nav-link.active');
-        if (activeLink) updateNavIndicator(activeLink, true);
-      }},
-      0.10
-    );
+    // 3. Navbar in place (morphed) or drops down from top (fallback)
+    if (window.hasMorphedNavbar) {
+      gsap.set('.navbar-wrapper', { y: 0, opacity: 1 });
+      const activeLink = document.querySelector('#mainNavbar .nav-link.active') || document.querySelector('#mainNavbar .nav-link');
+      if (activeLink) updateNavIndicator(activeLink, true);
+    } else {
+      homeTl.fromTo('.navbar-wrapper',
+        { y: -80, opacity: 1 },
+        { y: 0, opacity: 1, duration: 0.65, ease: smoothEase, onComplete: () => {
+          const activeLink = document.querySelector('#mainNavbar .nav-link.active') || document.querySelector('#mainNavbar .nav-link');
+          if (activeLink) updateNavIndicator(activeLink, true);
+        }},
+        0.10
+      );
+    }
 
     // 4. Hero Name "PEEPHUWIT" Types out in-place with cyber cursor
     homeTl.fromTo('.hero-name',
@@ -1009,6 +1187,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (typeof handleHeroScrollZoom === 'function') handleHeroScrollZoom();
 
         hasTransitioned = false;
+        window.hasMorphedNavbar = false;
         welcomeScreen.classList.remove('hidden', 'fade-out');
         welcomeScreen.classList.add('active');
         if (window.resetBadgeToTop) {
@@ -1019,17 +1198,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Event Listeners for Page Navigation
-  if (welcomeContainer) {
-    welcomeContainer.addEventListener('click', transitionToScrollExpand);
-  }
-
+  // Event Listeners for Page Navigation (No click-to-skip on welcome preloader)
   if (navLogoBtn) {
     navLogoBtn.addEventListener('click', transitionToWelcome);
   }
 
   // Rubber Segment Active Indicator Pill Controller for Navbar (React Bits style)
-  const navLinksContainer = document.querySelector('.nav-links');
+  const navLinksContainer = document.querySelector('#mainNavbar .nav-links') || document.querySelector('.nav-links');
   let navIndicator = document.getElementById('navIndicator');
   if (navLinksContainer && !navIndicator) {
     navIndicator = document.createElement('div');
@@ -1055,6 +1230,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let lastRenderedHeight = -1;
 
   function renderIndicator() {
+    if (!navIndicator) navIndicator = document.getElementById('navIndicator');
     if (!navIndicator) return;
     const width = Math.max(0, Math.round(indicatorState.r - indicatorState.l));
     const left = Math.round(indicatorState.l);
@@ -1068,8 +1244,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function getNavSlots() {
-    if (!navLinksContainer) return [];
-    const links = Array.from(navLinksContainer.querySelectorAll('.nav-link'));
+    const container = document.querySelector('#mainNavbar .nav-links') || navLinksContainer;
+    if (!container) return [];
+    const links = Array.from(container.querySelectorAll('.nav-link'));
     return links.map(link => {
       const li = link.closest('li') || link;
       const l = li.offsetLeft;
@@ -1086,14 +1263,29 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateNavIndicator(targetLink, isImmediate = false) {
-    if (!targetLink || !navIndicator || !navLinksContainer) return;
+    if (!targetLink) {
+      targetLink = document.querySelector('#mainNavbar .nav-link.active') || document.querySelector('#mainNavbar .nav-link');
+    }
+    if (!targetLink) return;
+    if (!navIndicator) navIndicator = document.getElementById('navIndicator');
+    if (!navIndicator) return;
 
     const targetParentLi = targetLink.closest('li') || targetLink;
-    const l = targetParentLi.offsetLeft;
-    const width = targetParentLi.offsetWidth || targetLink.offsetWidth;
-    const r = l + width;
+    let l = targetParentLi.offsetLeft;
+    let width = targetParentLi.offsetWidth || targetLink.offsetWidth;
 
-    if (width === 0) return;
+    // Fallback: if width is 0 on the first frame of home activation, use cachedHomePillRect
+    if (width === 0 && cachedHomePillRect && cachedHomePillRect.width > 0) {
+      l = cachedHomePillRect.left;
+      width = cachedHomePillRect.width;
+    }
+
+    if (width === 0) {
+      requestAnimationFrame(() => updateNavIndicator(targetLink, isImmediate));
+      return;
+    }
+
+    const r = l + width;
 
     const b = {
       l: l,
@@ -1554,6 +1746,59 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================================================
+  // PAGE 4: CONTACT SECTION SCROLL EXPAND CONTROLLER (macOS Window Expand)
+  // Expands gracefully from centered floating luxury macOS window to full width as you scroll into view
+  // ==========================================================================
+  function handleContactScrollExpand() {
+    const homeScreen = document.getElementById('homeScreen');
+    const contactFooter = document.getElementById('contact');
+    const windowEl = document.getElementById('contactMacosWindow');
+    if (!contactFooter || !windowEl) return;
+
+    const vh = window.innerHeight || 800;
+    const footerRect = contactFooter.getBoundingClientRect();
+    const containerTop = homeScreen ? homeScreen.getBoundingClientRect().top : 0;
+
+    // Relative position of contact footer's top from viewport
+    const relativeTop = footerRect.top - containerTop;
+
+    // Progress calculation:
+    // When contact footer top just reaches viewport bottom: relativeTop == vh (p = 0)
+    // When contact footer is well in view: relativeTop == vh * 0.20 (p = 1)
+    const startDist = vh * 0.95;
+    const endDist = vh * 0.20;
+
+    let p = (startDist - relativeTop) / (startDist - endDist);
+
+    // If scrolled to near the very bottom of homeScreen, ensure full expansion
+    if (homeScreen) {
+      const maxScroll = homeScreen.scrollHeight - homeScreen.clientHeight;
+      if (homeScreen.scrollTop >= maxScroll - 40) {
+        p = 1;
+      }
+    }
+
+    p = Math.max(0, Math.min(1, p));
+
+    // Smoothstep easing curve
+    const ease = p * p * (3 - 2 * p);
+
+    const isMobile = window.innerWidth <= 768;
+    const minScale = isMobile ? 0.78 : 0.65;
+    const currentScale = minScale + (1.0 - minScale) * ease;
+    const currentY = (1 - ease) * (isMobile ? 35 : 70);
+    const currentRadius = 38 - (16 * ease);
+    const currentOpacity = 0.55 + (0.45 * ease);
+    const currentGlow = 0.02 + (0.14 * ease);
+
+    windowEl.style.setProperty('--contact-scale', currentScale.toFixed(4));
+    windowEl.style.setProperty('--contact-y', `${currentY.toFixed(1)}px`);
+    windowEl.style.setProperty('--contact-radius', `${currentRadius.toFixed(1)}px`);
+    windowEl.style.setProperty('--contact-opacity', currentOpacity.toFixed(3));
+    windowEl.style.setProperty('--contact-glow', currentGlow.toFixed(3));
+  }
+
+  // ==========================================================================
   // ==========================================================================
   // GSAP-STYLE PAPER AIRPLANE FLIGHT CONTROLLER (Files 5, 6, 7)
   // Starts at #about and finishes right before #portfolio with smooth scrub
@@ -1809,6 +2054,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function handleHomeScroll() {
     handleHeroScrollZoom();
+    handleContactScrollExpand();
     updatePaperPlaneProgress();
 
     const scrollContainer = document.getElementById('homeScreen');
@@ -1912,7 +2158,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (targetId === '#home') {
       targetTop = 0;
     } else if (targetId === '#contact') {
-      targetTop = Math.max(0, scrollContainer.scrollHeight - scrollContainer.clientHeight);
+      const contactSection = document.querySelector('#contact');
+      if (contactSection) {
+        const cRect = scrollContainer.getBoundingClientRect();
+        const tRect = contactSection.getBoundingClientRect();
+        const tTop = tRect.top - cRect.top + scrollContainer.scrollTop;
+        targetTop = Math.max(0, Math.round(tTop - navOffset));
+      } else {
+        targetTop = Math.max(0, scrollContainer.scrollHeight - scrollContainer.clientHeight);
+      }
     } else if (targetId === '#portfolio') {
       const portSection = document.querySelector('#portfolio');
       if (portSection) {
@@ -1983,6 +2237,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (typeof syncHomeSmoothScroll === 'function') syncHomeSmoothScroll(scrollContainer.scrollTop);
       handleScrollSpy();
       handleHeroScrollZoom();
+      handleContactScrollExpand();
       updatePaperPlaneProgress();
       if (typeof window._updateScrollFloat === 'function') {
         window._updateScrollFloat(true);
@@ -2016,6 +2271,7 @@ document.addEventListener('DOMContentLoaded', () => {
         onUpdate: () => {
           scrollContainer.scrollTop = scrollState.y;
           handleHeroScrollZoom();
+          handleContactScrollExpand();
           updatePaperPlaneProgress();
           if (typeof window._updateScrollFloat === 'function') {
             window._updateScrollFloat(false);
@@ -2060,6 +2316,43 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         smoothNavigateTo(targetId);
       }
+    });
+  }
+
+  // Contact Footer internal anchor links (Home, About, Portfolio, Back to Top)
+  const contactLinks = document.querySelectorAll('.contact-nav-link[href^="#"], .contact-sublink[href^="#"], .contact-back-to-top[href^="#"]');
+  contactLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      const targetId = this.getAttribute('href');
+      if (targetId && targetId.startsWith('#')) {
+        e.preventDefault();
+        smoothNavigateTo(targetId);
+      }
+    });
+  });
+
+  // macOS Contact Window Controls (Traffic Lights)
+  const macosCloseBtn = document.querySelector('.macos-dot-close');
+  const macosMinBtn = document.querySelector('.macos-dot-minimize');
+  const macosMaxBtn = document.querySelector('.macos-dot-maximize');
+  const macosWindow = document.getElementById('contactMacosWindow');
+
+  if (macosCloseBtn && macosWindow) {
+    macosCloseBtn.addEventListener('click', () => {
+      macosWindow.classList.add('macos-window-shake');
+      setTimeout(() => macosWindow.classList.remove('macos-window-shake'), 600);
+    });
+  }
+
+  if (macosMinBtn) {
+    macosMinBtn.addEventListener('click', () => {
+      smoothNavigateTo('#home');
+    });
+  }
+
+  if (macosMaxBtn && macosWindow) {
+    macosMaxBtn.addEventListener('click', () => {
+      macosWindow.classList.toggle('macos-window-maximized');
     });
   }
 
@@ -2157,6 +2450,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial check to set active indicator and hero zoom state
     handleHeroScrollZoom();
+    handleContactScrollExpand();
     setTimeout(handleScrollSpy, 120);
     initPaperPlaneFlight();
     updatePaperPlaneProgress();
@@ -2220,6 +2514,8 @@ document.addEventListener('DOMContentLoaded', () => {
       homeSmoothCurrent = homeSmoothTarget + (change + temp) * exp;
 
       homeScreen.scrollTop = homeSmoothCurrent;
+      handleHeroScrollZoom();
+      handleContactScrollExpand();
       if (typeof window._updateScrollFloat === 'function') {
         window._updateScrollFloat(false);
       }
@@ -2829,6 +3125,7 @@ document.addEventListener('DOMContentLoaded', () => {
       leadTextEl.innerHTML = '';
     }
   }
+
 
   // Recalculate indicator on window resize
   window.addEventListener('resize', () => {
@@ -3508,6 +3805,287 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ==========================================================================
+  // Interactive Project Modal Card Stack (React Bits Stack Component)
+  // Pile of cards you can drag, flick or click through, with thrown cards tucking underneath.
+  // ==========================================================================
+  let modalStackController = null;
+
+  function initModalStackController() {
+    const wrap = document.getElementById('modalStackWrap');
+    const container = document.getElementById('modalStack');
+    if (!wrap || !container) return null;
+
+    let cards = [];
+    let order = [];
+    let isAnimating = false;
+    let totalCount = 0;
+    const currentEl = wrap.querySelector('.stack-current');
+    const totalEl = wrap.querySelector('.stack-total');
+
+    // Organic pile layout configuration (React Bits pile layout math)
+    const POSITIONS = [
+      { x: 0, y: 0, rot: 0, scale: 1 },
+      { x: 6, y: 4, rot: 2.2, scale: 0.95 },
+      { x: -5, y: 6, rot: -2.6, scale: 0.90 },
+      { x: 5, y: 8, rot: 3.5, scale: 0.85 },
+      { x: -3, y: 10, rot: -1.8, scale: 0.80 }
+    ];
+
+    function renderPositions(animate = true, duration = 0.35) {
+      order.forEach((cardIdx, pos) => {
+        const card = cards[cardIdx];
+        if (!card) return;
+        const shade = card.querySelector('.stack-card-shade');
+        const p = POSITIONS[Math.min(pos, POSITIONS.length - 1)];
+        const zIndex = totalCount - pos;
+        card.style.zIndex = zIndex;
+
+        const shadeOpacity = Math.min(0.55, pos * 0.14);
+        if (shade) shade.style.opacity = shadeOpacity;
+
+        if (pos === 0) {
+          card.style.cursor = 'grab';
+          card.style.pointerEvents = 'auto';
+          card.setAttribute('aria-hidden', 'false');
+        } else {
+          card.style.cursor = 'default';
+          card.style.pointerEvents = 'none';
+          card.setAttribute('aria-hidden', 'true');
+        }
+
+        if (animate && window.gsap) {
+          gsap.to(card, {
+            x: p.x,
+            y: p.y,
+            rotation: p.rot,
+            rotationX: 0,
+            rotationY: 0,
+            scale: p.scale,
+            duration: duration,
+            ease: 'power2.out',
+            overwrite: 'auto'
+          });
+        } else if (window.gsap) {
+          gsap.set(card, {
+            x: p.x,
+            y: p.y,
+            rotation: p.rot,
+            rotationX: 0,
+            rotationY: 0,
+            scale: p.scale
+          });
+        }
+      });
+
+      if (currentEl && order.length) {
+        currentEl.textContent = (order[0] + 1);
+      }
+    }
+
+    function sendToBack(direction = [1, -0.2], velocity = null) {
+      if (isAnimating || order.length < 2) return;
+      isAnimating = true;
+
+      const topIdx = order[0];
+      const topCard = cards[topIdx];
+      let [dx, dy] = direction || [1, -0.2];
+      const len = Math.hypot(dx, dy) || 1;
+      dx /= len;
+      dy /= len;
+
+      const bounds = wrap.getBoundingClientRect();
+      const travel = Math.max(bounds.width, bounds.height) * 0.75 + 50;
+      const flyX = dx * travel;
+      const flyY = dy * travel;
+      const flyRot = dx * 18;
+
+      if (!window.gsap) {
+        order = [...order.slice(1), topIdx];
+        renderPositions(false);
+        isAnimating = false;
+        return;
+      }
+
+      // Throw top card along exit vector
+      gsap.to(topCard, {
+        x: flyX,
+        y: flyY,
+        rotation: flyRot,
+        rotationX: 0,
+        rotationY: 0,
+        scale: 0.88,
+        duration: 0.24,
+        ease: 'power2.out',
+        onComplete: () => {
+          // Reorder: Move top card to back of array
+          order = [...order.slice(1), topIdx];
+          topCard.style.zIndex = 1;
+
+          const bottomPos = POSITIONS[Math.min(order.length - 1, POSITIONS.length - 1)];
+
+          // Remaining cards smoothly advance forward in the pile
+          renderPositions(true, 0.32);
+
+          // Allow next interaction immediately for fluid fast flicking/clicking
+          isAnimating = false;
+
+          // Tuck back underneath with realistic spring bounce
+          gsap.fromTo(topCard,
+            { x: flyX * 0.45, y: flyY * 0.45, scale: 0.78, rotation: bottomPos.rot * 1.5 },
+            {
+              x: bottomPos.x,
+              y: bottomPos.y,
+              rotation: bottomPos.rot,
+              scale: bottomPos.scale,
+              duration: 0.38,
+              ease: 'back.out(1.2)'
+            }
+          );
+        }
+      });
+    }
+
+    // Pointer Drag & Flick & Click Handling
+    container.addEventListener('pointerdown', function onPointerDown(e) {
+      if (isAnimating || e.button !== 0) return;
+      if (!order.length) return;
+      const topIdx = order[0];
+      const topCard = cards[topIdx];
+      if (!topCard || !topCard.contains(e.target)) return;
+
+      if (e.pointerType === 'mouse') e.preventDefault();
+      const startX = e.clientX;
+      const startY = e.clientY;
+      const startTime = performance.now();
+      const samples = [[startX, startY, startTime]];
+      let moved = false;
+
+      topCard.style.cursor = 'grabbing';
+      if (window.gsap) {
+        gsap.to(topCard, { scale: 1.035, duration: 0.15, ease: 'power2.out' });
+      }
+
+      function onPointerMove(ev) {
+        const dx = ev.clientX - startX;
+        const dy = ev.clientY - startY;
+        if (!moved && Math.hypot(dx, dy) > 5) {
+          moved = true;
+        }
+
+        if (moved) {
+          samples.push([ev.clientX, ev.clientY, performance.now()]);
+          if (samples.length > 8) samples.shift();
+
+          // Organic lean tilt
+          const leanRot = dx * 0.08;
+          const tiltX = -dy * 0.04;
+          const tiltY = dx * 0.04;
+
+          if (window.gsap) {
+            gsap.set(topCard, {
+              x: dx,
+              y: dy,
+              rotation: leanRot,
+              rotationX: tiltX,
+              rotationY: tiltY,
+              transformPerspective: 800
+            });
+
+            // Reactive subtle lift on the card directly underneath
+            const dist = Math.min(1, Math.hypot(dx, dy) / 80);
+            if (order[1] !== undefined) {
+              const nextCard = cards[order[1]];
+              const p0 = POSITIONS[0];
+              const p1 = POSITIONS[1];
+              gsap.set(nextCard, {
+                x: p1.x + (p0.x - p1.x) * dist * 0.45,
+                y: p1.y + (p0.y - p1.y) * dist * 0.45,
+                scale: p1.scale + (p0.scale - p1.scale) * dist * 0.45
+              });
+            }
+          }
+        }
+      }
+
+      function onPointerUp(ev) {
+        window.removeEventListener('pointermove', onPointerMove);
+        window.removeEventListener('pointerup', onPointerUp);
+        window.removeEventListener('pointercancel', onPointerUp);
+        topCard.style.cursor = 'grab';
+
+        if (!moved) {
+          // Click to cycle to back
+          sendToBack([1, -0.2]);
+          return;
+        }
+
+        const dx = ev.clientX - startX;
+        const dy = ev.clientY - startY;
+        const dist = Math.hypot(dx, dy);
+
+        // Calculate flick speed from pointer samples
+        let vx = 0, vy = 0;
+        if (samples.length >= 2) {
+          const first = samples[0];
+          const last = samples[samples.length - 1];
+          const dt = Math.max((last[2] - first[2]) / 1000, 0.008);
+          vx = (last[0] - first[0]) / dt;
+          vy = (last[1] - first[1]) / dt;
+        }
+        const speed = Math.hypot(vx, vy);
+        const isFlick = speed > 400 && dist > 15;
+
+        if (dist > 65 || isFlick) {
+          const dirX = speed > 200 ? vx : dx;
+          const dirY = speed > 200 ? vy : dy;
+          sendToBack([dirX, dirY], [vx, vy]);
+        } else {
+          // Settle back to rest position
+          renderPositions(true, 0.28);
+        }
+      }
+
+      window.addEventListener('pointermove', onPointerMove);
+      window.addEventListener('pointerup', onPointerUp);
+      window.addEventListener('pointercancel', onPointerUp);
+    });
+
+    // Keyboard support for accessibility (ArrowRight, ArrowDown, Space, Enter)
+    wrap.addEventListener('keydown', (e) => {
+      if (['ArrowRight', 'ArrowDown', ' ', 'Enter'].includes(e.key)) {
+        e.preventDefault();
+        sendToBack([1, -0.2]);
+      }
+    });
+
+    return {
+      load(imagesList, title = 'Project') {
+        isAnimating = false;
+        container.innerHTML = imagesList.map((src, i) => `
+          <div class="stack-card" data-index="${i}">
+            <img src="${src}" alt="${title} screenshot ${i + 1}" draggable="false" loading="eager">
+            <div class="stack-card-shade"></div>
+          </div>
+        `).join('');
+
+        cards = Array.from(container.querySelectorAll('.stack-card'));
+        totalCount = cards.length;
+        order = cards.map((_, i) => i);
+        if (totalEl) totalEl.textContent = totalCount;
+        if (currentEl) currentEl.textContent = '1';
+        renderPositions(false);
+      },
+      reset() {
+        if (!cards.length) return;
+        order = cards.map((_, i) => i);
+        isAnimating = false;
+        renderPositions(false);
+      },
+      sendToBack
+    };
+  }
+
+  // ==========================================================================
   // Project Detail Modal Controller (Dynamic Data & Glassmorphism Overlay)
   // ==========================================================================
   const TECH_LOGOS_MAP = {
@@ -3523,8 +4101,17 @@ document.addEventListener('DOMContentLoaded', () => {
     'HTML': { url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/html5/html5-original.svg' },
     'CSS': { url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/css3/css3-original.svg' },
     'JavaScript': { url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg' },
-    'Next.js': { url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg', isWhite: true },
+    'Next.js': {
+      svg: '<svg viewBox="0 0 128 128" class="tech-tag-icon" fill="currentColor" stroke="none" aria-hidden="true"><path d="M64 0A64 64 0 0 0 0 64a64 64 0 0 0 64 64 64 64 0 0 0 35.508-10.838L47.014 49.34v40.238H38.4V38.4h10.768l57.125 73.584A64 64 0 0 0 128 64 64 64 0 0 0 64 0Zm17.777 38.4h8.534v48.776L81.777 75.97Zm24.18 73.92-.111.096a64 64 0 0 0 .111-.096z"/></svg>'
+    },
     'Python': { url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg' },
+    'FastAPI': { url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/fastapi/fastapi-original.svg' },
+    'SQLAlchemy': { url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/sqlalchemy/sqlalchemy-original.svg' },
+    'PostgreSQL': { url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg' },
+    'Supabase': { url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/supabase/supabase-original.svg' },
+    'GitHub Actions': { url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/githubactions/githubactions-original.svg' },
+    'Discord': { url: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/discord.svg', isWhite: true },
+    'Google Gemini': { url: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/googlegemini.svg', isWhite: true },
     'MySQL': { url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg' },
     'Docker': { url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-plain.svg' },
     'Git': { url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-plain.svg' },
@@ -3552,11 +4139,55 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const PROJECTS_DATA = {
+    'tech-scanner': {
+      title: 'TECH SCANNER',
+      subtitle: 'US stock screener & automated AI advisory system',
+      subtitle_th: 'ระบบสแกนและวิเคราะห์หุ้นสหรัฐฯ อัจฉริยะด้วย AI',
+      image: 'port/ts/1.png',
+      images: [
+        'port/ts/1.png',
+        'port/ts/2.png',
+        'port/ts/3.png',
+        'port/ts/4.png',
+        'port/ts/5.png'
+      ],
+      description: 'An intelligent US equity screener and automated market intelligence engine. Features algorithmic buy-dip/deep-value timing indicators, 10 iconic guru portfolio tracking, macro risk regimes, and autonomous 24/7 scanning with AI advisory and Discord alerts.',
+      description_th: 'ระบบสแกนและวิเคราะห์หุ้นสหรัฐฯ อัจฉริยะแบบฟูลสแต็ก ผสานการคำนวณเทคนิคอลประเมินจังหวะย่อตัวสะสมหุ้น ติดตามพอร์ต 10 เซียนระดับโลก ตรวจจับสภาวะเศรษฐกิจมหภาค พร้อมระบบคลาวด์เฝ้าตลาดอัตโนมัติ 24/7 วิเคราะห์เชิงลึกด้วย AI และแจ้งเตือนผ่าน Discord Webhook',
+      highlights: [
+        { title: 'Algorithmic Opportunity Matrix', desc: 'Real-time mathematical momentum scoring (Trend Dip, Deep Value, Overbought, Avoid) identifies prime dip-buying setups while filtering out value traps.' },
+        { title: '10 Global Guru Portfolios', desc: 'Instant 1-click cloning and tracking of premier strategies including Warren Buffett, Cathie Wood, Nancy Pelosi, Michael Burry, and Ray Dalio.' },
+        { title: '24/7 Autonomous Cloud Scanning', desc: 'Automated GitHub Actions runners execute market scans every 20 minutes during US market hours with zero server maintenance.' },
+        { title: 'AI Advisory & Rich Webhook Alerts', desc: 'Google Gemini 1.5 Flash generates actionable market briefs and dispatches structured multi-portfolio rich embed cards directly to Discord.' },
+        { title: 'Fullstack Type-Safe Architecture', desc: 'Next.js App Router with TypeScript frontend connected to high-performance Python FastAPI, SQLAlchemy ORM, and Supabase PostgreSQL with local offline caching.' }
+      ],
+      highlights_th: [
+        { title: 'Algorithmic Opportunity Matrix', desc: 'ระบบคัดกรองจังหวะการลงทุนเชิงปริมาณ (ย่อตัวในขาขึ้น, น่าสะสม, รอก่อน, ระวัง) ช่วยคัดเลือกหุ้นจังหวะสวยพร้อมกรองกับดักราคา (Value Trap)' },
+        { title: '10 Global Guru Portfolios', desc: 'ศูนย์รวม 10 พอร์ตเซียนระดับโลก (Warren Buffett, Cathie Wood, Nancy Pelosi, Michael Burry ฯลฯ) คัดลอกและติดตามได้ในคลิกเดียว' },
+        { title: '24/7 Autonomous Cloud Scanning', desc: 'ระบบเฝ้าตลาดอัตโนมัติบนคลาวด์ผ่าน GitHub Actions สแกนทุก 20 นาทีช่วงเวลาตลาดเปิด ปิดคอมนอนได้โดยระบบทำงาน 100%' },
+        { title: 'AI Advisory & Rich Webhook Alerts', desc: 'ผสาน Google Gemini 1.5 Flash วิเคราะห์หุ้นเชิงลึก และส่ง Rich Embed Card แจ้งเตือนเข้า Discord แยกป้ายชื่อพอร์ตชัดเจน' },
+        { title: 'Fullstack Type-Safe Architecture', desc: 'สถาปัตยกรรม Next.js App Router (TypeScript) ทำงานร่วมกับ Python FastAPI, SQLAlchemy ORM และฐานข้อมูล Supabase PostgreSQL พร้อมระบบ Seed ออฟไลน์' }
+      ],
+      techGroups: [
+        { label: 'Frontend', tags: ['Next.js', 'TypeScript', 'Tailwind CSS'] },
+        { label: 'Backend', tags: ['Python', 'FastAPI', 'SQLAlchemy'] },
+        { label: 'Database & Cloud', tags: ['Supabase', 'PostgreSQL', 'SQLite', 'GitHub Actions'] },
+        { label: 'AI & Automation', tags: ['Google Gemini', 'Discord'] }
+      ],
+      liveDemoUrl: 'https://tech-scanner-pphw.vercel.app',
+      sourceCodeUrl: 'https://github.com/peephuwit/tech-scanner'
+    },
     'room-reserve': {
       title: 'ROOMRESERVE',
       subtitle: 'Resource & meeting room scheduling platform',
       subtitle_th: 'ระบบจองห้องประชุมและบริหารจัดการทรัพยากร',
-      image: 'port/pic2.png',
+      image: 'port/room/1.png',
+      images: [
+        'port/room/1.png',
+        'port/room/2.png',
+        'port/room/3.png',
+        'port/room/4.png',
+        'port/room/5.png'
+      ],
       description: 'A modular resource scheduling engine with real-time conflict detection, showcased through an enterprise room booking interface.',
       description_th: 'ระบบบริหารจัดการและจัดสรรเวลาห้องประชุมแบบโมดูลาร์ พร้อมอัลกอริทึมตรวจสอบช่วงเวลาทับซ้อนแบบเรียลไทม์ ผ่านอินเทอร์เฟซการใช้งานระดับองค์กร',
       highlights: [
@@ -3616,6 +4247,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const closeBtn = document.getElementById('modalCloseBtn');
     const imgEl = document.getElementById('modalProjectImg');
+    const modalStackWrap = document.getElementById('modalStackWrap');
     const titleEl = document.getElementById('modalProjectTitle');
     const subtitleEl = document.getElementById('modalProjectSubtitle');
     const descEl = document.getElementById('modalDescription');
@@ -3631,10 +4263,53 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const isTh = (currentLang === 'th');
 
-      // Populate Left Column (Image)
-      if (imgEl) {
-        imgEl.src = data.image;
-        imgEl.alt = `${data.title} Preview`;
+      // Populate Left Column (Interactive Stack, Single Image, or Placeholder)
+      const imgWrapper = imgEl ? imgEl.parentElement : null;
+      let existingPlaceholder = imgWrapper ? imgWrapper.querySelector('.modal-empty-placeholder') : null;
+
+      if (data.images && data.images.length > 1) {
+        if (imgEl) imgEl.style.display = 'none';
+        if (existingPlaceholder) existingPlaceholder.style.display = 'none';
+        if (modalStackWrap) modalStackWrap.style.display = 'block';
+
+        if (!modalStackController) {
+          modalStackController = initModalStackController();
+        }
+        if (modalStackController) {
+          modalStackController.load(data.images, data.title);
+        }
+      } else {
+        if (modalStackWrap) modalStackWrap.style.display = 'none';
+
+        if (!data.image) {
+          if (imgEl) imgEl.style.display = 'none';
+          if (!existingPlaceholder && imgWrapper) {
+            const ph = document.createElement('div');
+            ph.className = 'empty-image-wrap modal-empty-placeholder';
+            ph.style.width = '100%';
+            ph.style.height = '100%';
+            ph.style.border = 'none';
+            ph.style.borderRadius = '0';
+            ph.innerHTML = '<div class="empty-image-placeholder"></div>';
+            imgWrapper.appendChild(ph);
+          } else if (existingPlaceholder) {
+            existingPlaceholder.style.display = 'flex';
+          }
+        } else {
+          if (imgEl) {
+            imgEl.src = data.image;
+            imgEl.alt = `${data.title} Preview`;
+            imgEl.style.display = '';
+            imgEl.style.setProperty('transform', 'none', 'important');
+            imgEl.style.setProperty('transition', 'none', 'important');
+          }
+          if (imgWrapper) {
+            imgWrapper.style.setProperty('transform', 'none', 'important');
+          }
+          if (existingPlaceholder) {
+            existingPlaceholder.style.display = 'none';
+          }
+        }
       }
 
       // Populate Right Column
@@ -3691,6 +4366,9 @@ document.addEventListener('DOMContentLoaded', () => {
       backdrop.classList.remove('is-open');
       backdrop.setAttribute('aria-hidden', 'true');
       document.body.classList.remove('modal-open');
+      if (modalStackController) {
+        modalStackController.reset();
+      }
     }
 
     // Attach click events on trigger buttons ONLY (per user request)
@@ -3717,10 +4395,17 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
 
-    // Escape key to close
+    // Escape key to close & Arrow/Space keys to cycle stack
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && backdrop.classList.contains('is-open')) {
         closeModal();
+      } else if (backdrop.classList.contains('is-open') && modalStackWrap && modalStackWrap.style.display !== 'none') {
+        if (['ArrowRight', 'ArrowDown', ' '].includes(e.key)) {
+          if (!['BUTTON', 'A', 'INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) {
+            e.preventDefault();
+            modalStackController?.sendToBack([1, -0.2]);
+          }
+        }
       }
     });
   }

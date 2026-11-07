@@ -15,8 +15,26 @@
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Athiti:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Athiti:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=4.0">
+  <style>
+    /* Absolute override: prevent any modal image / container scale or expanding */
+    .project-modal-container,
+    .project-modal-backdrop.is-open .project-modal-container,
+    .modal-image-wrapper,
+    .project-modal-backdrop.is-open .modal-image-wrapper,
+    .modal-image-wrapper:hover,
+    .modal-project-img,
+    .modal-image-wrapper:hover .modal-project-img {
+      transform: none !important;
+      -webkit-transform: none !important;
+      animation: none !important;
+    }
+    .modal-project-img {
+      transition: none !important;
+      -webkit-transition: none !important;
+    }
+  </style>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
@@ -27,34 +45,97 @@
   <canvas id="sideRaysCanvas" class="side-rays-canvas" aria-hidden="true"></canvas>
 
   <!-- ====================================================================
-       PAGE 1: Clean Minimalist Preloader with Decrypted Text & Loading Bar
+       PAGE 1: Apple FLIP Morph Preloader with Central Logo & 3x3 Lattice Loader
        ==================================================================== -->
   <section class="screen-section welcome-screen active" id="welcomeScreen">
-    <div class="welcome-container" id="welcomeContainer">
-      <!-- Decrypted Text Title (Speed 60ms) -->
-      <div class="loader-brand-title">
-        <span class="decrypted-text" id="loaderDecryptedText"></span>
-        <div class="loader-sub-text">loading PORTFOLIO<span class="wave-dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span></div>
+    <!-- Auto-Expanding Circular Scroll-Expand Frame (WebGL Rays + Mesh + Noise) -->
+    <div class="loader-scroll-expand-frame" id="scrollExpandFrame" aria-hidden="true">
+      <div class="scroll-expand__media port-bg-media" id="scrollExpandMedia">
+        <div class="port-bg-mesh"></div>
+        <canvas id="scrollExpandRaysCanvas" class="port-bg-rays" aria-hidden="true"></canvas>
+        <div class="port-bg-noise"></div>
       </div>
-      <script>
-        (function() {
-          var el = document.getElementById('loaderDecryptedText');
-          if (el) {
-            var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
-            var h = '';
-            for (var i = 0; i < 11; i++) {
-              h += '<span class="decrypted-char decrypted-char--encrypted">' + chars[Math.floor(Math.random() * chars.length)] + '</span>';
-            }
-            el.innerHTML = h;
-          }
-        })();
-      </script>
+    </div>
 
-      <!-- Loading Bar Component -->
-      <div class="loading-wrapper">
-        <div class="loading-bar-track">
-          <div class="loading-bar-fill" id="loadingBarFill"></div>
+    <!-- The Morphing Logo Capsule (matches .navbar structure and classes for 100% pixel-perfect handoff) -->
+    <nav class="navbar loader-morph-capsule" id="loaderMorphCapsule" aria-hidden="true">
+      <div class="navbar-top-row">
+        <div class="nav-brand-pill nav-logo loader-brand-pill">
+          <img src="theme/icon.svg" alt="pphw logo" class="nav-logo-icon">
         </div>
+        <ul class="loader-nav-links">
+          <div class="loader-nav-indicator active-home" id="loaderNavIndicator"></div>
+          <li>
+            <span class="loader-nav-item active">
+              <svg class="nav-icon" viewBox="0 0 24 24">
+                <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1v-5a1 1 0 0 0-1-1h-2a1 1 0 0 0-1 1v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5z"/>
+              </svg>
+              <span>HOME</span>
+            </span>
+          </li>
+          <li>
+            <span class="loader-nav-item">
+              <svg class="nav-icon" viewBox="0 0 24 24">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              <span>ABOUT</span>
+            </span>
+          </li>
+          <li>
+            <span class="loader-nav-item">
+              <svg class="nav-icon" viewBox="0 0 24 24">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+              </svg>
+              <span>PORTFOLIO</span>
+            </span>
+          </li>
+          <li>
+            <span class="loader-nav-item">
+              <svg class="nav-icon" viewBox="0 0 24 24">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                <polyline points="22,6 12,13 2,6"/>
+              </svg>
+              <span>CONTACT</span>
+            </span>
+          </li>
+        </ul>
+        <div class="nav-divider loader-nav-divider" aria-hidden="true"></div>
+        <div class="nav-lang-toggle-btn loader-lang-btn">
+          <svg class="lang-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m5 8 6 6"/>
+            <path d="m4 14 6-6 2-3"/>
+            <path d="M2 5h12"/>
+            <path d="M7 2h1"/>
+            <path d="m22 22-5-10-5 10"/>
+            <path d="M14 18h6"/>
+          </svg>
+          <span class="lang-code-text">EN</span>
+        </div>
+        <button type="button" class="nav-hamburger-btn loader-hamburger-btn" aria-hidden="true" tabindex="-1">
+          <span class="hamburger-line line-1"></span>
+          <span class="hamburger-line line-2"></span>
+          <span class="hamburger-line line-3"></span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- 8-Dot Lattice Matrix Loader (Center removed, rotates clockwise) & Side-by-side text -->
+    <div class="loader-lattice-wrap" id="loaderLatticeWrap">
+      <div class="lattice-grid" aria-label="Loading animation">
+        <span style="--i: 0;"></span>
+        <span style="--i: 1;"></span>
+        <span style="--i: 2;"></span>
+        <span style="--i: 7;"></span>
+        <span class="lattice-empty" aria-hidden="true"></span>
+        <span style="--i: 3;"></span>
+        <span style="--i: 6;"></span>
+        <span style="--i: 5;"></span>
+        <span style="--i: 4;"></span>
+      </div>
+      <div class="loader-lattice-text">
+        <span>loading portfolio</span><span class="wave-dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></span>
       </div>
     </div>
   </section>
@@ -62,28 +143,7 @@
   <!-- ====================================================================
        PAGE 1.5: Scroll Expand Transition Stage (React Bits ScrollExpand)
        ==================================================================== -->
-  <section class="screen-section scroll-expand-screen hidden" id="scrollExpandScreen">
-    <div class="scroll-expand" id="scrollExpandContainer">
-      <div class="scroll-expand__track" id="scrollExpandTrack">
-        <div class="scroll-expand__stage" id="scrollExpandStage">
-          <div class="scroll-expand__frame" id="scrollExpandFrame">
-            <div class="scroll-expand__media port-bg-media" id="scrollExpandMedia">
-              <div class="port-bg-mesh"></div>
-              <canvas id="scrollExpandRaysCanvas" class="port-bg-rays" aria-hidden="true"></canvas>
-              <div class="port-bg-noise"></div>
-            </div>
-            <div class="scroll-expand__scrim"></div>
-          </div>
-          <h1 class="scroll-expand__title" id="scrollExpandTitle">
-            Welcome To My PORTFOLIO Website
-          </h1>
-          <div class="scroll-expand__hint" id="scrollExpandHint">
-            <span class="scroll-expand__hint-float">Scroll inside the frame</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  <section class="screen-section scroll-expand-screen hidden" id="scrollExpandScreen" aria-hidden="true"></section>
 
   <!-- ====================================================================
        PAGE 2: Main Home Screen (photo2.png) + 3D Lanyard Badge
@@ -479,7 +539,7 @@
               <!-- Center: Node -->
               <div class="timeline-col col-node" aria-hidden="true">
                 <div class="timeline-node node-work" title="What I Do">
-                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="16 18 22 12 16 6"/>
                     <polyline points="8 6 2 12 8 18"/>
                     <line x1="14" y1="4" x2="10" y2="20"/>
@@ -598,7 +658,7 @@
               <!-- Center: Node -->
               <div class="timeline-col col-node" aria-hidden="true">
                 <div class="timeline-node node-approach" title="My Approach">
-                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
                   </svg>
                 </div>
@@ -624,7 +684,7 @@
               <!-- Center: Node -->
               <div class="timeline-col col-node" aria-hidden="true">
                 <div class="timeline-node node-explore" title="Currently Exploring">
-                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="10"/>
                     <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
                   </svg>
@@ -671,7 +731,7 @@
             <!-- Set 1 -->
             <div class="logo-loop-list">
               <div class="logo-loop-item" title="React"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" alt="React" loading="lazy"></div>
-              <div class="logo-loop-item" title="Next.js"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg" alt="Next.js" loading="lazy"></div>
+              <div class="logo-loop-item" title="Next.js"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-plain.svg" alt="Next.js" loading="lazy"></div>
               <div class="logo-loop-item" title="TypeScript"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-plain.svg" alt="TypeScript" loading="lazy"></div>
               <div class="logo-loop-item" title="JavaScript"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-plain.svg" alt="JavaScript" loading="lazy"></div>
               <div class="logo-loop-item" title="Tailwind CSS"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" alt="Tailwind CSS" loading="lazy"></div>
@@ -694,7 +754,7 @@
             <!-- Set 2 (Duplicate for seamless infinite marquee loop) -->
             <div class="logo-loop-list" aria-hidden="true">
               <div class="logo-loop-item" title="React"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" alt="React" loading="lazy"></div>
-              <div class="logo-loop-item" title="Next.js"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg" alt="Next.js" loading="lazy"></div>
+              <div class="logo-loop-item" title="Next.js"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-plain.svg" alt="Next.js" loading="lazy"></div>
               <div class="logo-loop-item" title="TypeScript"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/typescript/typescript-plain.svg" alt="TypeScript" loading="lazy"></div>
               <div class="logo-loop-item" title="JavaScript"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-plain.svg" alt="JavaScript" loading="lazy"></div>
               <div class="logo-loop-item" title="Tailwind CSS"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" alt="Tailwind CSS" loading="lazy"></div>
@@ -745,19 +805,19 @@
           <div class="portfolio-tab-pane active" id="tab-projects">
             <div class="portfolio-grid">
               
-              <!-- Card 1: Bumblebee Clock -->
-              <article class="about-scroll-item project-card" data-project="bumblebee-clock">
+              <!-- Card 1: Tech Scanner -->
+              <article class="about-scroll-item project-card" data-project="tech-scanner">
                 <div class="project-card-image-wrap">
-                  <img src="port/pic1.png" alt="Bumblebee Clock Project" class="project-img">
+                  <img src="port/ts/1.png" alt="Tech Scanner Project" class="project-img">
                 </div>
                 <div class="project-card-body">
                   <div class="project-card-info">
-                    <h3 class="project-title">BUMBLEBEE CLOCK</h3>
-                    <p class="project-category">Interactive Web Experience</p>
+                    <h3 class="project-title">TECH SCANNER</h3>
+                    <p class="project-category">US Stock Screener &amp; AI Advisory</p>
                   </div>
                   <div class="project-card-bottom">
                     <div class="project-card-footer">
-                      <button type="button" class="project-link" data-open-modal="bumblebee-clock" aria-label="View Bumblebee Clock details">
+                      <button type="button" class="project-link" data-open-modal="tech-scanner" aria-label="View Tech Scanner details">
                         <span>VIEW DETAILS</span>
                         <svg class="arrow-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                           <line x1="7" y1="17" x2="17" y2="7"></line>
@@ -772,7 +832,7 @@
               <!-- Card 2: RoomReserve -->
               <article class="about-scroll-item project-card" data-project="room-reserve">
                 <div class="project-card-image-wrap">
-                  <img src="port/pic2.png" alt="RoomReserve Project" class="project-img">
+                  <img src="port/room/1.png" alt="RoomReserve Project" class="project-img">
                 </div>
                 <div class="project-card-body">
                   <div class="project-card-info">
@@ -793,25 +853,25 @@
                 </div>
               </article>
 
-              <!-- Card 3: Placeholder -->
-              <article class="about-scroll-item project-card placeholder-card">
-                <div class="project-card-image-wrap empty-image-wrap">
-                  <div class="empty-image-placeholder"></div>
+              <!-- Card 3: Bumblebee Clock -->
+              <article class="about-scroll-item project-card" data-project="bumblebee-clock">
+                <div class="project-card-image-wrap">
+                  <img src="port/pic1.png" alt="Bumblebee Clock Project" class="project-img">
                 </div>
                 <div class="project-card-body">
                   <div class="project-card-info">
-                    <h3 class="project-title">XXX</h3>
-                    <p class="project-category">xxx</p>
+                    <h3 class="project-title">BUMBLEBEE CLOCK</h3>
+                    <p class="project-category">Interactive Web Experience</p>
                   </div>
                   <div class="project-card-bottom">
                     <div class="project-card-footer">
-                      <span class="project-link disabled">
-                        <span>XXX</span>
+                      <button type="button" class="project-link" data-open-modal="bumblebee-clock" aria-label="View Bumblebee Clock details">
+                        <span>VIEW DETAILS</span>
                         <svg class="arrow-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                           <line x1="7" y1="17" x2="17" y2="7"></line>
                           <polyline points="7 7 17 7 17 17"></polyline>
                         </svg>
-                      </span>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -855,6 +915,129 @@
         </div>
       </section>
     </div>
+
+    <!-- ====================================================================
+         Contact / Footer Section (macOS Window & Scroll Expand)
+         ==================================================================== -->
+    <footer class="contact-footer" id="contact" aria-label="Contact and Footer">
+      <div class="contact-scroll-expand-wrapper" id="contactExpandWrapper">
+        <div class="macos-window" id="contactMacosWindow" role="region" aria-label="macOS Contact Window">
+          
+          <!-- macOS Window Title Bar (Header) -->
+          <div class="macos-titlebar">
+            <div class="macos-traffic-lights" aria-label="Window controls">
+              <span class="macos-dot macos-dot-close" title="Close (Shake)"></span>
+              <span class="macos-dot macos-dot-minimize" title="Minimize (Back to Top)"></span>
+              <span class="macos-dot macos-dot-maximize" title="Zoom (Expand)"></span>
+            </div>
+          </div>
+
+          <!-- macOS Window Content Body -->
+          <div class="macos-window-body">
+            <div class="contact-inner-container">
+              
+              <!-- Big Hero CTA Row -->
+              <div class="contact-hero-row">
+                <div class="contact-subheading-tag">HAVE A PROJECT IN MIND?</div>
+                <a href="mailto:peephuwit@gmail.com" class="contact-email-link" aria-label="Send email to peephuwit@gmail.com">
+                  peephuwit@gmail.com
+                </a>
+                <div class="contact-cta-wrapper">
+                  <a href="mailto:peephuwit@gmail.com" class="contact-cta-pill-btn">
+                    <span>Start A Conversation</span>
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <line x1="7" y1="17" x2="17" y2="7"></line>
+                      <polyline points="7 7 17 7 17 17"></polyline>
+                    </svg>
+                  </a>
+                </div>
+              </div>
+
+              <!-- Sleek Divider -->
+              <div class="contact-divider" aria-hidden="true"></div>
+
+              <!-- Multi-column Grid -->
+              <div class="contact-columns-grid">
+                
+                <!-- Column 1: Brand & Bio -->
+                <div class="contact-col contact-col-brand">
+                  <div class="contact-brand-title">
+                    <span class="brand-text">PEEPHUWIT</span>
+                  </div>
+                  <p class="contact-brand-tagline">Built to evolve ideas.</p>
+                  <p class="contact-brand-desc">
+                    Computer Science student &amp; developer crafting interactive digital experiences and high-performance software.
+                  </p>
+                </div>
+
+                <!-- Column 2: Location & Availability -->
+                <div class="contact-col">
+                  <h4 class="contact-col-heading">Location</h4>
+                  <div class="contact-info-block">
+                    <p class="contact-info-primary">Bangkok, Thailand</p>
+                    <p class="contact-info-secondary">Available Worldwide / Remote</p>
+                  </div>
+                  <div class="contact-status-chip">
+                    <span class="status-indicator-dot"></span>
+                    <span>Available for Opportunities</span>
+                  </div>
+                </div>
+
+                <!-- Column 3: Navigation -->
+                <div class="contact-col">
+                  <h4 class="contact-col-heading">Navigation</h4>
+                  <ul class="contact-nav-list">
+                    <li><a href="#home" class="contact-nav-link">Home</a></li>
+                    <li><a href="#about" class="contact-nav-link">About Me</a></li>
+                    <li><a href="#portfolio" class="contact-nav-link">Portfolio Showcase</a></li>
+                    <li><a href="#contact" class="contact-nav-link">Contact</a></li>
+                  </ul>
+                </div>
+
+                <!-- Column 4: Connect / Social -->
+                <div class="contact-col">
+                  <h4 class="contact-col-heading">Connect</h4>
+                  <ul class="contact-nav-list">
+                    <li>
+                      <a href="https://github.com/peephuwit" target="_blank" rel="noopener noreferrer" class="contact-nav-link contact-social-link">
+                        <span>GitHub</span>
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="mailto:peephuwit@gmail.com" class="contact-nav-link contact-social-link">
+                        <span>Email</span>
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+
+              </div>
+
+              <!-- Bottom Copyright Bar -->
+              <div class="contact-bottom-bar">
+                <div class="contact-bottom-links">
+                  <a href="#about" class="contact-sublink">About</a>
+                  <a href="#portfolio" class="contact-sublink">Work</a>
+                  <a href="#contact" class="contact-sublink">Contact</a>
+                </div>
+                <p class="contact-copyright">© 2026 Peephuwit. All rights reserved.</p>
+                <a href="#home" class="contact-back-to-top" id="contactBackToTop" aria-label="Back to top">
+                  <span>Back to top</span>
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <line x1="12" y1="19" x2="12" y2="5"></line>
+                    <polyline points="5 12 12 5 19 12"></polyline>
+                  </svg>
+                </a>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </footer>
   </section>
 
   <!-- ====================================================================
@@ -873,8 +1056,20 @@
       <div class="project-modal-grid">
         <!-- LEFT COLUMN: Image, Tech Used & Action Buttons -->
         <div class="modal-left-col">
-          <div class="modal-image-wrapper">
+          <div class="modal-image-wrapper" id="modalImageWrapper">
             <img src="port/pic2.png" alt="Project Preview" class="modal-project-img" id="modalProjectImg">
+            
+            <!-- Interactive Pile Stack for Multi-Screenshot Projects -->
+            <div class="modal-stack-wrap project-card-stack-wrap" id="modalStackWrap" tabindex="0" role="region" aria-label="Project screenshot stack (drag, flick, or click to cycle)" style="display: none;">
+              <div class="stack-container" id="modalStack"></div>
+              <div class="stack-indicator" id="modalStackIndicator" aria-hidden="true">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="stack-indicator-icon">
+                  <rect x="2" y="7" width="16" height="15" rx="2"></rect>
+                  <path d="M6 3h14a2 2 0 0 1 2 2v13"></path>
+                </svg>
+                <span class="stack-current">1</span> / <span class="stack-total">5</span>
+              </div>
+            </div>
           </div>
 
           <!-- Technologies Used (Moved to Left Column with Frontend/Backend/Database separation) -->
@@ -1012,7 +1207,7 @@
   <script defer src="rapier.min.js"></script>
   <script defer src="card_data.js"></script>
   <script defer src="kartu_data.js"></script>
-  <script defer src="script.js"></script>
+  <script defer src="script.js?v=4.0"></script>
   <script defer src="skills_keypad.js"></script>
 </body>
 </html>
