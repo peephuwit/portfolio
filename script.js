@@ -1784,7 +1784,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const ease = p * p * (3 - 2 * p);
 
     const isMobile = window.innerWidth <= 768;
-    const minScale = isMobile ? 0.78 : 0.65;
+    const minScale = isMobile ? 0.75 : 0.55;
     const currentScale = minScale + (1.0 - minScale) * ease;
     const currentY = (1 - ease) * (isMobile ? 35 : 70);
     const currentRadius = 38 - (16 * ease);
@@ -2163,7 +2163,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const cRect = scrollContainer.getBoundingClientRect();
         const tRect = contactSection.getBoundingClientRect();
         const tTop = tRect.top - cRect.top + scrollContainer.scrollTop;
-        targetTop = Math.max(0, Math.round(tTop - navOffset));
+        // Land with the macOS window just below the floating navbar (not the footer's padding edge)
+        const padTop = parseFloat(getComputedStyle(contactSection).paddingTop) || 0;
+        const windowGap = isMobile ? 76 : 66;
+        targetTop = Math.max(0, Math.round(tTop + padTop - windowGap));
       } else {
         targetTop = Math.max(0, scrollContainer.scrollHeight - scrollContainer.clientHeight);
       }
@@ -4110,6 +4113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'PostgreSQL': { url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/postgresql/postgresql-original.svg' },
     'Supabase': { url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/supabase/supabase-original.svg' },
     'GitHub Actions': { url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/githubactions/githubactions-original.svg' },
+    'Cloudflare Tunnel': { url: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/cloudflare.svg', isWhite: true },
     'Discord': { url: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/discord.svg', isWhite: true },
     'Google Gemini': { url: 'https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/googlegemini.svg', isWhite: true },
     'MySQL': { url: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/mysql/mysql-original.svg' },
@@ -4149,7 +4153,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'port/ts/2.png',
         'port/ts/3.png',
         'port/ts/4.png',
-        'port/ts/5.png'
+        'port/ts/5.png',
+        'port/ts/6.png'
       ],
       description: 'An intelligent US equity screener and automated market intelligence engine. Features algorithmic buy-dip/deep-value timing indicators, 10 iconic guru portfolio tracking, macro risk regimes, and autonomous 24/7 scanning with AI advisory and Discord alerts.',
       description_th: 'ระบบสแกนและวิเคราะห์หุ้นสหรัฐฯ อัจฉริยะแบบฟูลสแต็ก ผสานการคำนวณเทคนิคอลประเมินจังหวะย่อตัวสะสมหุ้น ติดตามพอร์ต 10 เซียนระดับโลก ตรวจจับสภาวะเศรษฐกิจมหภาค พร้อมระบบคลาวด์เฝ้าตลาดอัตโนมัติ 24/7 วิเคราะห์เชิงลึกด้วย AI และแจ้งเตือนผ่าน Discord Webhook',
@@ -4175,6 +4180,45 @@ document.addEventListener('DOMContentLoaded', () => {
       ],
       liveDemoUrl: 'https://tech-scanner-pphw.vercel.app',
       sourceCodeUrl: 'https://github.com/peephuwit/tech-scanner'
+    },
+    'food-pos': {
+      title: 'FOOD POS',
+      subtitle: 'Restaurant point-of-sale with table management & kitchen display',
+      subtitle_th: 'ระบบขายหน้าร้านอาหาร พร้อมจัดการโต๊ะและจอในครัว',
+      image: 'port/pos/1.png',
+      images: [
+        'port/pos/1.png',
+        'port/pos/2.png',
+        'port/pos/3.png',
+        'port/pos/4.png',
+        'port/pos/5.png',
+        'port/pos/6.png',
+        'port/pos/7.png'
+      ],
+      description: 'A point-of-sale system for restaurants covering front-of-house ordering, 4-table management, sales history with receipts, menu & price editing, a kitchen display (KDS), and sales analytics with AI insights. Daily, weekly and monthly sales summaries are sent automatically as Discord notifications.',
+      description_th: 'ระบบขายหน้าร้านสำหรับร้านอาหาร ครอบคลุมการรับออเดอร์หน้าร้าน การจัดการ 4 โต๊ะ ประวัติการขายพร้อมสลิป การแก้ไขเมนูและราคา จอในครัว (KDS) และสถิติยอดขายพร้อม AI พร้อมแจ้งเตือนสรุปยอดขายรายวัน/สัปดาห์/เดือนอัตโนมัติผ่าน Discord',
+      highlights: [
+        { title: 'Fast Front-of-House Selling', desc: 'Category-filtered menu cards with a live bill, dine-in table or customer name, and cash / transfer payment.' },
+        { title: 'Table Management', desc: 'Dedicated view for managing orders across 4 tables.' },
+        { title: 'Kitchen Display (KDS)', desc: 'Orders are sent to a kitchen screen so the kitchen sees what to cook in real time.' },
+        { title: 'Sales History & Slips', desc: 'Daily bill list with totals, average per bill, payment method and printable slips, browsable by date.' },
+        { title: 'Sales Analytics & AI', desc: 'Sales statistics with AI-assisted insights, plus a menu & price editor for the owner.' }
+      ],
+      highlights_th: [
+        { title: 'Fast Front-of-House Selling', desc: 'การ์ดเมนูแยกหมวดหมู่ บิลแบบเรียลไทม์ ระบุโต๊ะหรือชื่อลูกค้า และรับชำระเงินสด/โอนเงิน' },
+        { title: 'Table Management', desc: 'หน้าจัดการออเดอร์แยกตาม 4 โต๊ะ' },
+        { title: 'Kitchen Display (KDS)', desc: 'ส่งออเดอร์ไปจอในครัวให้ครัวเห็นรายการที่ต้องทำแบบเรียลไทม์' },
+        { title: 'Sales History & Slips', desc: 'รายการบิลรายวัน ยอดรวม เฉลี่ยต่อบิล วิธีชำระเงิน และสลิป เลือกดูย้อนหลังตามวันที่ได้' },
+        { title: 'Sales Analytics & AI', desc: 'สถิติยอดขายพร้อมการวิเคราะห์ด้วย AI และหน้าแก้ไขเมนูและราคาสำหรับเจ้าของร้าน' }
+      ],
+      techGroups: [
+        { label: 'Frontend', tags: ['HTML', 'CSS', 'JavaScript'] },
+        { label: 'Backend', tags: ['Python', 'SQLite'] },
+        { label: 'Networking & Automation', tags: ['Cloudflare Tunnel', 'Discord'] }
+      ],
+      liveDemoLabel: 'Download',
+      liveDemoUrl: 'https://github.com/peephuwit/food-pos/releases/latest',
+      sourceCodeUrl: 'https://github.com/peephuwit/food-pos'
     },
     'room-reserve': {
       title: 'ROOMRESERVE',
@@ -4216,7 +4260,7 @@ document.addEventListener('DOMContentLoaded', () => {
       title: 'BUMBLEBEE CLOCK',
       subtitle: 'Mecha-themed precision digital timepiece',
       subtitle_th: 'นาฬิกาดิจิทัลความแม่นยำสูงในธีมจักรกลหุ่นรบ',
-      image: 'port/pic1.png',
+      image: 'port/bb.png',
       description: 'An interactive digital timepiece inspired by futuristic mechanical aesthetics. Features fluid real-time ticking animations, dynamic HUD elements, and ambient reactive glow effects built entirely with native web standards.',
       description_th: 'นาฬิกาดิจิทัลเชิงโต้ตอบที่ได้แรงบันดาลใจจากความงามของจักรกลล้ำยุค โดดเด่นด้วยแอนิเมชันเข็มวินาทีที่ลื่นไหล องค์ประกอบหน้าจอ HUD แบบไดนามิก และแสงนีออนโต้ตอบ โดยสร้างขึ้นด้วยเทคโนโลยีเว็บมาตรฐานทั้งหมด',
       highlights: [
@@ -4346,8 +4390,16 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
       }
 
-      if (liveDemoBtn) liveDemoBtn.href = data.liveDemoUrl || '#';
-      if (sourceCodeBtn) sourceCodeBtn.href = data.sourceCodeUrl || '#';
+      if (liveDemoBtn) {
+        liveDemoBtn.href = data.liveDemoUrl || '#';
+        const demoLabel = liveDemoBtn.querySelector('span');
+        if (demoLabel) demoLabel.textContent = data.liveDemoLabel || 'Live Demo';
+        liveDemoBtn.style.display = data.liveDemoUrl ? '' : 'none';
+      }
+      if (sourceCodeBtn) {
+        sourceCodeBtn.href = data.sourceCodeUrl || '#';
+        sourceCodeBtn.style.display = data.sourceCodeUrl ? '' : 'none';
+      }
 
       // Open modal & lock scroll
       backdrop.classList.add('is-open');
