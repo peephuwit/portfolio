@@ -5170,7 +5170,8 @@ body.gsap-enabled .home-screen.active .sphere-3d-wrapper {
   position: relative;
   width: 100%;
   height: clamp(540px, 70vh, 670px);
-  margin-top: -36px;
+  /* No negative margin: it made the 3D canvas overlap the bottom of the tab bar and swallow clicks */
+  margin-top: 8px;
   background: transparent;
   border: none;
   box-shadow: none;
