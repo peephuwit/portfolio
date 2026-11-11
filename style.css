@@ -2276,7 +2276,7 @@ body.mobile-menu-open #homeScreen {
 
 /* Desktop/tablet-landscape: vertically center the hero text block so it lines up with the 3D card on tall screens */
 @media (min-width: 769px) {
-  .hero-section { justify-content: center; }
+  .hero-section { justify-content: center; padding-bottom: 100px; }
 }
 
 .hero-section.switching {
