@@ -2274,6 +2274,11 @@ body.mobile-menu-open #homeScreen {
   transition: opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1), transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
+/* Desktop/tablet-landscape: vertically center the hero text block so it lines up with the 3D card on tall screens */
+@media (min-width: 769px) {
+  .hero-section { justify-content: center; }
+}
+
 .hero-section.switching {
   opacity: 0.35;
   transform: translateY(6px);
