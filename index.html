@@ -16,7 +16,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Athiti:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=4.6">
+  <link rel="stylesheet" href="style.css?v=5.7">
   <style>
     /* Absolute override: prevent any modal image / container scale or expanding */
     .project-modal-container,
@@ -954,59 +954,73 @@
               <span class="macos-dot macos-dot-minimize" title="Minimize (Back to Top)"></span>
               <span class="macos-dot macos-dot-maximize" title="Zoom (Expand)"></span>
             </div>
+            <span class="macos-title-text">Contact</span>
           </div>
 
           <!-- macOS Window Content Body -->
           <div class="macos-window-body">
             <div class="ct-glow" aria-hidden="true"></div>
             <div class="contact-inner-container ct-layout">
+              <div class="ct-focus" id="ctFocus" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
 
-              <!-- Top: heading (left) + info list (right) -->
               <div class="ct-top">
-                <h2 class="ct-heading">Get in<br>touch.</h2>
+                <!-- Left: heading + contact info -->
+                <div class="ct-left">
+                  <h2 class="ct-heading">Get in touch.</h2>
 
-                <ul class="ct-info-list">
-                  <li class="ct-info-item">
-                    <svg class="ct-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"></path><circle cx="12" cy="10" r="2.6"></circle></svg>
-                    <div>
-                      <h3 class="ct-info-title">Location</h3>
-                      <p class="ct-info-text">Bangkok, Thailand</p>
-                      <p class="ct-info-text">Available Worldwide / Remote</p>
-                      <div class="contact-status-chip">
-                        <span class="status-indicator-dot"></span>
-                        <span>Available for Opportunities</span>
+                  <ul class="ct-info-list">
+                    <li class="ct-info-item">
+                      <svg class="ct-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"></path><circle cx="12" cy="10" r="2.6"></circle></svg>
+                      <div>
+                        <h3 class="ct-info-title">Location</h3>
+                        <p class="ct-info-text">Bangkok, Thailand</p>
                       </div>
-                    </div>
-                  </li>
-                  <li class="ct-info-item">
-                    <svg class="ct-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1.5"></rect><polyline points="3 6.5 12 13 21 6.5"></polyline></svg>
-                    <div>
-                      <h3 class="ct-info-title">Mail</h3>
-                      <a href="mailto:peephuwit@gmail.com" class="ct-info-text ct-info-link">peephuwit@gmail.com</a>
-                    </div>
-                  </li>
-                  <li class="ct-info-item">
-                    <svg class="ct-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
-                    <div>
-                      <h3 class="ct-info-title">Follow Us</h3>
-                      <a href="https://github.com/peephuwit" target="_blank" rel="noopener noreferrer" class="ct-social-btn" aria-label="GitHub">
+                    </li>
+                    <li class="ct-info-item">
+                      <svg class="ct-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="1.5"></rect><polyline points="3 6.5 12 13 21 6.5"></polyline></svg>
+                      <div>
+                        <h3 class="ct-info-title">Email</h3>
+                        <a href="mailto:peephuwit@gmail.com" class="ct-info-text ct-info-link">peephuwit@gmail.com</a>
+                      </div>
+                    </li>
+                    <li class="ct-info-item">
+                      <svg class="ct-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"></circle><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"></path><path d="M16 5.5a3 3 0 0 1 0 5.5M18 14.3c1.8.8 3 2.5 3 4.7"></path></svg>
+                      <div>
+                        <h3 class="ct-info-title">Follow us</h3>
+                        <div class="ct-social-row">
+                          <a href="https://github.com/peephuwit" target="_blank" rel="noopener noreferrer" class="ct-social-btn" aria-label="GitHub">
                         <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>
                       </a>
-                    </div>
-                  </li>
-                </ul>
-              </div>
+                          <a href="https://instagram.com/pp.pphw__" target="_blank" rel="noopener noreferrer" class="ct-social-btn" aria-label="Instagram">
+                            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.3" cy="6.7" r="0.6" fill="currentColor"></circle></svg>
+                          </a>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
 
-              <!-- Bottom: CTA -->
-              <div class="ct-bottom">
-                <h2 class="ct-heading ct-heading-sm">Start a<br>conversation.</h2>
-                <a href="mailto:peephuwit@gmail.com" class="contact-cta-pill-btn">
-                  <span>Say Hello</span>
-                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <line x1="7" y1="17" x2="17" y2="7"></line>
-                    <polyline points="7 7 17 7 17 17"></polyline>
-                  </svg>
-                </a>
+                <!-- Right: message form -->
+                <form class="ct-form" id="contactForm" novalidate>
+                  <div class="ct-form-row">
+                    <label class="ct-field">
+                      <span class="ct-label">Your Name</span>
+                      <input type="text" name="name" placeholder="Peter Parker" autocomplete="name" required>
+                    </label>
+                    <label class="ct-field">
+                      <span class="ct-label">Email address</span>
+                      <input type="email" name="email" placeholder="peterparker67@example.com" autocomplete="email" required>
+                    </label>
+                  </div>
+                  <label class="ct-field">
+                    <span class="ct-label">Message</span>
+                    <textarea name="message" rows="6" placeholder="Write something...." required></textarea>
+                  </label>
+                  <button type="submit" class="ct-send-btn">
+                    <span>Send Message</span>
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                  </button>
+                </form>
               </div>
 
               <!-- Bottom Copyright Bar -->
@@ -1201,7 +1215,7 @@
   <script defer src="rapier.min.js"></script>
   <script defer src="card_data.js"></script>
   <script defer src="kartu_data.js"></script>
-  <script defer src="script.js?v=4.4"></script>
+  <script defer src="script.js?v=5.2"></script>
   <script defer src="skills_keypad.js"></script>
 </body>
 </html>

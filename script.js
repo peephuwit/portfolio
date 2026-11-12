@@ -1,3 +1,31 @@
+// ---- Adaptive performance: detect weak devices and trim the heaviest GPU work (low-end only) ----
+(function () {
+  const root = document.documentElement;
+  function enable() {
+    if (window.__LOW_END) return;
+    window.__LOW_END = true;
+    root.classList.add('low-end');
+    window.dispatchEvent(new Event('lowend'));
+  }
+  const cores = navigator.hardwareConcurrency || 8;
+  const mem = navigator.deviceMemory || 8;
+  if (cores <= 4 || mem <= 4 || window.matchMedia('(prefers-reduced-data: reduce)').matches) { enable(); return; }
+  // Frame-time probe: if the page can't hold ~40fps a few seconds after load, switch to low-end mode
+  window.addEventListener('load', function () {
+    setTimeout(function () {
+      let frames = 0, start = 0;
+      function tick(t) {
+        if (document.hidden) { frames = 0; start = 0; return requestAnimationFrame(tick); }
+        if (!start) start = t;
+        frames++;
+        if (t - start < 2500) return requestAnimationFrame(tick);
+        if (frames / ((t - start) / 1000) < 40) enable();
+      }
+      requestAnimationFrame(tick);
+    }, 4000);
+  });
+})();
+
 /**
  * Portfolio Single Page Application (SPA) Controller & Clean 2D Subtle-Angle Drop Physics
  */
@@ -1796,6 +1824,13 @@ document.addEventListener('DOMContentLoaded', () => {
     windowEl.style.setProperty('--contact-radius', `${currentRadius.toFixed(1)}px`);
     windowEl.style.setProperty('--contact-opacity', currentOpacity.toFixed(3));
     windowEl.style.setProperty('--contact-glow', currentGlow.toFixed(3));
+
+    // Slide-up reveal of the window content once it is (almost) full size; re-arm when it shrinks again
+    const ctLayout = windowEl.querySelector('.ct-layout');
+    if (ctLayout) {
+      if (p >= 0.97) ctLayout.classList.add('ct-in');
+      else if (p < 0.55) ctLayout.classList.remove('ct-in');
+    }
   }
 
   // ==========================================================================
@@ -3667,7 +3702,7 @@ document.addEventListener('DOMContentLoaded', () => {
     gl.uniform1f(uFalloffLoc, config.falloff);
     gl.uniform1f(uOpacityLoc, config.opacity);
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 1);
 
     function resize() {
       const w = canvas.clientWidth || window.innerWidth;
@@ -3693,6 +3728,8 @@ document.addEventListener('DOMContentLoaded', () => {
       animId = requestAnimationFrame(render);
       if (document.hidden) return;
       if (canvas.closest('.hidden')) return;
+      if (window.__LOW_END && (time - (render._last || 0)) < 33) return; // ~30fps on weak devices
+      render._last = time;
 
       gl.uniform1f(uTimeLoc, time * 0.001);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -5806,7 +5843,8 @@ function init3DLanyardWebGL() {
     powerPreference: 'high-performance'
   });
   renderer.setSize(width, height);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(window.__LOW_END ? 1 : Math.min(window.devicePixelRatio, 2));
+  window.addEventListener('lowend', function () { renderer.setPixelRatio(1); renderer.setSize(canvas.clientWidth || width, canvas.clientHeight || height, false); });
   renderer.outputEncoding = THREE.sRGBEncoding;
   renderer.toneMapping = THREE.NoToneMapping;
   renderer.toneMappingExposure = 1.0;
@@ -7070,3 +7108,77 @@ function preventPageZoom() {
     lastTouchEnd = now;
   }, false);
 }
+
+
+// Contact form: opens the visitor's mail app with the message pre-filled
+(function () {
+  const form = document.getElementById('contactForm');
+  if (!form) return;
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const f = form.elements;
+    const bad = [f.name, f.email, f.message].filter(function (el) { return !el.value.trim() || !el.checkValidity(); });
+    [f.name, f.email, f.message].forEach(function (el) { el.classList.toggle('ct-invalid', bad.indexOf(el) !== -1); });
+    if (bad.length) { bad[0].focus(); return; }
+    const subject = encodeURIComponent('Portfolio message from ' + f.name.value.trim());
+    const body = encodeURIComponent(f.message.value.trim() + '\n\n— ' + f.name.value.trim() + ' (' + f.email.value.trim() + ')');
+    window.location.href = 'mailto:peephuwit@gmail.com?subject=' + subject + '&body=' + body;
+  });
+})();
+
+
+// Contact focus frame: corner brackets that lock onto the hovered/focused element (default: heading)
+(function () {
+  const layout = document.querySelector('.ct-layout');
+  const frame = document.getElementById('ctFocus');
+  if (!layout || !frame) return;
+  const SEL = '.ct-heading, .ct-info-item, .ct-social-btn, .ct-field input, .ct-field textarea, .ct-send-btn, .contact-sublink, .contact-back-to-top, .contact-copyright';
+  const home = layout.querySelector('.ct-heading');
+  const PAD = 10;
+  let current = home;
+  let armed = false;
+
+  function place(el) {
+    if (!el) return;
+    current = el;
+    if (!armed) return;
+    // layout box is scaled by the window's scale effect, so convert viewport rects back to local px
+    const lr = layout.getBoundingClientRect();
+    const k = lr.width / layout.offsetWidth || 1;
+    const r = el.getBoundingClientRect();
+    frame.style.transform = 'translate3d(' + ((r.left - lr.left) / k - PAD) + 'px,' + ((r.top - lr.top) / k - PAD) + 'px,0)';
+    frame.style.width = (r.width / k + PAD * 2) + 'px';
+    frame.style.height = (r.height / k + PAD * 2) + 'px';
+    frame.classList.add('is-on');
+  }
+
+  layout.addEventListener('mouseover', function (e) {
+    const t = e.target.closest(SEL);
+    if (t && layout.contains(t)) place(t);
+  });
+  layout.addEventListener('mouseleave', function () { place(home); });
+  layout.addEventListener('focusin', function (e) {
+    const t = e.target.closest(SEL);
+    if (t) place(t);
+  });
+  window.addEventListener('resize', function () { place(current); });
+  layout.addEventListener('animationend', function () { place(current); });
+  // re-lock while the window scales in/out during scroll
+  const homeScreen = document.getElementById('homeScreen');
+  if (homeScreen) homeScreen.addEventListener('scroll', function () { place(current); }, { passive: true });
+  // Show the frame only after the heading has finished sliding in
+  function arm() {
+    armed = true;
+    frame.style.transition = 'opacity 0.7s ease';
+    place(home);
+    void frame.offsetWidth;
+    frame.style.transition = '';
+  }
+  layout.addEventListener('animationend', function (e) {
+    if (e.target === home && !armed && layout.classList.contains('ct-in')) arm();
+  });
+  new MutationObserver(function () {
+    if (!layout.classList.contains('ct-in')) { armed = false; frame.classList.remove('is-on'); current = home; }
+    else if (window.matchMedia('(prefers-reduced-motion: reduce)').matches && !armed) arm();
+  }).observe(layout, { attributes: true, attributeFilter: ['class'] });
+})();

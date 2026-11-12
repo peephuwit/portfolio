@@ -6554,10 +6554,7 @@ body.modal-open {
   border-radius: var(--contact-radius, 22px);
   border: 1px solid rgba(255, 255, 255, 0.12);
   box-shadow: 
-    0 30px 80px -20px rgba(0, 0, 0, 0.8),
-    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
-    0 1px 0 rgba(255, 255, 255, 0.20) inset,
-    0 0 45px rgba(0, 210, 255, var(--contact-glow, 0.12));
+    0 30px 80px -20px rgba(0, 0, 0, 0.8);
   overflow: hidden;
   position: relative;
   transform: translate3d(0, var(--contact-y, 0px), 0) scale(var(--contact-scale, 1));
@@ -6589,7 +6586,7 @@ body.modal-open {
   left: 20%;
   right: 20%;
   height: 120px;
-  background: radial-gradient(ellipse 70% 100% at 50% 0%, rgba(0, 210, 255, 0.14) 0%, transparent 80%);
+  display: none;
   pointer-events: none;
   z-index: 0;
 }
@@ -6928,8 +6925,8 @@ body.modal-open {
   gap: 16px;
   padding-top: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
-  font-family: 'Inter', sans-serif;
-  font-size: 0.82rem;
+  font-family: 'Athiti', sans-serif;
+  font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.40);
 }
 
@@ -7096,4 +7093,133 @@ body.modal-open {
 @media (max-width: 768px) {
   .ct-top { grid-template-columns: 1fr; }
   .ct-glow { width: 90%; left: -30%; }
+}
+
+
+/* Contact: centered title, left info + right form */
+.macos-titlebar { position: relative; }
+.macos-title-text {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Anton', sans-serif;
+  font-size: 15px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.75);
+  pointer-events: none;
+}
+
+.ct-heading { font-family: 'Anton', sans-serif; font-weight: 400; letter-spacing: 0.01em; text-transform: uppercase; line-height: 1.08; }
+.ct-info-title { font-family: 'Athiti', sans-serif; }
+.ct-left { display: flex; flex-direction: column; gap: clamp(28px, 4vw, 48px); }
+.ct-left .ct-info-list { gap: clamp(20px, 2.6vw, 30px); }
+.ct-social-row { display: flex; gap: 10px; }
+
+.ct-form { display: flex; flex-direction: column; gap: 18px; }
+.ct-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.ct-field { display: flex; flex-direction: column; gap: 8px; }
+.ct-label { font-size: 14px; font-weight: 500; color: rgba(255, 255, 255, 0.85); }
+.ct-field input,
+.ct-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: 'Athiti', sans-serif;
+  font-size: 15px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 13px 16px;
+  outline: none;
+  resize: none;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.ct-field textarea { min-height: 150px; }
+.ct-field input::placeholder,
+.ct-field textarea::placeholder { color: rgba(255, 255, 255, 0.4); }
+.ct-field input:focus,
+.ct-field textarea:focus { border-color: rgba(255, 255, 255, 0.45); background: rgba(255, 255, 255, 0.12); }
+.ct-field .ct-invalid, .ct-field input:invalid.ct-touched { border-color: #ff6b6b; }
+.ct-send-btn {
+  font-family: 'Athiti', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #0b1220;
+  background: #fff;
+  border: 0;
+  border-radius: 14px;
+  padding: 14px;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+.ct-send-btn:hover { transform: translateY(-2px); opacity: 0.92; }
+
+@media (max-width: 768px) {
+  .ct-form-row { grid-template-columns: 1fr; }
+}
+
+.ct-heading { white-space: nowrap; font-size: clamp(34px, 4.8vw, 68px); }
+.ct-info-title { font-family: 'Anton', sans-serif; font-weight: 400; letter-spacing: 0.04em; text-transform: none; }
+.ct-send-btn:hover { background: #00d2ff; color: #090c15; opacity: 1; }
+.ct-send-btn { transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1); }
+.ct-send-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+
+/* Focus frame: four thin sharp corner brackets that follow the hovered element */
+.ct-heading, .ct-info-item { width: fit-content; }
+.ct-focus {
+  position: absolute;
+  left: 0; top: 0; width: 0; height: 0;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  will-change: transform, width, height;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+              width 0.35s cubic-bezier(0.16, 1, 0.3, 1), height 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s ease;
+}
+.ct-focus.is-on { opacity: 1; }
+.ct-focus i {
+  position: absolute;
+  width: 14px; height: 14px;
+  border: 0 solid #fff;
+}
+.ct-focus i:nth-child(1) { left: 0; top: 0; border-width: 1.5px 0 0 1.5px; }
+.ct-focus i:nth-child(2) { right: 0; top: 0; border-width: 1.5px 1.5px 0 0; }
+.ct-focus i:nth-child(3) { left: 0; bottom: 0; border-width: 0 0 1.5px 1.5px; }
+.ct-focus i:nth-child(4) { right: 0; bottom: 0; border-width: 0 1.5px 1.5px 0; }
+@media (hover: none) { .ct-focus { display: none; } }
+
+/* Slide-up reveal for contact content (class .ct-in is toggled from script.js) */
+.ct-layout .ct-heading,
+.ct-layout .ct-info-item,
+.ct-layout .ct-form > *,
+.ct-layout .contact-bottom-bar { opacity: 0; }
+.ct-layout.ct-in .ct-heading,
+.ct-layout.ct-in .ct-info-item,
+.ct-layout.ct-in .ct-form > *,
+.ct-layout.ct-in .contact-bottom-bar {
+  opacity: 1;
+  animation: ctRise 0.8s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+@keyframes ctRise {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.ct-layout.ct-in .ct-heading { animation-delay: 0s; }
+.ct-layout.ct-in .ct-info-item:nth-child(1) { animation-delay: 0.10s; }
+.ct-layout.ct-in .ct-info-item:nth-child(2) { animation-delay: 0.18s; }
+.ct-layout.ct-in .ct-info-item:nth-child(3) { animation-delay: 0.26s; }
+.ct-layout.ct-in .ct-form > :nth-child(1) { animation-delay: 0.08s; }
+.ct-layout.ct-in .ct-form > :nth-child(2) { animation-delay: 0.16s; }
+.ct-layout.ct-in .ct-form > :nth-child(3) { animation-delay: 0.24s; }
+.ct-layout.ct-in .contact-bottom-bar { animation-delay: 0.34s; }
+@media (prefers-reduced-motion: reduce) {
+  .ct-layout .ct-heading, .ct-layout .ct-info-item, .ct-layout .ct-form > *, .ct-layout .contact-bottom-bar { opacity: 1; animation: none !important; }
+}
+
+/* Low-end devices: drop the costliest effect (frosted-glass backdrop blur); look stays close thanks to translucent backgrounds */
+html.low-end *, html.low-end *::before, html.low-end *::after {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
 }
