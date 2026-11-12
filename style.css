@@ -7188,7 +7188,6 @@ body.modal-open {
 .ct-focus i:nth-child(2) { right: 0; top: 0; border-width: 1.5px 1.5px 0 0; }
 .ct-focus i:nth-child(3) { left: 0; bottom: 0; border-width: 0 0 1.5px 1.5px; }
 .ct-focus i:nth-child(4) { right: 0; bottom: 0; border-width: 0 1.5px 1.5px 0; }
-@media (hover: none) { .ct-focus { display: none; } }
 
 /* Slide-up reveal for contact content (class .ct-in is toggled from script.js) */
 .ct-layout .ct-heading,

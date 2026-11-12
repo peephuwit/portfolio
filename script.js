@@ -7157,6 +7157,12 @@ function preventPageZoom() {
     if (t && layout.contains(t)) place(t);
   });
   layout.addEventListener('mouseleave', function () { place(home); });
+  // Touch: move the frame to whatever was tapped
+  layout.addEventListener('pointerdown', function (e) {
+    if (e.pointerType === 'mouse') return;
+    const t = e.target.closest(SEL);
+    if (t && layout.contains(t)) place(t);
+  }, { passive: true });
   layout.addEventListener('focusin', function (e) {
     const t = e.target.closest(SEL);
     if (t) place(t);
