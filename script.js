@@ -10,20 +10,6 @@
   const cores = navigator.hardwareConcurrency || 8;
   const mem = navigator.deviceMemory || 8;
   if (cores <= 4 || mem <= 4 || window.matchMedia('(prefers-reduced-data: reduce)').matches) { enable(); return; }
-  // Frame-time probe: if the page can't hold ~40fps a few seconds after load, switch to low-end mode
-  window.addEventListener('load', function () {
-    setTimeout(function () {
-      let frames = 0, start = 0;
-      function tick(t) {
-        if (document.hidden) { frames = 0; start = 0; return requestAnimationFrame(tick); }
-        if (!start) start = t;
-        frames++;
-        if (t - start < 2500) return requestAnimationFrame(tick);
-        if (frames / ((t - start) / 1000) < 40) enable();
-      }
-      requestAnimationFrame(tick);
-    }, 4000);
-  });
 })();
 
 /**
@@ -3702,7 +3688,7 @@ document.addEventListener('DOMContentLoaded', () => {
     gl.uniform1f(uFalloffLoc, config.falloff);
     gl.uniform1f(uOpacityLoc, config.opacity);
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 1);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
     function resize() {
       const w = canvas.clientWidth || window.innerWidth;
@@ -5527,6 +5513,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!hamburgerBtn || !dropdown || !viewport || !track || !items.length) return;
 
+    const STATIC_LIST = true; // menu shows all items at once (no scroll-wheel selection)
     const BASE_COUNT = 4;
     const SET_OFFSET = 4; // Middle set starts at index 4 (0..3, 4..7, 8..11)
     let selectedIndex = SET_OFFSET;
@@ -5627,6 +5614,14 @@ document.addEventListener('DOMContentLoaded', () => {
       hamburgerBtn.setAttribute('aria-expanded', 'true');
       dropdown.classList.add('active');
       dropdown.setAttribute('aria-hidden', 'false');
+      // Staggered slide-in: delay grows with each item's position below the top visible row
+      syncWithCurrentSection();
+      items.forEach((it, i) => {
+        it.style.setProperty('--wd', i % BASE_COUNT);
+      });
+      dropdown.classList.remove('wheel-enter');
+      void dropdown.offsetWidth;
+      dropdown.classList.add('wheel-enter');
       if (backdrop) {
         backdrop.classList.add('active');
         backdrop.setAttribute('aria-hidden', 'false');
@@ -5655,6 +5650,7 @@ document.addEventListener('DOMContentLoaded', () => {
       hamburgerBtn.classList.remove('active');
       hamburgerBtn.setAttribute('aria-expanded', 'false');
       dropdown.classList.remove('active');
+      dropdown.classList.remove('wheel-enter');
       dropdown.setAttribute('aria-hidden', 'true');
       if (backdrop) {
         backdrop.classList.remove('active');
@@ -5710,7 +5706,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, { passive: true });
 
     viewport.addEventListener('touchmove', (e) => {
-      if (!isOpen || !e.touches || !e.touches[0]) return;
+      if (STATIC_LIST || !isOpen || !e.touches || !e.touches[0]) return;
       if (e.cancelable) e.preventDefault(); // Stop background scroll while interacting with menu!
       const dy = e.touches[0].clientY - touchStartY;
       if (Math.abs(dy) > 28) {
@@ -5726,7 +5722,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Mouse wheel support (Infinite Loop)
     viewport.addEventListener('wheel', (e) => {
-      if (!isOpen) return;
+      if (STATIC_LIST || !isOpen) return;
       e.preventDefault();
       if (e.deltaY > 15) {
         updateWheel(selectedIndex + 1, true);
@@ -5740,6 +5736,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!isOpen) return;
       if (e.key === 'Escape') {
         closeMenu();
+      } else if (STATIC_LIST && (e.key === 'ArrowDown' || e.key === 'ArrowUp')) {
+        return;
       } else if (e.key === 'ArrowDown') {
         e.preventDefault();
         updateWheel(selectedIndex + 1, true);
