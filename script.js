@@ -5952,7 +5952,7 @@ function init3DLanyardWebGL() {
   const PHOTO_ASPECT = 2583 / 3375; // True aspect ratio of authentic white-bordered card (0.765333)
   const photoSrc = (typeof window !== 'undefined' && window.CARD_PHOTO_DATA)
     ? window.CARD_PHOTO_DATA
-    : 'theme/ppcard2_white_clean.png';
+    : 'theme/card.webp';
 
   let frontMatRef = null;
 
@@ -6101,13 +6101,6 @@ function init3DLanyardWebGL() {
 
   const frontImg = new Image();
   frontImg.onload = () => updateFrontAtlasImage(frontImg);
-  frontImg.onerror = () => {
-    if (frontImg.src.endsWith('.webp')) {
-      frontImg.src = 'theme/ppcard2_white_clean.png';
-    } else if (typeof window !== 'undefined' && window.CARD_PHOTO_DATA) {
-      frontImg.src = window.CARD_PHOTO_DATA;
-    }
-  };
   frontImg.src = photoSrc;
   if (frontImg.complete && frontImg.naturalWidth > 0) {
     updateFrontAtlasImage(frontImg);
