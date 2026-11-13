@@ -1,17 +1,3 @@
-// ---- Adaptive performance: detect weak devices and trim the heaviest GPU work (low-end only) ----
-(function () {
-  const root = document.documentElement;
-  function enable() {
-    if (window.__LOW_END) return;
-    window.__LOW_END = true;
-    root.classList.add('low-end');
-    window.dispatchEvent(new Event('lowend'));
-  }
-  const cores = navigator.hardwareConcurrency || 8;
-  const mem = navigator.deviceMemory || 8;
-  if (cores <= 4 || mem <= 4 || window.matchMedia('(prefers-reduced-data: reduce)').matches) { enable(); return; }
-})();
-
 /**
  * Portfolio Single Page Application (SPA) Controller & Clean 2D Subtle-Angle Drop Physics
  */
@@ -3714,8 +3700,6 @@ document.addEventListener('DOMContentLoaded', () => {
       animId = requestAnimationFrame(render);
       if (document.hidden) return;
       if (canvas.closest('.hidden')) return;
-      if (window.__LOW_END && (time - (render._last || 0)) < 33) return; // ~30fps on weak devices
-      render._last = time;
 
       gl.uniform1f(uTimeLoc, time * 0.001);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -5841,8 +5825,7 @@ function init3DLanyardWebGL() {
     powerPreference: 'high-performance'
   });
   renderer.setSize(width, height);
-  renderer.setPixelRatio(window.__LOW_END ? 1 : Math.min(window.devicePixelRatio, 2));
-  window.addEventListener('lowend', function () { renderer.setPixelRatio(1); renderer.setSize(canvas.clientWidth || width, canvas.clientHeight || height, false); });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.outputEncoding = THREE.sRGBEncoding;
   renderer.toneMapping = THREE.NoToneMapping;
   renderer.toneMappingExposure = 1.0;

@@ -7219,12 +7219,6 @@ body.modal-open {
   .ct-layout .ct-heading, .ct-layout .ct-info-item, .ct-layout .ct-form > *, .ct-layout .contact-bottom-bar { opacity: 1; animation: none !important; }
 }
 
-/* Low-end devices: drop the costliest effect (frosted-glass backdrop blur); look stays close thanks to translucent backgrounds */
-html.low-end *, html.low-end *::before, html.low-end *::after {
-  -webkit-backdrop-filter: none !important;
-  backdrop-filter: none !important;
-}
-
 /* Mobile menu: plain list, all items visible; they slide in to the right one after another when it opens */
 .option-wheel-item:nth-child(-n+4),
 .option-wheel-item:nth-child(n+9) { display: none; }
@@ -7277,3 +7271,12 @@ html.low-end *, html.low-end *::before, html.low-end *::after {
 /* Mobile menu: slimmer language row */
 .option-wheel-lang-footer { padding: 4px 14px 8px 14px !important; }
 .mobile-lang-toggle-btn { height: 28px !important; padding: 0 12px !important; font-size: 12px !important; gap: 6px !important; }
+
+/* Loader capsule logo: fixed size + absolute centering (Safari-safe) */
+.loader-morph-capsule:not(.capsule-expanded) .loader-brand-pill { position: relative !important; }
+.loader-morph-capsule:not(.capsule-expanded) .loader-brand-pill .nav-logo-icon {
+  position: absolute !important;
+  top: 50% !important; left: 50% !important;
+  width: 31px !important; height: 22px !important;
+  transform: translate(-50%, -50%) !important;
+}
